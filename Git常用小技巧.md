@@ -47,7 +47,8 @@ Cherry-pick：`git cherry-pick --no-commit 路径/CommitId`
 
 diff文件检查：`git apply --check patch` 手动处理冲突rej文件：`git apply --reject patch`
 
-添加Tag：`git tag 1.1` 注：tag不可重命名，但可以删`-d` 提交历史中添加tag：`git tag 1.1 xxxxxx` 
+添加Tag：`git tag 1.1` 注：tag不可重命名，但可以删`-d` 提交历史中添加tag：`git tag 1.1 xxxxxx`  
+
 查看两个tag之间的提交：`git log --pretty=oneline tagA...tagB`
 
 
