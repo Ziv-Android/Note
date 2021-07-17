@@ -29,6 +29,7 @@
 ##### basefacelibrary
 
 ##### zsmasklibrary
+自研口罩检测
 
 #### arcsontviplibrary(未使用)
 人脸识别虹软付费算法相关
@@ -93,7 +94,7 @@ Kotlin + Java + C
 [高德地图](https://lbs.amap.com/api/android-sdk/guide/create-project/android-studio-create-project)
 
 #### Bugly
-
+崩溃信息收集平台
 
 #### 数据库调试
 [amitshekhar]
