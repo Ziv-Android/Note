@@ -1,11 +1,14 @@
+[TOC]
+
 ## 项目架构
 ### Model依赖
 ![app_model](zbx_qjy_doc/pic/app_model.png)  
 项目整体结构较为清晰，app模块下依赖五个功能模块，分别提供主要的功能交互（app），人脸检测识别（arcsontlibrary），（codeLibrary），外部摄像头/摄像头升级（lib_camera_isp），额外硬件信息获取与控制（seriallib）和网络状态（wifilib）
 ### Model细节
 #### app
+基本逻辑功能实现
 ##### libs
-高德地图SDK相关
+[高德地图SDK相关](#地图定位)
 
 中控身份证SDK相关，[开发文档](zbx_qjy_doc/doc/ZKIDR%20SDK%20for%20Android-Ver2.0.2-cn.pdf)
 

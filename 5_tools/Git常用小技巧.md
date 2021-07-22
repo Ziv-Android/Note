@@ -2,7 +2,11 @@
 
 带账号clone项目：`git clone http://userName:password@link`
 
-切换分支：`git checkout -b local_name origin_name`
+新建本地分支并切换：`git checkout -b local_name origin_name`
+
+不使用`-b`参数直接切换已有分支：`git checkout local_name`
+
+重命名分支：`git checkout -m <old_name> <new_name>`
 
 使用`git fetch` + `git rebase` 代替 `git pull` 能减少部分代码冲突
 
@@ -51,6 +55,6 @@ diff文件检查：`git apply --check patch` 手动处理冲突rej文件：`git 
 
 查看两个tag之间的提交：`git log --pretty=oneline tagA...tagB`
 
-
+删除git跟踪的文件：`git rm --cache file_path`
 
 https://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html
