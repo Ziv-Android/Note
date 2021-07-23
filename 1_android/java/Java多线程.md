@@ -1,3 +1,5 @@
+## synchronized原理
+
 ## volatile与synchronized区别和联系
 hanppens-before原则
 ## 锁

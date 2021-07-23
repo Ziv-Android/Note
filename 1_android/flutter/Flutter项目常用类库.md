@@ -33,6 +33,10 @@
 国际化语言支持
 flutter_localizations
 
+
+[Flutter GetX使用](https://juejin.cn/post/6924104248275763208)
+[Flutter GetX深度剖析](https://juejin.cn/post/6984593635681517582) 
+
 ### rxdart
 [rxdart](https://github.com/ReactiveX/rxdart)
 

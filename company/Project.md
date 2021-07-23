@@ -30,6 +30,7 @@
 #### arcsontlibrary
 人脸识别虹软算法相关
 ##### basefacelibrary
+人脸检测算法库的调用
 
 ##### zsmasklibrary
 自研口罩检测
