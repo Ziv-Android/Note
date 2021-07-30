@@ -13,11 +13,19 @@ IO阻塞，频繁复杂SQL查询
 ## 改善策略
 尽可能将耗时操作转移至非UI线程
 ### AsyncTask
-AsyncTask是一个抽象的泛型类，提供Params，Progress，Result三个泛型参数
-Params：
-Progress：
-Result：
+AsyncTask是一个抽象的泛型类，提供Params，Progress，Result三个泛型参数，不需要时传Void
+Params：参数类型
+Progress：后台任务执行进度
+Result：后台返回的结果类型
+
+AsyncTask默认的线程池是进程范围共享，当线程数超过线程池的最大容量，线程池会爆掉（3.0以后改为串行，避免该问题）
+AsyncTask内默认线程池
+核心线程数为CPU + 1
+最大线程数CPU * 2 + 1
+
+
 ### Thread、HandlerThread + Process.setThreadPoiority(Process.THREAD_PRIORITY_BACKGROUND)
+
 
 ### ThreadPool
 
