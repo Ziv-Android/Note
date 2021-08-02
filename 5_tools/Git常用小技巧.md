@@ -1,5 +1,18 @@
 获取ssh-keygen：`ssh-keygen -t rsa -C "邮箱地址"`
 
+修改config信息
+```
+git config --global --add user.name new_name
+git config --global --add user.email new_email@xxx.com
+git config --global --unset user.name old_name
+git config --global --unset user.email old_email@xxx.com 
+```
+提示有多值时
+```
+git config --global --replace-all user.name new_name
+git config --global --replace-all user.email new_email@xxx.com
+```
+
 带账号clone项目：`git clone http://userName:password@link`
 
 新建本地分支并切换：`git checkout -b local_name origin_name`
