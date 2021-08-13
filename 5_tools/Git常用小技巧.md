@@ -49,6 +49,9 @@ scope(可选)
 subject：尽量控制在50个字以内
 
 提交在上次commit中：`git commit --amend`
+进入vim编辑环境后
+按`i`键进入编辑状态，编辑完成按`esc`键退出编辑
+按`:`键进入命令模式，保存修改输入`w`，退出输入`q`，可一起使用，如保存并退出输入`wq`回车即可
 
 向服务器指定分支提交代码：`git push origin HEAD:tencent`
 
@@ -69,5 +72,13 @@ diff文件检查：`git apply --check patch` 手动处理冲突rej文件：`git 
 查看两个tag之间的提交：`git log --pretty=oneline tagA...tagB`
 
 删除git跟踪的文件：`git rm --cache file_path`
+
+新建Github仓库
+初始化本地：`git init`
+添加文件：`git add .`
+提交本地：`git commit -m "feat: create project"`
+命名分支：`git branch -M main`
+添加远程仓库：`git remote add origin https://github.com/xxx/xxxxxx.git`
+推送至远程仓库：`git push -u origin main`
 
 https://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html
