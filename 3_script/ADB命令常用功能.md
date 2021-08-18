@@ -1,16 +1,80 @@
-# ADB命令常用功能
-## adb-base
-1. 查看ADB版本信息：`adb version`
-2. 重启ADB服务：`adb kill-server & adb start-server`
-3. 查看多有设备连接信息：`adb devices`
-4. 指定设备：`adb -s [设备号] [后续命令]`
-5. 将本地（PC）文件推送至远程（手机）：`adb push [源地址] [目的地址]`
-6. 将手机（手机）文件取回本地（PC）：`adb pull [源地址] [目的地址]`
-7. 安装应用到手机：`adb install -r FileName.apk`
-8. 卸载应用：`adb uninstall [packageName]`
-9. 进入设备控制台：`adb shell`
+# ADB命令释义 v31.0.3-7562133
+## adb
+adb devices  
+adb help  
+adb version  
 
-## adb-shell-base
+## 网络相关  
+adb connect HOST[:PORT]  
+adb disconnect  
+adb pair  
+adb forward --list  
+adb forward [--no-rebind] LOCAL REMOTE  
+adb forwoad --remote LOCAL  
+adb forwoad --remove-all  
+ppTTY  
+reverse --list  
+reverse [--no-rebind] LOCAL REMOTE  
+reverse --remove REMOTE  
+reverse --remove-all  
+mdns check  
+mdns services  
+
+## 文件传输  
+adb push LOCAL... REMOTE  
+adb pull REMOTE... LOCAL  
+adb sync  
+
+## 应用安装/卸载  
+adb install PACKAGE  
+adb install-multiple PACKAGE...  
+adb install-multi-package PACKAGES...  
+adb uninstall [-k] PACKAGE  
+
+## 日志调试
+adb bugreport [PATH]  
+adb jdwp  
+adb logcat -v time  
+
+## 脚本支持  
+adb wait-for-[-TRANSPORT]-STATE..  
+TRANSPORT: usb, local, any  
+STATE: device, recovery, rescue, sideload, bootloader, disconnect  
+adb get-state  
+adb get-serialno  
+adb get-devpath  
+adb remount [-R]  
+adb reboot [bootloader|recovery|sideload|sideload-auto-reboot]  
+adb sideload OTAPACKAGE  
+adb root  
+adb unroot  
+adb usb  
+adb tcpip PORT
+
+## 连接关系
+adb start-server
+adb kill-server
+adb reconnect  
+adb reconnect device
+adb reconnect offline
+
+## USB操作  
+adb attach  
+adb detach  
+
+## 环境变量  
+adb $ADB_TRACE  
+adb $ADB_VENOR_KEYS  
+adb $ANDROID_SERIAL  
+adb $ANDROID_LOG_TAGS  
+adb $ADB_LOCAL_TRANSPORT_MAX_PORT  
+adb $ADB_MDNS_AUTO_CONNECT  
+
+## 命令行
+adb shell  
+adb emu COMMAND  
+
+### adb-shell
 1. 查看目录信息：`ls`
 2. 切换目录：`cd`
 3. 查看进程信息：`ps`或`top`
@@ -21,24 +85,26 @@
 8. 创建文件：``
 9. 创建目录：`mkdir xxx`
 
-## adb-shell-am
-1. start
-2. startservice
-3. force-stop
-4. kill
-5. kill-all
-6. broadcast
-7. instrument
-8. profile start
-9. profile stop
-10. dumpheap
-11. set-debug-app
-12. clear-debug-app
-13. monitor
-14. screen-compat
-15. display-densoty
-16. to-uri
-17. to-intent-uri
+### adb-shell-am
+1. adb shell am start
+
+2. adb shell am startservice
+3. adb shell am stopservice
+4. adb shell am force-stop
+5. adb shell am kill
+6. adb shell am kill-all
+7. broadcast
+8. instrument
+9. profile start
+10. profile stop
+11. dumpheap
+12. set-debug-app
+13. clear-debug-app
+14. monitor
+15. screen-compat
+16. display-densoty
+17. to-uri
+18. to-intent-uri
 
 
 ## adb-shell-pm

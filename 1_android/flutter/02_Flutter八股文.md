@@ -1,5 +1,17 @@
-## Flutter基础
+## Flutter简介
+开发效率高
+开发阶段：基于JIT模式避免每次改动都要进行编译，极大的节省了开发时间  
+发布阶段：基于AOT模式，保证应用性能
 
+类型安全
+由于Dart是类型安全的语言，支持静态类型检测，所以可以在编译前发现一些类型的错误
+
+!(Framework)[pics/framework_flutter.png]
+## Flutter基础
+var、dynamic和Object、final和const  
+var用于变量定义，赋值后类型便确定，后期不能改变
+dynamic
+Object
 
 ## Flutter单线程如何保证流畅性
 

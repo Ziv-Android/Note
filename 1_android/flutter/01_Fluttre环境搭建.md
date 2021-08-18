@@ -132,6 +132,7 @@ flutter config --enable-windows-desktop
 ```
 flutter config --android-studio-dir <directory>
 ```
+安装路径中包含有空格，如Android Studio时，路径需要使用双引号包裹   
 6. `flutter doctor`报错: NoClassDefFoundError(XmlSchema)
 ```
 Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/annotation/XmlSchema
