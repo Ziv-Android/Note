@@ -194,6 +194,18 @@ Flutter lint analyze
 ```
 flutter analyze
 ```
+
+## 配置资源镜像
+```
+export PUB_HOSTED_URL=https://pub.flutter-io.cn
+export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+```
+不可用时可参考 https://flutter.io/community/china 获取最新动态
+
+## Flutter升级
+升级Flutter：`flutter upgrade`
+升级Flutter Packages：`flutter packages upgrade`
+
 ## Hello World
 创建并执行第一个Flutter程序
 ```
@@ -201,3 +213,4 @@ flutter create my_app
 cd my_app
 flutter run
 ```
+![HelloWorld](pics/HelloWorld.png)
