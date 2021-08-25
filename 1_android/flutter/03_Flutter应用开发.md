@@ -48,6 +48,7 @@ Future push(BuildContext context, Route route)
 replace  
 
 Future pushNamed(BuildContext context, String routeName, {Object arguments})
+`Navigator.pushNamed(context, "new_page")`
 
 pushReplacementNamed
 
@@ -58,6 +59,12 @@ bool pop(BuildContext context, [result])
 popUntil  
 
 ### 路由传值
+1. 非命名路由
+通过构造函数定义数据类型进行数据传递，对应的result返回值可通过Navigator.of(context).pop(result)
+注：点击导航栏返回箭头返回时没有返回数据
+
+2. 命名路由
+
 
 
 
@@ -68,3 +75,51 @@ popUntil
 ## 调试
 
 ## 异常捕获
+
+## 屏幕适配
+使用 `MediaQuery.of(context).size.width` 获取屏幕宽度，从而切换布局
+```flutter
+//判断屏幕宽度
+if (MediaQuery.of(context).size.width > 600) {
+    isLargeScreen = true;
+} else {
+    isLargeScreen = false;
+}
+```
+
+包裹`new OrientationBuilder()`监听横竖屏变化`Orientation. portrait`，如果不需要可以去掉。返回两个widget在Row中管理，如果是小屏幕，使用空的**Container()**占位，否则使用**Expanded()**扩展
+```
+body: new OrientationBuilder(builder: (context, orization) {
+    return new Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <widget>[
+            new Expanded(child: new ListWidget()),
+            isLargeScreen ? new Expanded(child: new DetailWidget(selectValue)) : new Container()
+        ],
+    );
+}),
+```
+处理点击事件
+```
+if (isLargeScreen) {
+    selectValue = value;
+    setState(() {});
+} else {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+        return new DetailWidget(value);
+    }));
+}
+```
+强制横竖屏的操作
+```
+// 强制竖屏
+SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+]);
+// 强制横屏
+SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight
+]);
+```
