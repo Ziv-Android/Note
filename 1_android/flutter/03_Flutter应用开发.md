@@ -64,13 +64,93 @@ popUntil
 注：点击导航栏返回箭头返回时没有返回数据
 
 2. 命名路由
+参数传递方：`Navigator.of(context).pushNamed("new_page", arguments: {"key": "value"})`
+参数接收方：`var args = ModelRoute.of(context).settings.arguments`
 
+### 路由钩子
+打开命名路由时，如果命名路由已经在路由表注册则调用`build`函数生成组件，如果没有注册则调用`MaterialApp.onGenerateRoute`属性用于打开命名路由之前，实现统一权限控制。
+`onGenerateRoute`只对命名路由生效
 
+navigatorObservers：监听所有路由跳转动作
 
+inUnknownRoute：路由也不存在时回调
 
 ## 包管理
+`pubspec.yaml`文件
+字段 | 释义
+--- | ---
+name | 名称
+description | 描述，简介
+version | 版本号
+dependencies | 依赖
+dev_dependencies | 开发环境依赖
+flutter | flutter相关配置选项
+
+dependencies下的依赖包作为App源码的一部分参与编译，最终打包在App中
+dev_dependencies 常用于配置开发阶段的测试工具包，用于提高开发测试效率
+
+### Pub仓库
+Pub仓库：https://pub.dev/
+
+添加需要的包后执行`flutter packages get`
+
+### 本地仓库
+假定包名为`pkg1`
+```
+dependencies:
+    pkg1:
+        path: ../../code/pkg1
+```
+路径可以是相对的，也可以是绝对的
+
+### Git仓库
+同样假定包名为`pkg1`，使用path参数指定相对位置
+```
+dependencies:
+    pkg1:
+        git:
+            url: git://github.com/xxx/xx/pkg1.git
+            path: ../../code/pkg1
+```
 
 ## 资源管理
+Flutter APP安装包中会包含代码和 assets（资源）两部分。Assets是会打包到程序安装包中的，可在运行时访问。常见类型的assets包括静态数据（例如JSON文件）、配置文件、图标和图片（JPEG，WebP，GIF，动画WebP / GIF，PNG，BMP和WBMP）等
+
+指定assets
+```
+flutter:
+    assets:
+        - assets/ic_launcher.png
+        - assets/background.png
+```
+构建期间，Flutter将asset放置在asset bundle存档中，程序可在运行时读取，但不能修改
+
+变体资源：用于扩展本地化支持等
+加载assets文本，使用rootBundle对象加载或DefaultAssetBundle
+```
+import 'dart:async' show Future;
+import 'package:flutter/services.dart' show rootBundle;
+
+Future<String> loadAsset() async {
+  return await rootBundle.loadString('assets/config.json');
+}
+```
+加载assets图片，使用AssetImage类
+```
+Widget build(BuildContext context) {
+  return new DecoratedBox(
+    decoration: new BoxDecoration(
+      image: new DecorationImage(
+        image: new AssetImage('graphics/background.png'),
+      ),
+    ),
+  );
+}
+```
+.../image.png
+.../2.0x/image.png
+.../3.0x/image.png
+
 
 ## 调试
 
