@@ -126,6 +126,7 @@ flutter:
 构建期间，Flutter将asset放置在asset bundle存档中，程序可在运行时读取，但不能修改
 
 变体资源：用于扩展本地化支持等
+
 加载assets文本，使用rootBundle对象加载或DefaultAssetBundle
 ```
 import 'dart:async' show Future;
@@ -135,6 +136,7 @@ Future<String> loadAsset() async {
   return await rootBundle.loadString('assets/config.json');
 }
 ```
+
 加载assets图片，使用AssetImage类
 ```
 Widget build(BuildContext context) {
@@ -147,10 +149,26 @@ Widget build(BuildContext context) {
   );
 }
 ```
+
+声明像素比例资源
 .../image.png
 .../2.0x/image.png
 .../3.0x/image.png
 
+控制缩放参数需使用ImageStream或ImageCache来加载图片资源， 加载依赖包中的资源必须先为AssetImage提供package参数
+```
+// 返回为ImageProvider
+new AssetImage('icons/heart.png', package: 'package_icons')
+// 返回时一个weight
+new Image.asset('icons/heart.png', package: 'package_icons')
+```
+
+打包依赖包中的资源，需要在`pubspec.yaml`文件中声明，假设包为`test_backgrounds`资源在`../lib/backgrounds/`目录下，则：
+```
+flutter:
+    assets:
+        - packages/test_backgrounds/backgrounds/xxx.png
+```
 
 ## 调试
 
