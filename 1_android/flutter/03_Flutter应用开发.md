@@ -171,6 +171,159 @@ flutter:
 ```
 
 ## 调试
+### Widget
+调试Widget树（转存储Widgets树状态）: 只要应用程序已经构建了至少一次（即在调用build()之后的任何时间），解决简单的布局问题，一般从frame回调或事件处理器中调用它是最佳解决方案。
+```
+debugDumpApp()
+```
+输出构建函数对应的所有widget，即在widget树的跟中调用toStringDeepwidget
+```
+I/flutter ( 6559): WidgetsFlutterBinding - CHECKED MODE
+I/flutter ( 6559): RenderObjectToWidgetAdapter<RenderBox>([GlobalObjectKey RenderView(497039273)]; renderObject: RenderView)
+I/flutter ( 6559): └MaterialApp(state: _MaterialAppState(1009803148))
+I/flutter ( 6559):  └ScrollConfiguration()
+I/flutter ( 6559):   └AnimatedTheme(duration: 200ms; state: _AnimatedThemeState(543295893; ticker inactive; ThemeDataTween(ThemeData(Brightness.light Color(0xff2196f3) etc...) → null)))
+I/flutter ( 6559):    └Theme(ThemeData(Brightness.light Color(0xff2196f3) etc...))
+I/flutter ( 6559):     └WidgetsApp([GlobalObjectKey _MaterialAppState(1009803148)]; state: _WidgetsAppState(552902158))
+I/flutter ( 6559):      └CheckedModeBanner()
+I/flutter ( 6559):       └Banner()
+I/flutter ( 6559):        └CustomPaint(renderObject: RenderCustomPaint)
+I/flutter ( 6559):         └DefaultTextStyle(inherit: true; color: Color(0xd0ff0000); family: "monospace"; size: 48.0; weight: 900; decoration: double Color(0xffffff00) TextDecoration.underline)
+I/flutter ( 6559):          └MediaQuery(MediaQueryData(size: Size(411.4, 683.4), devicePixelRatio: 2.625, textScaleFactor: 1.0, padding: EdgeInsets(0.0, 24.0, 0.0, 0.0)))
+I/flutter ( 6559):           └LocaleQuery(null)
+I/flutter ( 6559):            └Title(color: Color(0xff2196f3))
+```
+```
+import 'package:flutter'
+```
+自定义widget可通过覆盖`debugFillProperties()`来添加信息，将DiagnosticsProperty (opens new window)对象作为方法参数，并调用父类方法。
+
+### RenderTree
+调试渲染树（转存储RenderTree），解决较复杂的UI问题，一般从frame回调或事件处理器中调用它是最佳解决方案。
+```
+import 'package:flutter/rendering.dart';
+
+debugDumpRenderTree()
+```
+对应根RenderObject的toStringDeep，调试布局问题时，关键看`size`和`constraints`字段，约束向下传递，尺寸向上传递
+```
+I/flutter ( 6559): RenderView
+I/flutter ( 6559):  │ debug mode enabled - android
+I/flutter ( 6559):  │ window size: Size(1080.0, 1794.0) (in physical pixels)
+I/flutter ( 6559):  │ device pixel ratio: 2.625 (physical pixels per logical pixel)
+I/flutter ( 6559):  │ configuration: Size(411.4, 683.4) at 2.625x (in logical pixels)
+I/flutter ( 6559):  │
+I/flutter ( 6559):  └─child: RenderCustomPaint
+I/flutter ( 6559):    │ creator: CustomPaint ← Banner ← CheckedModeBanner ←
+I/flutter ( 6559):    │   WidgetsApp-[GlobalObjectKey _MaterialAppState(1009803148)] ←
+I/flutter ( 6559):    │   Theme ← AnimatedTheme ← ScrollConfiguration ← MaterialApp ←
+I/flutter ( 6559):    │   [root]
+I/flutter ( 6559):    │ parentData: <none>
+I/flutter ( 6559):    │ constraints: BoxConstraints(w=411.4, h=683.4)
+I/flutter ( 6559):    │ size: Size(411.4, 683.4)
+```
+自定义widget可通过覆盖`debugFillProperties()`来添加信息，将DiagnosticsProperty (opens new window)对象作为方法参数，并调用父类方法。
+
+### LayerTree
+调试Layer合成问题，
+```
+debugDumpLayerTree()
+```
+对应根Layer的toStringDeep输出
+```
+I/flutter : TransformLayer
+I/flutter :  │ creator: [root]
+I/flutter :  │ offset: Offset(0.0, 0.0)
+I/flutter :  │ transform:
+I/flutter :  │   [0] 3.5,0.0,0.0,0.0
+I/flutter :  │   [1] 0.0,3.5,0.0,0.0
+I/flutter :  │   [2] 0.0,0.0,1.0,0.0
+I/flutter :  │   [3] 0.0,0.0,0.0,1.0
+I/flutter :  │
+I/flutter :  ├─child 1: OffsetLayer
+I/flutter :  │ │ creator: RepaintBoundary ← _FocusScope ← Semantics ← Focus-[GlobalObjectKey MaterialPageRoute(560156430)] ← _ModalScope-[GlobalKey 328026813] ← _OverlayEntry-[GlobalKey 388965355] ← Stack ← Overlay-[GlobalKey 625702218] ← Navigator-[GlobalObjectKey _MaterialAppState(859106034)] ← Title ← ⋯
+I/flutter :  │ │ offset: Offset(0.0, 0.0)
+I/flutter :  │ │
+I/flutter :  │ └─child 1: PictureLayer
+I/flutter :  │
+I/flutter :  └─child 2: PictureLayer
+```
+根部的变换时应用设备像素比的变换，上述例子中，每个逻辑像素代表3.5个设备像素
+
+### 语义树
+获取语义树（呈现给系统可访问性API的树）的转储，要使用此功能，必须首先启用辅助功能，例如启用系统辅助工具或SemanticsDebugger
+```
+debugDumpSemanticsTree()
+```
+
+### 调度
+要找出相对于帧的开始/结束事件发生的位置，可以分别判断
+debugPrintBeginFrameBanner -> 帧的开始
+debugPrintEndFrameBanner ->  帧的结束
+
+打印当前帧被调度的调用堆栈
+```
+debugPrintScheduleFrameStacks
+```
+
+### 可视化调试
+通过设置`debugPaintSizeEnabled`为`true`以可视方式调试布局问题，推荐在`void main()`顶部设置，启用后：
+1. 所有的Widget被包裹一个深青色边框，padding显示为浅蓝色
+2. 子widget周围为深蓝色边框，
+3. 对齐方式显示为黄色箭头
+4. 空白以灰色显示
+
+`debugPaintBaselinesEnabled`具有基线对象：
+1. 文字基线以绿色显示
+2. 表意基线以橙色显示
+
+`debugPaintPointersEnabled`点击对象突出以深青色显示
+
+调试合成图层
+`debugPaintLayerBordersEnabled`：用橙色或轮廓线标出每一层的边界
+`debugRepaintRainbowEnabled`：图层重绘时，该层会被一组旋转色覆盖
+
+### 调试动画
+设置动画timeDilation变量为大于1.0的数字，如50.0，且运行时不要参与修改
+
+### 调试UI性能问题
+debugPrintMarkNeedsLayoutStacks：调试重新布局问题
+debugPrintMarkNeedsPaintStacks：调试重新绘制问题
+可以使用services库中的debugPrintStack()方法按需打印堆栈痕迹
+
+### 统计应用启动时间
+收集有关Flutter应用程序启动所需时间的详细信息
+```
+flutter run --trace-startup --profile
+```
+
+输出`start_up_info.json`（单位微秒）
+```
+{
+  "engineEnterTimestampMicros": 96025565262,
+  "timeToFirstFrameMicros": 2171978,
+  "timeToFrameworkInitMicros": 514585,
+  "timeAfterFrameworkInitMicros": 1657393
+}
+```
+engineEnterTimestampMicros -> 进入Flutter引擎时  
+timeToFirstFrameMicros -> 展示应用第一帧时  
+timeToFrameworkInitMicros -> 初始化Flutter框架时  
+timeAfterFrameworkInitMicros -> 完成Flutter框架初始化时  
+
+### 跟踪代码逻辑性能
+类似Android平台systrace
+```
+import 'dart:developer';
+
+Timeline.startSync("感兴趣的方法");
+// some code
+Timeline.finishSync();
+```
+然后打开应用程序中的Observatory timeline页面，在`Recorded Streams`中选择`Dart`复选框，并执行想测量的功能
+
+### DevTools
+
 
 ## 异常捕获
 
