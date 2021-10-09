@@ -2,5 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/model/EDSR_Tensorflow" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/model/FSRCNN_Tensorflow" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/model/TF-ESPCN" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/model/TF-LapSRN" vcs="Git" />
   </component>
 </project>
