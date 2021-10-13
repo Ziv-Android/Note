@@ -93,21 +93,46 @@ adb emu COMMAND
 4. adb shell am force-stop
 5. adb shell am kill
 6. adb shell am kill-all
-7. broadcast
-8. instrument
-9. profile start
-10. profile stop
-11. dumpheap
-12. set-debug-app
-13. clear-debug-app
-14. monitor
-15. screen-compat
-16. display-densoty
-17. to-uri
-18. to-intent-uri
+7. adb shell am broadcast
+8. adb shell am instrument
+9. adb shell am profile start
+10. adb shell am profile stop
+11. adb shell am dumpheap
+12. adb shell am set-debug-app
+13. adb shell am clear-debug-app
+14. adb shell am monitor
+15. adb shell am screen-compat
+16. adb shell am display-densoty
+17. adb shell am to-uri
+18. adb shell am to-intent-uri
 
 
 ## adb-shell-pm
 
 
+## 日志
+分类 | 说明 | 命令 | 注意
+--- | --- | --- | ---
+kernel log | 属于Linux内核的log ，可以通过读取/proc/kmsg或者通过串口来抓取。 | `adb shell cat /proc/kmsg > kernel.log` | 需要root权限
+radio log | Android RIL层log，常用于调试Android通信方面的代码 | `adb logcat -b radio -v time` |
+main log | 默认输出 | `adb logcat -b main -v time` | 默认`-b main`可以省略
+event log | event log属于system log，平时可以跟在main log之后 | `adb logcat -b event -v time` |
+
+V(明细:verbose) -> D(调试:debug) -> I(信息:info) -> W(警告:warn) -> E(错误:error) -> F(严重错误:fatal) -> S(无记载:silent)
+
+日志级别过滤
+显示V及以上的日志信息：`adb logcat *:V`
+
+日志分类显示
+adb logcat -s aaa 指定设备aaa
+adb logcat -v tag 指定标签tag
+adb logcat -v time
+adb logcat -v thread
+
+
+日志grep过滤（windows使用find代替）
+adb logcat | grep PID
+adb logcat | grep -i "忽略大小写"
+
 https://blog.csdn.net/wang18323834864/article/details/78618748
+https://www.jianshu.com/p/1c9106dd8284

@@ -25,3 +25,4 @@ LapSRN：这是一个中等大小的模型，它的特点是最大可以将图�
 
 
 https://blog.csdn.net/LuohenYJ/article/details/108207700
+https://www.pyimagesearch.com/2020/11/09/opencv-super-resolution-with-deep-learning/
