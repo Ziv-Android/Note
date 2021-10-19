@@ -51,6 +51,12 @@ def main():
     print("执行：", cmd)
     subprocess.call(cmd, shell=True)
 
+  try:
+    print('try')
+    memoryview
+  except Exception as e:
+    print('exception')
+
   # apk_type = sys.argv[1]
   # 
   # flavor_list = sys.argv[2:]
