@@ -95,6 +95,13 @@ MM指导下的ISOP(ntegrated strategy & operation process)集成战略与运营�
 
 ### MM方法论应用于产品线规划
 #### MM的六个阶段
+1. 理解市场 - 确定目标方向
+2. 细分市场 - 单一变化条件
+3. 组合分析 - 确定产品形态
+4. 制定业务计划 - 承上启下
+5. 融合和优化业务计划 - 形成各层级SP和BP
+6. 管理与评估业务计划 - 常规性日常活动，定期审视适当调整（客户需求的不稳定性和多变性）
+
 ![MM应用于产品规划的6个阶段](pic/MM应用于产品规划的6个阶段.png)
 4P：产品（product）、价格（price）、渠道（place）、促销（promotion）+ 2：技术支持、订单履行。
 TPM，transformation progress metrics，变革进展评估
