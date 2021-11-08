@@ -1,12 +1,39 @@
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class HelloWorld {
     public static void main(String[] args) {
+        LinkedList<String> list = new LinkedList<>(Arrays.asList("/", "+", "="));
+        for (int i = 0; i < 10; i++) {
+            list.add("" + i);
+        }
+        for (char i = 'a'; i <= 'z'; i++) {
+            list.add("" + i);
+        }
+        for (char i = 'A'; i <= 'Z'; i++) {
+            list.add("" + i);
+        }
+        Collections.sort(list);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
+        }
+    }
+
+    private static void mathTest() {
         // 随机数
         // round -> [0.0, 1.0)
         float random = (float) (Math.round(Math.random() * 20)) / 100;
         System.out.println("Hello world: " + random);
+        float random3 = 36.3F + (float) (Math.round(Math.random() * 50)) / 100;
+        System.out.println("Hello world3: " + random3);
+        float number = 12.34555F;
+        DecimalFormat decimalFormat = new DecimalFormat(".00");
+        String price = decimalFormat.format(number);
+        System.out.println("Hello world4: " + price);
         int max = 20, min = 5;
         // nextInt -> [5, 20)
         int random2 = new Random().nextInt((max - min) + 1) + min;
