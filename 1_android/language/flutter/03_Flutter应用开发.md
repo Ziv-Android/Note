@@ -324,6 +324,11 @@ Timeline.finishSync();
 
 ### DevTools
 
+Dart分析器`flutter analyze`静态代码检查工具
+
+语句级单步调试分析器
+
+debugger()声明
 
 ## 异常捕获
 
