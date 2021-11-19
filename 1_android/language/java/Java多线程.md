@@ -73,4 +73,55 @@ volatile标记的变量不会被编译器优化；synchronized标记的变量可
 粗化高频锁：尽可能合并处理调用频繁且过短的锁
 消除无用锁：尽可能不加锁或使用volatile代替锁
 
+#### Synchronized与ReentrantLock
+Synchronized | ReentrantLock
+--- | --- 
+重量级锁，被动阻塞悲观锁，状态block | 轻量级锁，主动阻塞，乐观锁，状态wait
+可修饰实例方法，静态方法，代码块 | 一般配合try...catch...finally使用
+线程在内核态和用户态之间来回切换，耗费系统资源 | cas + volatile管理线程
+自动释放锁 | try中获取锁，finally中释放锁
+只有非公平锁（允许插队） | 提供公平和非公平两种，默认非公平
+可重入 | 可重入
+不可中断 | 提供可中断和不可中断两种方式
+Synchronized只有一个等待队列 | ReentrantLock中一把锁可以对应多个条件队列。通过newCondition表示。
+
+主要在于java对象的内存地址是否相同
+
 ### 原子性、可见性、指令重排 
+#### 原子性
+基本变量修改系统保证其原子性，复杂变量需要使用AtomicReference与AtomicReferenceFieldUpdater进行包装
+
+##### AtomicReference与AtomicReferenceFieldUpdater
+```java
+class AtomicReferenceValueHolder {
+    AtomicReference<String> atomicValue = new AtomicReference<>("HelloAtomic");
+}
+
+AtomicReferenceValueHolder holder = new AtomicReferenceValueHolder();
+holder.atomicValue.compareAndSet("Hello", "World"); // sun.misc.Unsafe
+String value = holder.atomicValue.getAndUpdate(new UnaryOperator<String>() {
+    @Override
+    public String apply(String s) {
+        return "HelloWorld";
+    }
+});
+```
+```java
+class SimpleValueHolder {
+    public static AtomicReferenceFieldUpdater<SimpleValueHolder, String> valueUpdater 
+        = new AtomicReferenceFieldUpdater.newUpdater(SimpleValueHolder.class, String.class, "value");
+    volatile String value = "HelloAtomic"; // volatile
+}
+
+SimpleValueHolder holder = new SimpleValueHolder();
+SimpleValueHolder.valueUpdater.compareAndSet(holder, "Hello", "World"); // sun.misc.Unsafe
+String value = SimpleValueHolder.valueUpdater.getAndUpdate(holder, new UnaryOperator<String>() {
+    @Override
+    public String apply(String s) {
+        return "HelloWorld";
+    }
+});
+```
+AtomicReference相比AtomicReferenceFieldUpdater会多创建一个AtomicReference对象，该对象头占12字节，成员变量占4字节，64位系统涉及指针压缩`-XX:-UseCompressedOops`优化，不启动指针压缩时增加为16 + 8 = 24字节
+
+如：BufferedInputStream中使用的就是ARFU 和 Kotlin中的by lazy与协程
