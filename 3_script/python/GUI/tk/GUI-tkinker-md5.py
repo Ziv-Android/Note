@@ -36,7 +36,7 @@ class MY_GUI():
         # 按钮
         self.str_trans_to_md5_button = Button(self.init_window_name, text="字符串转MD5", bg="lightblue", width=10,
                                               command=self.str_trans_to_md5)  # 调用内部方法  加()为直接调用
-        self.str_trans_to_md5_button.grid(row=1, column=11)
+        self.str_trans_to_md5_button.grid(row=1, column=11, padx=8, pady=8)
 
     # 功能函数
     def str_trans_to_md5(self):

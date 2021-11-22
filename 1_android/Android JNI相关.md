@@ -186,6 +186,54 @@ Rust
 KotlinNative
 ScalaNative
 
+#### Golang
+https://juejin.cn/post/6861129639440580622#heading-0
+https://ejin66.github.io/2018/09/15/go-to-so-android.html
+1. 安装配置Go环境
+简单来说 有几个环境变量要设置一下
+```
+GOARCH=CPU 类型
+GOOS=设备类型
+CGO_ENABLED=1
+CC=ndk 里的 clang,需要是对应 CPU 版本的, API 呢建议是最低
+```
+这里单独说明一下, 高版本的 ndk 用的是 clang, 低版本用的是 gcc, 这个根据你情况来, 个人建议直接用 21.0.6113669版本, 这个我测试过, 没有问题, ndk20 我也试过, 也是 ok 的
+
+go build 命令，-buildmode=c-shared 构建类型, 使用 go help buildmode查看, 安卓一般用c-shared就可以了, 意思就是 c 类型的共享库(动态库)，-o 后面跟输出的位置, 一般建议使用 libxxx.so 的格式, 相对的, 头文件也会被生成在同一目录下, xxx 就是库的名字, 对应到 Java 里加载库的方法就是System.loadLibrary("xxx") 而不是System.loadLibrary("libxxx")，最后一个是需要编译的 go 文件了
+
+CPU 类型和设备类型可以使用go tool dist list查看
+2. package一定要是main(强制规定)，一定要包含main函数(强制规定)，import "C", 不能少, 因为要编译出 c(c++)的头文件，每个方法前要加//export 方法名, 这里要注意// 和 export间不能有空格，方法名和 go 的方法名必须完全一样，方法名不能是 c 内置的方法名, 比如remove就不行
+
+3. 执行
+```shell
+export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/21.0.6113669
+
+export GOARCH=arm
+export GOOS=android
+export CGO_ENABLED=1
+# export CGO_LDFLAGS=--sysroot=%NDK_ROOT%/platforms/android-21/arch-arm
+# export CC=arm-linux-androideabi-gcc --sysroot=%NDK_ROOT%\platforms\android-21\arch-arm
+export CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang
+go build -buildmode=c-shared -o output/android/armeabi-v7a/libadd.so add_library.go
+
+echo "Build armeabi-v7a success"
+
+export GOARCH=arm64
+export GOOS=android
+export CGO_ENABLED=1
+# export CGO_LDFLAGS=--sysroot=%NDK_ROOT%/platforms/android-21/arch-arm
+# export CC=arm-linux-androideabi-gcc --sysroot=%NDK_ROOT%\platforms\android-21\arch-arm
+export CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang
+go build -buildmode=c-shared -o output/android/arm64-v8a/libadd.so add_library.go
+
+echo "Build arm64-v8a success"
+```
+
+常见问题
+提示 -buildmode=c-shared not supported on windows/amd64 -buildmode=c-shared 对go 版本有要求，go version >= 1.10
+提示 can't load package: package .: build constraints exclude all Go files in 需要先设置go env: set CGO_ENABLED=1
+提示 unimplemented: 64-bit mode not compiled in 不支持64位的编译，修改GOARCH： set GOARCH=386
+
 #### Kotlin native
 ```gradle
 kotlin {
@@ -261,22 +309,6 @@ fun JNI_OnLoad(vm: CPointer<JavaVMVar>, preserved: COpaquePointer):jint {
     }
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 https://blog.csdn.net/afei__/article/details/81290711
 https://blog.csdn.net/sailuoatm/article/details/118463339
