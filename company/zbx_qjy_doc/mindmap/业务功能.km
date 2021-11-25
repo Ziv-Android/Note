@@ -1,0 +1,235 @@
+{
+    "root": {
+        "data": {
+            "id": "cfyifjfrzs00",
+            "created": 1637807858988,
+            "text": "FX2/FX6"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cfyiiz6vio00",
+                    "created": 1637808128371,
+                    "text": "检测人脸",
+                    "layout_mind_offset": {
+                        "x": 15,
+                        "y": -35
+                    },
+                    "note": "1. 通过摄像头获取到图像数据\n2. 进行检测人脸动作，将人脸数据作为逻辑触发的一个入口\n3. 判断是否需要触发获取人脸特征值\n4. 对比特征值判断人员是否在库，人证是否匹配等操作"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyjn2o1j280",
+                            "created": 1637811270506,
+                            "text": "人脸位置检测",
+                            "layout_right_offset": {
+                                "x": 0,
+                                "y": -17
+                            }
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyjn5prnfs0",
+                            "created": 1637811277140,
+                            "text": "人脸识别",
+                            "layout_right_offset": {
+                                "x": 4,
+                                "y": -18
+                            }
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyijfmn1aw0",
+                    "created": 1637808164153,
+                    "text": "检测健康码",
+                    "layout_mind_offset": {
+                        "x": 102,
+                        "y": 71
+                    },
+                    "note": "1. 通过扫码器获取到健康码数据，或通过刷身份证，人脸识别到用户信息主要是name和cardId\n2. 不同渠道健康码，对应请求相应的API接口，数据返回为Json格式，解析Json，请求和解析涉及一定的加密解密操作\n3. 根据解析到的Json数据结果完成健康码检测"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyipwz3my00",
+                            "created": 1637808672096,
+                            "text": "ZBX"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyionqwza00",
+                            "created": 1637808573646,
+                            "text": "Pub"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqjpn82w0",
+                            "created": 1637808721591,
+                            "text": "NP"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyird4lsbs0",
+                            "created": 1637808785622,
+                            "text": "NewPub"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiq5gkv6o0",
+                            "created": 1637808690567,
+                            "text": "巴彦淖尔市/内蒙码"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqca3lqw0",
+                            "created": 1637808705413,
+                            "text": "NT-牛图"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqojxqjc0",
+                            "created": 1637808732129,
+                            "text": "DW-德沃"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqx9h0ds0",
+                            "created": 1637808751088,
+                            "text": "ZJJ-张家口"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyijlv5muo0",
+                    "created": 1637808177728,
+                    "text": "检测身份证",
+                    "layout_mind_offset": {
+                        "x": 12,
+                        "y": -440
+                    },
+                    "note": "1. 通过USB设备或串口设备拿到用户身份证信息\n2. 解析得到用户name，cardId，sex，photo，address信息\n3. 支撑健康码查询/人证对比等逻辑"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyio6n88480",
+                            "created": 1637808536418,
+                            "text": "离线身份证读取",
+                            "layout_right_offset": {
+                                "x": 5,
+                                "y": -21
+                            }
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyioghl8bs0",
+                            "created": 1637808557845,
+                            "text": "云身份证读取",
+                            "layout_right_offset": {
+                                "x": 15,
+                                "y": -21
+                            }
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyijxo8z5k0",
+                    "created": 1637808203432,
+                    "text": "检测体温(FX6)",
+                    "layout_mind_offset": {
+                        "x": -609,
+                        "y": -598
+                    },
+                    "note": "1. 检测到人脸/识别到非陌生人后，判断是否需要做测温处理\n2. 需要则根据测温头返回的环境温度，目标温度，当前发射率，根据测温算法计算得出当前目标温度\n3. 获取成功三次后取中间值作为最终输出结果\n4. 快速测温逻辑不会检测人脸，直接从上述第二步开始获取温度信息，因此快速测温的触发比普通测温要提前"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyndmh574w0",
+                            "created": 1637821814422,
+                            "text": "快速测温"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyndpwolm80",
+                            "created": 1637821821892,
+                            "text": "测量体温"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyijqdyou00",
+                    "created": 1637808187572,
+                    "text": "检测IC卡",
+                    "layout_mind_offset": {
+                        "x": 535,
+                        "y": 304
+                    },
+                    "note": "1. 通过IC卡设备读取IC卡数据\n2. 根据平台下发的人员信息和配置，判断该IC卡是否有效，通行时段是否允许通行等\n3. 根据结果控制是否执行开门逻辑"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cfyime81sco0",
+                    "created": 1637808396186,
+                    "text": "其它...",
+                    "layout_mind_offset": {
+                        "x": -29,
+                        "y": 162
+                    }
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cfyqkoj7ixc0",
+                    "created": 1637830830780,
+                    "text": "日志上报",
+                    "layout_mind_offset": {
+                        "x": -36,
+                        "y": -74
+                    }
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

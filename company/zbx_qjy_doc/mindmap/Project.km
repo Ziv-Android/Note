@@ -1,0 +1,206 @@
+{
+    "root": {
+        "data": {
+            "id": "cfyifjfrzs00",
+            "created": 1637807858988,
+            "text": "FX2/FX6"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cfyiiz6vio00",
+                    "created": 1637808128371,
+                    "text": "检测人脸",
+                    "layout_mind_offset": {
+                        "x": 20,
+                        "y": -75
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyjjcd1b1c0",
+                            "created": 1637810978151,
+                            "text": "虹软人脸算法",
+                            "layout_right_offset": {
+                                "x": 0,
+                                "y": -14
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cfyjk7ed5xs0",
+                                    "created": 1637811045712,
+                                    "text": "人脸位置检测"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cfyjkbfgwtc0",
+                                    "created": 1637811054486,
+                                    "text": "人脸识别"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyijfmn1aw0",
+                    "created": 1637808164153,
+                    "text": "检测健康码",
+                    "layout_mind_offset": {
+                        "x": 151,
+                        "y": -1
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyipwz3my00",
+                            "created": 1637808672096,
+                            "text": "ZBX"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyionqwza00",
+                            "created": 1637808573646,
+                            "text": "Pub"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqjpn82w0",
+                            "created": 1637808721591,
+                            "text": "NP"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyird4lsbs0",
+                            "created": 1637808785622,
+                            "text": "NewPub"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiq5gkv6o0",
+                            "created": 1637808690567,
+                            "text": "巴彦淖尔市/内蒙码"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqca3lqw0",
+                            "created": 1637808705413,
+                            "text": "NT-牛图"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqojxqjc0",
+                            "created": 1637808732129,
+                            "text": "DW-德沃"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyiqx9h0ds0",
+                            "created": 1637808751088,
+                            "text": "ZJJ-张家口"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyijlv5muo0",
+                    "created": 1637808177728,
+                    "text": "检测身份证",
+                    "layout_mind_offset": {
+                        "x": 4,
+                        "y": -466
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyio6n88480",
+                            "created": 1637808536418,
+                            "text": "离线身份证读取",
+                            "layout_right_offset": {
+                                "x": 5,
+                                "y": -21
+                            }
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfyioghl8bs0",
+                            "created": 1637808557845,
+                            "text": "云身份证读取",
+                            "layout_right_offset": {
+                                "x": 15,
+                                "y": -21
+                            }
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyijqdyou00",
+                    "created": 1637808187572,
+                    "text": "检测IC卡",
+                    "layout_mind_offset": {
+                        "x": 452,
+                        "y": 162
+                    }
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cfyijxo8z5k0",
+                    "created": 1637808203432,
+                    "text": "检测体温(FX6)",
+                    "layout_mind_offset": {
+                        "x": 20,
+                        "y": 1
+                    }
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cfyime81sco0",
+                    "created": 1637808396186,
+                    "text": "其它...",
+                    "layout_mind_offset": {
+                        "x": 442,
+                        "y": 120
+                    }
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

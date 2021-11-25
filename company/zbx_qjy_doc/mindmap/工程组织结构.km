@@ -1,0 +1,167 @@
+{
+    "root": {
+        "data": {
+            "id": "cfyo0wa7kdk0",
+            "created": 1637823638147,
+            "text": "App"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cfyo49fwsd40",
+                    "created": 1637823901882,
+                    "text": "app"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyo54xnjrc0",
+                            "created": 1637823970435,
+                            "text": "人脸识别，健康码识别的主要业务逻辑部分，包含人脸数据同步，设置配置的请求和应用，创建Http本地服务，MQ服务订阅与解订阅，地图定位和各个渠道业务逻辑，如FX6，CMZ，FX2等"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo10xo6vs0",
+                    "created": 1637823648272,
+                    "text": "arcsontlibrary"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyo2h5cfq00",
+                            "created": 1637823761929,
+                            "text": "虹软人脸识别SDK接入逻辑"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo6to5cgo0",
+                    "created": 1637824102644,
+                    "text": "basefacelibrary"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyo8bnzx7k0",
+                            "created": 1637824220181,
+                            "text": "人脸基础业务逻辑封装，人脸工具类，人脸数据结构对象"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo7k9v66w0",
+                    "created": 1637824160554,
+                    "text": "zsmasklibrary"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyo9nix3t40",
+                            "created": 1637824324360,
+                            "text": "自研人脸戴口罩检测逻辑"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo3t7lins0",
+                    "created": 1637823866551,
+                    "text": "Klibrary"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyoebc12vk0",
+                            "created": 1637824689642,
+                            "text": "算法激活，人脸识别辅助相关逻辑"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo1gim9h40",
+                    "created": 1637823682191,
+                    "text": "lib_camera_isp"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyof8ueq5c0",
+                            "created": 1637824762588,
+                            "text": "ISP相机逻辑"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo1klrfg80",
+                    "created": 1637823691088,
+                    "text": "seriallib"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyofj57rw80",
+                            "created": 1637824785009,
+                            "text": "串口操作逻辑，涉及温度数据读取与转换，身份证数据读取与转换，健康码数据读取，健康码读头数据交互等"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo1nyopw00",
+                    "created": 1637823698400,
+                    "text": "wifilib"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyohfll1r40",
+                            "created": 1637824934020,
+                            "text": "应用网络操作"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfyo1q8gmu00",
+                    "created": 1637823703345,
+                    "text": "lib_common"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfyoi2c30vc0",
+                            "created": 1637824983511,
+                            "text": "ZK离线身份证模块配置和数据读取"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

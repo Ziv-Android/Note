@@ -1,0 +1,167 @@
+{
+    "root": {
+        "data": {
+            "id": "cfymmue5ank0",
+            "created": 1637819715823,
+            "text": "App(Java/Kotlin)"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cfympatin8g0",
+                    "created": 1637819908309,
+                    "text": "HTTP"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfymrv303m00",
+                            "created": 1637820109147,
+                            "text": "client"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cfyms50urrs0",
+                                    "created": 1637820130785,
+                                    "text": "设备配置请求/同步"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cfymshojzao0",
+                                    "created": 1637820158339,
+                                    "text": "设备授权请求"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cfymtwvu3qw0",
+                                    "created": 1637820269795,
+                                    "text": "日志上传"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cfymsyesxrs0",
+                                    "created": 1637820194755,
+                                    "text": "业务接口逻辑"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cfymt7ab8iw0",
+                                    "created": 1637820214074,
+                                    "text": "..."
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cfymuny4so00",
+                            "created": 1637820328707,
+                            "text": "server"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cfymv40390w0",
+                                    "created": 1637820363654,
+                                    "text": "对外提供第三方接口服务"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfymowdh77s0",
+                    "created": 1637819876864,
+                    "text": "MQTT"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfymqms19ew0",
+                            "created": 1637820012705,
+                            "text": "设备与平台绑定/解绑"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfymtd126800",
+                            "created": 1637820226575,
+                            "text": "设备配置动态下发"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfymtlk155s0",
+                            "created": 1637820245137,
+                            "text": "日志上传"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cfympelyngo0",
+                    "created": 1637819916559,
+                    "text": "Serial（串口）/USB",
+                    "layout_mind_offset": {
+                        "x": 545,
+                        "y": 97
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cfymra2kbo80",
+                            "created": 1637820063408,
+                            "text": "测温模块温度数据"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfymrhizhr40",
+                            "created": 1637820079638,
+                            "text": "云身份证数据"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfymrqgzg8o0",
+                            "created": 1637820099108,
+                            "text": "健康码数据"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cfymx18o0go0",
+                            "created": 1637820514371,
+                            "text": "IC卡数据"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "filetree",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
