@@ -50,11 +50,12 @@ Working directory: $FileDir$
 ### 设计UI界面
 
 ### 转换.ui为.py
+`python -m PyQt5.uic.pyuic .\Weather.ui -o Weather.py`
 
 ### 填充执行逻辑
 
 ### 打包编译exe
-
+`pyinstaller -F -w -i Weather.icon Weather.py`
 
 ## 参考资料
 https://lovesoo.org/2020/03/14/pyqt-getting-started/

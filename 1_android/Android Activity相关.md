@@ -53,16 +53,20 @@ getWidth/getHeight与getMeasureWidth/getMeasureHeight
 2. 使用exported暴漏本身，需要添加权限验证，以及拒绝服务漏洞（intent.getExtras()）
 3. 通过InterFilter隐式调用
 
-## 如何解决Activity参数传递的类型安全及接口复杂问题
+## 如何解决Activity参数传递的类型安全及接口复杂问题（人工永远都会出错）
 类型安全：Bundle的K-V不能在编译期保证类型
 接口复杂：启动Activity时参数和结果传递都要依赖Intent
 
-通过注解处理器生成Builder
-Builder
-
-人工永远都会出错
+通过注解处理器生成参数处理Builder
 
 ## 代码任意位置给当前Activity添加View
+如何在任意位置获取当前Activity，在生命周期LifecycleCallBacks中的onActivityCreate回调下使用`private static WeakReference<Activity> currentActivityRef = new WeakReference<>(activity)`即可获取当前Activity
+
+Activity窗口认知
+
+潜在的内存泄漏以及内存回收机制
+
+如何评估技术方案合理性
 
 ## 微信右滑效果
 
