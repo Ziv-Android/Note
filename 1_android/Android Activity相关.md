@@ -62,14 +62,19 @@ getWidth/getHeight与getMeasureWidth/getMeasureHeight
 ## 代码任意位置给当前Activity添加View
 如何在任意位置获取当前Activity，在生命周期LifecycleCallBacks中的onActivityCreate回调下使用`private static WeakReference<Activity> currentActivityRef = new WeakReference<>(activity)`即可获取当前Activity
 
-Activity窗口认知
+addContentView => DecorView
+需要再DecorView创建后才能通过findViewById找的到
+
+Activity窗口认知，
 
 潜在的内存泄漏以及内存回收机制
 
-如何评估技术方案合理性
+如何评估技术方案合理性：方案选型 -> 全局View与当前Activity上添加View的区别
 
 ## 微信右滑效果
-
+手势和动画的运用
+是否了解窗口绘制的内部原理
+对Activity的窗口有深入认识
 
 Kotlin相关
 空安全
