@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>907</width>
-    <height>613</height>
+    <width>919</width>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,17 +18,70 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
-      <width>881</width>
-      <height>501</height>
+      <y>50</y>
+      <width>901</width>
+      <height>631</height>
      </rect>
     </property>
+    <property name="rowCount">
+     <number>21</number>
+    </property>
+    <property name="columnCount">
+     <number>5</number>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="horizontalHeaderCascadingSectionResizes">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="horizontalHeaderHighlightSections">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="horizontalHeaderStretchLastSection">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderHighlightSections">
+     <bool>true</bool>
+    </attribute>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
    </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>730</x>
-      <y>580</y>
+      <x>750</x>
+      <y>720</y>
       <width>158</width>
       <height>25</height>
      </rect>
@@ -53,8 +106,8 @@
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>11</x>
-      <y>550</y>
+      <x>10</x>
+      <y>690</y>
       <width>297</width>
       <height>25</height>
      </rect>
@@ -84,8 +137,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>371</width>
-      <height>21</height>
+      <width>391</width>
+      <height>31</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_number">
