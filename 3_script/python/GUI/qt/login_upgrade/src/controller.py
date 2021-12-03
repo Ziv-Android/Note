@@ -35,10 +35,6 @@ class LoginWindow(QtWidgets.QDialog, Login_Ui):
         self.close()
 
 
-# def main():
-
-
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     login = LoginWindow()
