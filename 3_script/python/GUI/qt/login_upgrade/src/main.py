@@ -60,11 +60,10 @@ class UpgradeThread(QThread):
         line_index = 0
         while True:
             print("线程更新数据")
+            # total_data[]
             for data in total_data:
                 self.upgrade_data.emit(line_index, data)
-                if 
-
-            time.sleep(1)
+                # if
 
 
 total_data = []
