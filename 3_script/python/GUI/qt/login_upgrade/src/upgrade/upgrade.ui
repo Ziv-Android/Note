@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>919</width>
-    <height>756</height>
+    <width>917</width>
+    <height>755</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Upgrade</string>
+   <string>云升级</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableWidget" name="upgradeDetail">
+   <widget class="QTableWidget" name="upgrade_detail_TableWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -77,7 +77,7 @@
     <column/>
     <column/>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>750</x>
@@ -88,14 +88,14 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_Bottom">
      <item>
-      <widget class="QPushButton" name="Button_cancel">
+      <widget class="QPushButton" name="cancel_Button">
        <property name="text">
         <string>取消</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="Button_upgrade">
+      <widget class="QPushButton" name="upgrade_Button">
        <property name="text">
         <string>升级</string>
        </property>
@@ -103,7 +103,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -113,8 +113,11 @@
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_File">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QPushButton" name="Button_input_file">
+      <widget class="QPushButton" name="input_file_Button">
        <property name="text">
         <string>导入文件</string>
        </property>
@@ -124,7 +127,7 @@
       <widget class="QLineEdit" name="lineEdit_filePath"/>
      </item>
      <item>
-      <widget class="QPushButton" name="Button_download_file">
+      <widget class="QPushButton" name="download_file_Button">
        <property name="text">
         <string>下载模板</string>
        </property>
@@ -132,59 +135,47 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>391</width>
-      <height>31</height>
+      <width>381</width>
+      <height>21</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_number">
      <item>
-      <widget class="QLabel" name="label_total_file">
+      <widget class="QLabel" name="username_label">
        <property name="text">
-        <string>升级总数:</string>
+        <string>用户名</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QTextBrowser" name="textBrowser_total_file">
-       <property name="openLinks">
-        <bool>false</bool>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="username_lineEdit"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_upgrade_success">
+      <widget class="QLabel" name="password_label">
        <property name="text">
-        <string>成功升级:</string>
+        <string>密码</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QTextBrowser" name="textBrowser_upgrade_success">
-       <property name="openLinks">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_upgrade_failed">
-       <property name="text">
-        <string>失败数量</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTextBrowser" name="textBrowser_upgrade_failed">
-       <property name="openLinks">
-        <bool>false</bool>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="password_lineEdit"/>
      </item>
     </layout>
+   </widget>
+   <widget class="QLineEdit" name="message_lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>901</width>
+      <height>20</height>
+     </rect>
+    </property>
    </widget>
   </widget>
  </widget>
