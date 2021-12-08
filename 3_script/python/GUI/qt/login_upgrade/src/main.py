@@ -3,6 +3,7 @@
 import sys
 import time
 import csv
+import queue
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, pyqtSlot
@@ -12,11 +13,32 @@ from PyQt5.QtWidgets import QFileDialog
 from upgrade.UpgradeWindow import Ui_MainWindow as Upgrade_Ui
 
 
+# 升级线程
+class UpgradeThread(QThread):
+    # upgrade_data = pyqtSignal(int, dict)
+    upgrade_data = pyqtSignal()
+
+    def run(self):
+        count = 0
+        while True:
+            # currentSn = self.queue.get()
+            print("线程更新数据", count)
+            # self.upgrade_data.emit(1, {'sn': "1h1gstav-qu12oj3g", 'state': "升级中", 'progress': ("%d %" % count), 'version': "1.0"})
+            self.upgrade_data.emit()
+            count += 1
+            # if self.queue.empty():
+            #     break
+            # self.queue.task_down()
+            time.sleep(1)
+
+
 # 升级窗口
 class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
     def __init__(self):
         super(UpgradeWindow, self).__init__()
         self.setupUi(self)
+        # 信息
+        self.message_lineEdit.setText("升级总数：0 成功升级：0 失败数量：0")
         # 导入文件
         self.input_file_Button.clicked.connect(self.add_data_from_csv_file)
         # 下载模板
@@ -39,6 +61,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         self.upgrade_detail_TableWidget.setRowCount(101)
         # self.upgrade_detail_TableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.total_data = []
+        self.queue_sn = queue.Queue()
 
     def get_username_password(self):
         # 用户名/密码
@@ -55,10 +78,22 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
 
     def exec_upgrade(self):
         print("执行升级")
-        # 启动更新线程
-        update_data_thread = UpgradeThread()
-        update_data_thread.upgrade_data.connect(self.update_data)
-        update_data_thread.start()
+        # 数据清洗
+        self.total_data = list(filter(lambda _item: _item['sn'].isnumeric() == True, self.total_data))
+        print("read_data_from_cvs", "数据清洗：", len(self.total_data))
+        # 获取数据
+        # for _item in self.total_data:
+        #     self.queue_sn.put(_item['sn'])
+        # print(self.queue_sn)
+
+        # update_data_thread = UpgradeThread()
+        # update_data_thread.upgrade_data.connect(self.update_data)
+        # update_data_thread.start()
+        # for i in range(4):
+        #     # 启动更新线程
+        #     update_data_thread = UpgradeThread(self.queue_sn)
+        #     update_data_thread.upgrade_data.connect(self.update_data)
+        #     update_data_thread.start()
 
     def exec_cancel(self):
         print("执行取消")
@@ -153,27 +188,15 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         self.upgrade_detail_TableWidget.setItem(line_num, 4, item_version)
 
 
-class UpgradeThread(QThread):
-    upgrade_data = pyqtSignal(int, list)
-
-    def run(self):
-        # self.read_data_from_cvs()
-        line_index = 0
-        while True:
-            print("线程更新数据")
-            # total_data[]
-            # for data in total_data:
-            #     self.upgrade_data.emit(line_index, data)
-            # if
-            time.sleep(1)
-
-
 def main():
     app = QtWidgets.QApplication(sys.argv)
     home = UpgradeWindow()
 
     # 初始化数据/读取svc模板文件
     home.read_data_from_init()
+
+    update_data_thread = UpgradeThread()
+    update_data_thread.start()
 
     # 显示表格
     home.show()

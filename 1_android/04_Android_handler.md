@@ -1,3 +1,8 @@
+## 非UI线程为什么不能更新UI
+1. 线程安全问题，UI操作无法接受线程同步导致的性能开销，为了正确显示赋值和显示都必须控制
+2. handler.postMessage或view.postInvalidate通知UI更新（间接更新）
+3. SurfaceView，TextureView，GLSurfaceView独立线程，均不使用UI线程提高UI响应效率lockCanvas->draw->unlockCanvasAndPost，GLThread->run->guardedRun->view.mRenderer.OnDrawFrame(gl)
+
 ## Looper,Message,MessageQueue
 Looper::pollInner
 epoll_create
