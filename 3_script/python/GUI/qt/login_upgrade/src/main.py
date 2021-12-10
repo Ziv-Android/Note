@@ -3,7 +3,7 @@
 import sys
 import time
 import csv
-import queue
+import random
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal, pyqtSlot
@@ -12,94 +12,70 @@ from PyQt5.QtWidgets import QFileDialog
 
 from upgrade.UpgradeWindow import Ui_MainWindow as Upgrade_Ui
 
-total_size = 0
-success_size = 0
-failed_size = 0
+total_data = []
+empty_data = []
+success_data = []
+failed_data = []
 
 
-class TaskThread(QRunnable):
-    '''
-    实际任务执行的核心，结果发送至槽
-    '''
-    communication = None
-    line = 0
-    data = None
+class WorkerSignal(QObject):
+    finished = pyqtSignal(int)
+    progress = pyqtSignal(int, dict)
 
     def __init__(self):
-        super(TaskThread, self).__init__()
-
-    def run(self):
-        print("TaskThread", "run", "执行实际任务", self.data['sn'])
-        progress = 0
-        while progress <= 100:
-            print("TaskThread", "run", "执行实际任务", "progress", progress)
-            progress += 1
-            # self.data['state'] = "升级中"
-            # 模拟耗时操作
-            time.sleep(1)
-
-            # self.data['progress'] = str(progress) + "%"
-            # self.communication.upgrade_data_signal.emit(self.line, self.data)
-
-        # message = "升级总数：%d 成功升级：%d 失败数量：%d" % (total_size, success_size, failed_size)
-        # self.communication.message_data_signal.emit(message)
-
-    def transfer(self, total_size, line, data, communication):
-        print("TaskThread", "transfer", "初始化线程数据", line)
-        self.communication = communication
-        self.total_size = total_size
-        self.line = line
-        self.data = data
-        # 初始化数据
-        self.data['state'] = "在线"
-        self.data['progress'] = "0%"
-        self.data['version'] = "1.0.1.202112091514"
-        print("TaskThread", "transfer", "data type: ", type(self.data))
-        self.communication.upgrade_data_signal.emit(self.line, self.data)
+        super(WorkerSignal, self).__init__()
 
 
-class ThreadPoolHelper(QObject):
-    '''
-    线程池帮助类，定义任务，绑定线程
-    '''
-    communication = None
-
-    def __init__(self, communication):
+class Worker(QRunnable):
+    def __init__(self, name, _signal=None):
         super().__init__()
-        print("ThreadPoolHelper", "init", "创建QThreadPool")
-        self.threadpool = QThreadPool()
-        self.threadpool.globalInstance()
-        self.threadpool.setMaxThreadCount(20)
-        self.communication = communication
+        self.thread_name = name
+        self.signal = _signal
+        self.setAutoDelete(True)
+        print("Worker", "init", "创建Worker", name)
 
-    def startPool(self):
-        print("ThreadPoolHelper", "startPool", "启动TaskThread")
-        total_size = len(self.communication.total_data)
-        for line in range(total_size):
-            data_item = self.communication.total_data[line]
-            task_thread = TaskThread()
-            task_thread.transfer(total_size, line, data_item, self.communication)
-            task_thread.setAutoDelete(True)
-            self.threadpool.start(task_thread)
-
-        self.threadpool.waitForDone()
-        self.communication.finish_signal.emit()
-
-class WorkerThread(QThread):
-    '''
-    线程池管理线程
-    '''
-    def __init__(self, communication):
-        super(WorkerThread, self).__init__()
-        print("WorkerThread", "init", "创建ThreadPoolHelper")
-        self.threadPoolHelper = ThreadPoolHelper(communication)
+    def setData(self, i, _data):
+        self.line = i
+        self.data = _data
+        print("Worker", "setData", self.line, self.data)
 
     def run(self):
-        print("WorkerThread", "run", "启动QThread")
-        '''
-        启动线程池
-        '''
-        self.threadPoolHelper.startPool()
+        for i in range(10):
+            print("Worker", "run", f"threadName: {self.thread_name}", i)
+            self.data['progress'] = str(i + 1) + "%"
+            try:
+                self.signal.progress.emit(self.line, self.data)
+            except Exception as e:
+                print(e.with_traceback())
+            time.sleep(random.randint(500, 1500) / 1000)
+
+        print("Worker", "run", f"threadName: {self.thread_name}", "finish")
+        self.signal.finished.emit(0)
+
+
+class UpgradeThread(QThread):
+    update_message = pyqtSignal()
+    update_data = pyqtSignal(int, dict)
+    '''
+    通过线程，创建线程池
+    '''
+    def __init__(self):
+        super(UpgradeThread, self).__init__()
+        print("UpgradeThread", "init", "创建QThread线程，防止界面卡死")
+        self.pool = QThreadPool.globalInstance()
+        self.pool.setMaxThreadCount(100)
+
+    def run(self):
+        print("UpgradeThread", "run", "启动线程池")
+        for index in range(len(total_data)):
+            workerSignal = WorkerSignal()
+            workerSignal.progress.connect(self.update_data)
+            workerSignal.finished.connect(self.update_message)
+            runnable = Worker(str(index), workerSignal)
+            runnable.setData(index, total_data[index])
+            self.pool.start(runnable)
+
+        self.pool.waitForDone()
 
 
 # 升级窗口
@@ -113,13 +89,11 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         super(UpgradeWindow, self).__init__()
         self.setup_ui()
         self.bind_signal()
-        self.total_data = []
-        # self.queue_sn = queue.Queue()
 
     def setup_ui(self):
         self.setupUi(self)
         # 信息
-        self.message_lineEdit.setText("升级总数：0 成功升级：0 失败数量：0")
+        self.update_message()
         # 导入文件
         self.input_file_Button.clicked.connect(self.add_data_from_csv_file)
         # 下载模板
@@ -148,7 +122,8 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         self.message_data_signal.connect(self.update_message)
         self.finish_signal.connect(self.update_finish)
 
-    def update_message(self, msg):
+    def update_message(self):
+        msg = "升级总数：%d 成功升级：%d 失败数量：%d" % (len(total_data), len(success_data), len(failed_data))
         print("UpgradeWindow", "update_message", "更新头部信息", msg)
         self.message_lineEdit.setText(msg)
 
@@ -213,25 +188,23 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
             csv_write.writerow(csv_head)
 
     def exec_upgrade(self):
+        global total_data
         print("UpgradeWindow", "exec_upgrade", "执行升级")
         self.upgrade_Button.setEnabled(False)
         # 数据清洗
-        self.total_data = list(filter(lambda _item: _item['sn'].isnumeric() == True, self.total_data))
-        print("UpgradeWindow", "exec_upgrade", "数据清洗：", len(self.total_data))
-        # 获取数据
-        # for _item in self.total_data:
-        #     self.queue_sn.put(_item['sn'])
-        # print(self.queue_sn)
+        total_data = list(filter(lambda _item: _item['sn'].isnumeric() == True, total_data))
+        print("UpgradeWindow", "exec_upgrade", "数据清洗：", len(total_data))
 
-        workerThread = WorkerThread(self)
-        workerThread.start()
-        workerThread.wait()
+        self.upgradeThread = UpgradeThread()
+        self.upgradeThread.update_data.connect(self.update_data)
+        self.upgradeThread.start()
 
     def exec_cancel(self):
         print("UpgradeWindow", "exec_cancel", "执行取消")
         self.close()
 
     def add_data_from_csv_file(self):
+        global total_data
         print("UpgradeWindow", "add_data_from_csv_file")
         file_path = self.lineEdit_filePath.text()
         file_path, file_format = QFileDialog.getOpenFileName(self, '选择文件', file_path, 'Excel files(*.csv)')
@@ -244,50 +217,66 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
                 sn_file = csv.reader(openf)
                 # print("cvs文件数据：", list(sn_file))
                 self.read_data_from_csv(sn_file)
-                self.add_data(self.total_data)
+                self.add_data(total_data)
 
     def read_data_from_init(self):
+        global total_data
         print("UpgradeWindow", "read_data_from_init", "初始化数据")
         for i in range(0, 100):
-            self.total_data.append({'sn': "请输入序列号", 'state': "", 'progress': "", 'version': ""})
+            total_data.append({'sn': "请输入序列号", 'state': "", 'progress': "", 'version': ""})
 
-        self.add_data(self.total_data)
+        self.add_data(total_data)
+
+    def read_data_from_table(self):
+        global total_data
+        print("UpgradeWindow", "read_data_from_table")
+        items = self.upgrade_detail_TableWidget.findItems('-')
+        print("UpgradeWindow", "read_data_from_table", items)
+        col_num = self.upgrade_detail_TableWidget.columnCount()
+        print("UpgradeWindow", "read_data_from_table", col_num)
+        # for i in range(col_num):
+        #     total_data.append()
+        # self.upgrade_detail_TableWidget.items()
 
     def read_data_from_csv(self, csv_iterator):
+        global total_data
         print("UpgradeWindow", "read_data_from_cvs")
         # 数据清洗
-        self.total_data = list(filter(lambda _item: _item['sn'].isnumeric()==True, self.total_data))
-        print("UpgradeWindow", "read_data_from_cvs", "数据清洗：", len(self.total_data))
+        total_data = list(filter(lambda _item: _item['sn'].isnumeric()==True, total_data))
+        print("UpgradeWindow", "read_data_from_cvs", "数据清洗：", len(total_data))
 
         # 获取序列号list
         temp = []
-        for _item in self.total_data:
+        for _item in total_data:
             temp.append(_item['sn'])
         print("UpgradeWindow", "read_data_from_cvs", "原有sn", temp)
 
         # print("csv_iterator", csv_iterator)
         # 添加文件数据
         for cvs_line in csv_iterator:
-            print('sn:', cvs_line, type(cvs_line))
+            print("UpgradeWindow", "read_data_from_cvs", 'sn:', cvs_line, type(cvs_line))
             sn = cvs_line[0].strip()
             # 判断SN是否合法, 检查去重
-            if sn.isnumeric() and sn not in temp:
-                temp.append(sn)
-                self.total_data.append({'sn': sn, 'state': "", 'progress': "", 'version': ""})
-        print("UpgradeWindow", "read_data_from_cvs", "数据文件导入：", len(self.total_data))
+            if sn.isnumeric():
+                if sn not in temp:
+                    temp.append(sn)
+                    total_data.append({'sn': sn, 'state': "", 'progress': "", 'version': ""})
+        print("UpgradeWindow", "read_data_from_cvs", "数据文件导入：", len(total_data))
 
-        global total_size
-        total_size = len(self.total_data)
+        total_size = len(total_data)
+        empty_size = len(empty_data)
+        success_size = len(success_data)
+        failed_size = len(failed_data)
         message = "升级总数：%d 成功升级：%d 失败数量：%d" % (total_size, success_size, failed_size)
         self.message_data_signal.emit(message)
 
         # 空白填充
-        while len(self.total_data) < 100:
-            self.total_data.append({'sn': "请输入序列号", 'state': "", 'progress': "", 'version': ""})
-        print("UpgradeWindow", "read_data_from_cvs", "数据补足：", len(self.total_data))
+        while len(total_data) < 100:
+            total_data.append({'sn': "请输入序列号", 'state': "", 'progress': "", 'version': ""})
+        print("UpgradeWindow", "read_data_from_cvs", "数据补足：", len(total_data))
 
 
-def main():
+if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     home = UpgradeWindow()
@@ -297,10 +286,6 @@ def main():
     home.show()
 
     sys.exit(app.exec_())
-
-
-if __name__ == "__main__":
-    main()
 
 # 参考资料
 # Qt线程池问题：https://blog.csdn.net/weixin_38587278/article/details/106430250
