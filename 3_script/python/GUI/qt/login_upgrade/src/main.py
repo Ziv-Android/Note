@@ -19,7 +19,8 @@ failed_data = []
 
 
 class WorkerSignal(QObject):
-    finished = pyqtSignal(int)
+    finished = pyqtSignal()
+    cancel = pyqtSignal()
     progress = pyqtSignal(int, dict)
 
     def __init__(self):
@@ -46,15 +47,18 @@ class Worker(QRunnable):
             try:
                 self.signal.progress.emit(self.line, self.data)
             except Exception as e:
-                print(e.with_traceback())
+                print("操作取消或程序异常退出")
+                self.signal.cancel.emit()
             time.sleep(random.randint(500, 1500) / 1000)
 
+        success_data.append(self.data)
         print("Worker", "run", f"threadName: {self.thread_name}", "finish")
-        self.signal.finished.emit(0)
+        self.signal.finished.emit()
 
 
 class UpgradeThread(QThread):
     update_message = pyqtSignal()
+    update_cancel = pyqtSignal()
     update_data = pyqtSignal(int, dict)
     '''
     通过线程，创建线程池
@@ -70,6 +74,7 @@ class UpgradeThread(QThread):
         for index in range(len(total_data)):
             workerSignal = WorkerSignal()
             workerSignal.progress.connect(self.update_data)
+            workerSignal.cancel.connect(self.update_cancel)
             workerSignal.finished.connect(self.update_message)
             runnable = Worker(str(index), workerSignal)
             runnable.setData(index, total_data[index])
@@ -119,7 +124,6 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
     def bind_signal(self):
         print("UpgradeWindow", "bind_signal", "绑定信号")
         self.upgrade_data_signal.connect(self.update_data)
-        self.message_data_signal.connect(self.update_message)
         self.finish_signal.connect(self.update_finish)
 
     def update_message(self):
@@ -190,13 +194,17 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
     def exec_upgrade(self):
         global total_data
         print("UpgradeWindow", "exec_upgrade", "执行升级")
-        self.upgrade_Button.setEnabled(False)
         # 数据清洗
         total_data = list(filter(lambda _item: _item['sn'].isnumeric() == True, total_data))
         print("UpgradeWindow", "exec_upgrade", "数据清洗：", len(total_data))
 
+        if len(total_data) > 0:
+            self.upgrade_Button.setEnabled(False)
+
         self.upgradeThread = UpgradeThread()
         self.upgradeThread.update_data.connect(self.update_data)
+        self.upgradeThread.update_message.connect(self.update_message)
+        # self.upgradeThread.update_cancel.connect(self.update_message)
         self.upgradeThread.start()
 
     def exec_cancel(self):
@@ -234,6 +242,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         print("UpgradeWindow", "read_data_from_table", items)
         col_num = self.upgrade_detail_TableWidget.columnCount()
         print("UpgradeWindow", "read_data_from_table", col_num)
+        self.upgrade_detail_TableWidget.currentColumn()
         # for i in range(col_num):
         #     total_data.append()
         # self.upgrade_detail_TableWidget.items()
@@ -263,12 +272,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
                     total_data.append({'sn': sn, 'state': "", 'progress': "", 'version': ""})
         print("UpgradeWindow", "read_data_from_cvs", "数据文件导入：", len(total_data))
 
-        total_size = len(total_data)
-        empty_size = len(empty_data)
-        success_size = len(success_data)
-        failed_size = len(failed_data)
-        message = "升级总数：%d 成功升级：%d 失败数量：%d" % (total_size, success_size, failed_size)
-        self.message_data_signal.emit(message)
+        self.update_message()
 
         # 空白填充
         while len(total_data) < 100:
