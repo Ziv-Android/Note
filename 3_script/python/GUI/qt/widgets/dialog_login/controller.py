@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from main import *
-
+import sys
+from PyQt5 import QtWidgets
 # 导入 Qt designer 设计的页面
-from login.LoginWindow import Ui_Dialog as Login_Ui
+from ui_login.LoginWindow import Ui_Dialog as Login_Ui
 
 
 # 登陆窗口

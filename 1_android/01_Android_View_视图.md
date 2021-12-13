@@ -28,8 +28,9 @@ Vsync机制分为两步：
 1. 启动SurfaceFlinger主线程:mian_surfaceflingger.cpp
 2. sp<SurfaceFlinger> flinger = new SurfaceFlinger()创建DispSync，DispSync构造函数启动DispSyncThread线程
 3. SurfaceFlinger对象是一个strong point，引用时onFirstRef()方法执行mEventQueue.init()初始化消息队列，创建loop和handle
-4. flinger->run()调用mEventQueue.waitMessage()等待AP和EventThread(DispSyncSource)发送数据
-5. flinger->init()
+4. flinger->init()：创建EGLDisplay并初始化，创建两条EventThread，设置MessageQueeu的EventThread（获取了Thread的fd用于通信），创建RenderEngine
+5. flinger->run()调用mEventQueue.waitMessage()等待EventThread-SF发送数据
+6. 
 
 ### 
 

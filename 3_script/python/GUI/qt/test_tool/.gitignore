@@ -1,0 +1,5 @@
+.idea
+product
+__pycache__
+ui_*
+log.txt
