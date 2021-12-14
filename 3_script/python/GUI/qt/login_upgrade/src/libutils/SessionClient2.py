@@ -7,7 +7,7 @@ from requests_toolbelt.multipart import encoder
 
 # 支持admin:admin登录
 user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
-device_info = '{"type":"get_hwinfo","module":"BUS_WEB_REQUEST"}'
+device_info = '{"type":"get_device_info","module":"SS_BUS_REQUEST"}:'
 
 
 class SessionClient:
@@ -18,8 +18,10 @@ class SessionClient:
     """
     def __init__(self, url, username, password):
         self.url = url
+        self.progress_last = 0
         self.ses = None
         # self.log = ZLog()
+        self.cookies = None
         self.is_login = False       # 登录判断
         self.username = username
         self.password = password
@@ -56,6 +58,7 @@ class SessionClient:
             # print(url)
             # # 对应login.php加密，数据为user_pwd字符串
             # en_key = '天天'
+
             url = self.url + "/request.php"
             print(url)
             # 对应request.php，数据为json
@@ -63,25 +66,25 @@ class SessionClient:
             user_pwd = '{}:{}'.format(self.username, self.password)
             print(user_pwd)
             aes_user_pwd = self.aes_pwd(user_pwd, en_key)
-            print(user_info % aes_user_pwd)
-            self.ses = requests.session()
             login_info = user_info % aes_user_pwd
             print(login_info)
             resp = requests.post(url=url, data=login_info, timeout=10)
+            self.cookies = resp.cookies
+            # self.ses = requests.session()
+            # resp = self.ses.post(url, aes_user_pwd, timeout=10)
             # resp = self.ses.post(url, user_info % aes_user_pwd, timeout=10)
             print(resp.status_code)
             if resp.status_code == 200:
                 self.is_login = True
                 # self.log.log_info("login success", "HTTPClient")
-                print(self.ses.cookies)
+                # print(self.ses.cookies)
+                print(self.cookies)
                 print("login success", "HTTPClient")
             else:
                 # self.log.log_error("login failed", "HTTPClient")
                 print("login failed", "HTTPClient")
-
-            result = resp.content.decode()
-            print(result)
-            return result
+            
+            print(resp.content.decode())
         except Exception:
             print("login Exception")
             if not self.ses:
@@ -91,11 +94,13 @@ class SessionClient:
         self.login()
 
         try:
-            url = self.url + "/request.php"
+            url = self.url + "/systemjson.php"
             print(url)
-            print(self.ses.cookies)
-            resp = self.ses.post(url=url, data=device_info, timeout=10)
+            # print(self.ses.cookies)
+            print(self.cookies)
+            # resp = self.ses.post(url, device_info, timeout=10)
             # resp = self.ses.post(url, user_info % aes_user_pwd, timeout=10)
+            resp = requests.post(url=url, data=device_info, timeout=10, cookies=self.cookies)
             print(resp.status_code)
             if resp.status_code == 200:
                 self.is_login = True
@@ -105,9 +110,8 @@ class SessionClient:
                 # self.log.log_error("login failed", "HTTPClient")
                 print("request failed", "HTTPClient")
 
-            result = resp.content.decode()
-            print(result)
-            return result
+            print(resp.content.decode())
+
         except Exception:
             print("login Exception")
             if not self.ses:
@@ -118,11 +122,12 @@ class SessionClient:
     :param filename 升级文件abs路径
     :return http状态值，response数据
     '''
-    def update(self, filename, callback):
+    def update(self, filename):
         self.login()
 
         try:
-            url = self.url + "/update.php"
+            # url = self.url + "/update.php"
+            url = self.url + "/upload.cgi"
             filename.replace('\\', '/')
             print(url, filename)
             name = filename.split("/")[-1]
@@ -143,12 +148,13 @@ class SessionClient:
                     "Content-Disposition": "form-data",
                 }
             )
-            m = encoder.MultipartEncoderMonitor(e, callback)
+            m = encoder.MultipartEncoderMonitor(e, self.progress_callback)
             headers = {
                 'Content-Type': e.content_type,
             }
             print(headers)
-            resp = self.ses.post(url, data=m, headers=headers, timeout=600)
+            # resp = self.ses.post(url, data=m, headers=headers, timeout=600)
+            resp = requests.post(url=url, data=m, headers=headers, cookies=self.cookies, timeout=600)
             print(resp.status_code, resp.content)
             if resp.status_code == 200:
                 # self.log.log_info("success: " + filename, "update")
@@ -163,8 +169,33 @@ class SessionClient:
                 self.close()
             return 404, None
 
-    # def progress_callback(self, monitor):
-    #     print(round(monitor.bytes_read/monitor.len*100, 2))
+    def progress_callback(self, monitor):
+        progress = round(monitor.bytes_read / monitor.len * 100, 2)
+        if progress - self.progress_last > 3:
+            self._heart()
+            self._heart2()
+            self.progress_last = progress
+        print(progress)
+
+    def _heart(self):
+        url = self.url + "/vb.htm?getdate=&gettime="
+        resp = requests.get(url, cookies=self.cookies)
+        if resp.status_code == 200:
+            # self.log.log_info("success: " + filename, "update")
+            print("success: ", "vb.htm")
+        else:
+            # self.log.log_err("failed: " + filename, "update")
+            print("failed: ", "vb.htm")
+
+    def _heart2(self):
+        url = self.url + "/webpage_relogin.php"
+        resp = requests.post(url, cookies=self.cookies)
+        if resp.status_code == 200:
+            # self.log.log_info("success: " + filename, "update")
+            print("success: ", "webpage_relogin")
+        else:
+            # self.log.log_err("failed: " + filename, "update")
+            print("failed: ", "webpage_relogin")
 
     '''
     关闭
