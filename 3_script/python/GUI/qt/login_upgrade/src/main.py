@@ -82,18 +82,18 @@ class Worker(QRunnable):
             self.data['state'] = "在线"
         else:
             self.data['state'] = "离线"
-        print("Worker", "run", "step(2)login:", state_code)
+        print("Worker", self.thread_name, "login", state_code)
 
         info_json = client.info()
         json_obj = json.loads(info_json)
         version = json_obj['body']['soft_ver']
-        print("Worker", "run", "step(3)info", "version:", version)
+        print("Worker", self.thread_name, "info version:", version)
         self.data['version'] = version
         self.signal.progress.emit(self.line, self.data)
         time.sleep(0.5)
 
         state_code, content = client.update(file_path, self.progress_change)
-        print("Worker", "run", "step(4)update:", state_code, content)
+        print("Worker", self.thread_name, "update:", state_code, content)
         client.close()
 
         if state_code == 200:
@@ -116,7 +116,7 @@ class Worker(QRunnable):
         self.signal.progress.emit(self.line, self.data)
         self.signal.active_count.emit(-1)
         self.signal.finished.emit()
-        print("Worker", "run", f"threadName: {self.thread_name}", "finish")
+        print("Worker", self.thread_name, "finish")
 
 
 class UpgradeThread(QThread):
@@ -247,7 +247,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
 
         if index >= 0:
             del database[index]
-            
+
     # 改
     def database_update(self, database, data, index=-1):
         print("UpgradeWindow", "database_update", data, index)
