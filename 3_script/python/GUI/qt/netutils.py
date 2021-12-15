@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import socket
+import logging
 
 def isNetOk(server):
     s = socket.socket()
