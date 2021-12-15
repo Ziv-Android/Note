@@ -86,6 +86,7 @@ class SessionClient:
             print("login Exception")
             if not self.ses:
                 self.close()
+            return None
 
     def info(self):
         self.login()
@@ -112,6 +113,7 @@ class SessionClient:
             print("login Exception")
             if not self.ses:
                 self.close()
+            return None
 
     '''
     升级
