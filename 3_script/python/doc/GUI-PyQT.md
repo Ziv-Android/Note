@@ -24,16 +24,17 @@ sys.exit(app.exec_())
 Qt Designer 是通过拖拽的方式放置控件，并实时查看控件效果进行快速UI设计。 最终生成.ui文件（实质上是XML格式的文件），可以通过pyuic5工具转换成.py文件。
 ```text
 Name: QtDisigner
-Program : C:\Python38\Lib\site-packages\pyqt5_tools\Qt\bin\designer.exe # 当前designer目录，请根据实际修改
+Program : D:\Python\Lib\site-packages\qt5_applications\Qt\bin\designer.exe # 当前designer目录，请根据实际修改
 Working directory: $FileDir$
 ```
 注意新版本工具更新在该目录下：**`D:\Python\Lib\site-packages\qt5_applications\Qt\bin\designer`**
 
-2. pyuic
+1. pyuic
 PyUIC主要是把Qt Designer生成的.ui文件换成.py文件。
 ```text
-Name: QtDisigner
-Program : C:\Python38\Lib\site-packages\pyqt5_tools\Qt\bin\designer.exe # 当前designer目录，请根据实际修改
+Name: PyUIC
+Program : D:\Python\Scripts\pyuic5.exe
+Arguments: $FileName$ -o ui_$FileNameWithoutExtension$.py
 Working directory: $FileDir$
 ```
 
@@ -41,7 +42,8 @@ Working directory: $FileDir$
 PyRCC主要是把编写的.qrc资源文件换成.py文件。
 ```text
 Name: QtDisigner
-Program : C:\Python38\Lib\site-packages\pyqt5_tools\Qt\bin\designer.exe # 当前designer目录，请根据实际修改
+Program : D:\Python\Scripts\pyrcc5.exe
+Arguments: $FileName$ -o rc_$FileNameWithoutExtension$.py
 Working directory: $FileDir$
 ```
 
@@ -187,9 +189,75 @@ print(fun_add(1, 2))
 
 类的动态属性 property(get, set, del) / @property + @param.setter + @param.deleter
 
-### QtDesinger
+### 快速上手QtDesinger
 ctrl + R 预览窗口
 
+#### 属性编辑器
+objectName：控件对象名称
+geometry：相对坐标系
+sizePolicy：控件大小策略
+minimumSize：最小宽度，高度
+maximumSize：最大宽度，高度。如果下个让窗口或控件的大小固定，将minimumSize与maximumSize属性设置为相同值即可
+font：字体
+cousor，光标
+windowTitle：窗口标题
+windowIcon/icon：窗口图标/控件图标
+iconSize：图标大小
+toolTip：提示信息
+statusTip：任务栏提示信息
+text：控件文本
+shortcut：快捷键
+
+#### 信号/槽编辑器
+为控件添加信号和槽函数，编辑控件的信号和槽函数
+
+#### 资源浏览器
+为控件添加图片，比如label，button的背景图片等
+
+#### ui文件及转py方法
+ui文件是一个XML（可扩展标记语言）格式的文件，
+
+[UI文件转Python文件](./../GUI/qt/ui_file_to_py.py)
+另一种实现
+[UI文件转Python文件2](./../GUI/qt/ui_file_to_py_2.py)
+
+#### 界面与逻辑分离
+```python
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow
+from ui_xxx import *
+
+class XxWinodw(QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super(Xxx, self).__init__()
+        self.setupUi(self)
+
+if __name__ = "__main__":
+    app = QApplication(sys.argv)
+    win = XxWinodw()
+    win.show()
+    sys.exit(app.exec_())
+```
+至此，已经可以实现简单PyQt开发
+
+### 布局管理
+垂直，水平，栅格，表单
+
+命名
+doubleSpinBox_returns_min
+doubleSpinBox_returns_max
+
+水平/垂直策略（QtWidgets.QSizePolicy）
+Fixed：窗口控件具有其sizeHint所提示的尺寸且尺寸不会再发生改变，即固定尺寸
+Minimum:窗口控件的sizeHint所提示的尺寸就是它的最小尺寸:该窗口控件不能被压缩得比这个值小，但可以变得更大。
+Maximum:窗口控件的sizeHint所提示的尺寸就是它的最大尺寸:该窗口控件不能变得比这个值大，但它可以被压缩到mintsizeHint给定的尺寸大小。 
+Preferred:窗口控件的sizeHint所提示的尺寸就是它的期望尺寸:该窗口控件可以缩小到minisizeHint所提示的尺寸，也可以变得比sizeHint所提示的尺寸还要大。
+Expanding:窗口控件可以缩小到minisizeHint所提示的尺寸，也可以变得比 sizeHint所提示的尺寸大，但它希望能够变得更大。
+MinimumExpanding:窗口控件的sizeHint所提示的尺寸就是它的最小尺寸:该窗口控件不能被压缩得比这个值还小，但它希望能够变得更大。
+Ignored:无视窗口控件的sizeHint和minisizeHint所提示的尺寸，按照默认来设置。
+
+sizePolicy.setHorizontalStretch(0) #水平伸展0
+sizePolicy.setVerticalStretch(0) #垂直伸展0
 
 
 ## 参考资料
