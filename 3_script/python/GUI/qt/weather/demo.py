@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget
 
 import sys
 import requests
@@ -14,6 +14,7 @@ class MainDialog(QMainWindow):
         super(QMainWindow, self).__init__(parent)
         self.ui = Weather.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.center()
         self.initCityComboBox()
 
     def initCityComboBox(self):
@@ -55,6 +56,11 @@ class MainDialog(QMainWindow):
 
     def clearText(self):
         self.ui.textEdit.clear()
+
+    def center(self):
+        screen = QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
 
 
 if __name__ == '__main__':

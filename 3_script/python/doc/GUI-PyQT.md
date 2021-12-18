@@ -53,7 +53,15 @@ Working directory: $FileDir$
 [Weather_UI](./../GUI/qt/weather/Weather.ui)
 
 ### 转换.ui为.py
-`python -m PyQt5.uic.pyuic .\Weather.ui -o Weather.py`
+`python -m PyQt5.uic.pyuic .\Weather.ui -o ui_Weather.py`  
+或
+`pyuic5 -o ui_Weathre.py Weather.ui`
+
+### 转换资源文件
+`pyrcc5 apprcc.qrc -o rc_apprcc.py`
+```
+import apprcc_cc
+```
 
 ### 填充执行逻辑
 
@@ -189,10 +197,10 @@ print(fun_add(1, 2))
 
 类的动态属性 property(get, set, del) / @property + @param.setter + @param.deleter
 
-### 快速上手QtDesinger
+## 快速上手QtDesinger
 ctrl + R 预览窗口
 
-#### 属性编辑器
+### 属性编辑器
 objectName：控件对象名称
 geometry：相对坐标系
 sizePolicy：控件大小策略
@@ -208,20 +216,20 @@ statusTip：任务栏提示信息
 text：控件文本
 shortcut：快捷键
 
-#### 信号/槽编辑器
+### 信号/槽编辑器
 为控件添加信号和槽函数，编辑控件的信号和槽函数
 
-#### 资源浏览器
+### 资源浏览器
 为控件添加图片，比如label，button的背景图片等
 
-#### ui文件及转py方法
+### ui文件及转py方法
 ui文件是一个XML（可扩展标记语言）格式的文件，
 
 [UI文件转Python文件](./../GUI/qt/ui_file_to_py.py)
 另一种实现
 [UI文件转Python文件2](./../GUI/qt/ui_file_to_py_2.py)
 
-#### 界面与逻辑分离
+### 界面与逻辑分离
 ```python
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -256,9 +264,104 @@ Expanding:窗口控件可以缩小到minisizeHint所提示的尺寸，也可以�
 MinimumExpanding:窗口控件的sizeHint所提示的尺寸就是它的最小尺寸:该窗口控件不能被压缩得比这个值还小，但它希望能够变得更大。
 Ignored:无视窗口控件的sizeHint和minisizeHint所提示的尺寸，按照默认来设置。
 
+参考百分比布局
+```
+sizePolicy = QtWidgets.QSizePolicy(QtWeights.QSizePolicy.Preferred, QtWeights.QSizePolicy.Preferred)
 sizePolicy.setHorizontalStretch(0) #水平伸展0
 sizePolicy.setVerticalStretch(0) #垂直伸展0
+sizePolicy.setHeightForWidth(self.label_1.sizePolicy().hasHeightForWidth())
+self.label_1.setSizePolicy(sizePolicy)
+```
 
+设置Tab键顺序：Edit -> 设置Tab键次序
+
+### **信号（signal）和槽（slot）**-核心
+所有从QObject类或其子类派生的类都能包含信号和槽。在创建事件循环之后，当对象状态改变时，信号通过emit函数发射，由QObject.signal.connect()连接的槽函数将自动执行，单个信号可以与多个槽进行连接。多个信号也可以与单个槽进行连接
+
+### 打包资源
+新建qrc资源文件
+```
+<rcc version="1.0">
+    <qresource prefix="pic">
+        <file>images/cartonn1.ico</file>
+        <file>images/cartonn2.ico</file>
+        <file>images/cartonn3.ico</file>
+        <file>images/python.jpg</file>
+    </qresource>
+</rcc>
+```
+使用时：
+```
+import apprcc_rc
+
+self.label.setPixmap(QtGui.QPixmap(":/pic/images/python.jpg"))
+```
+
+## PyQt5基本窗口控件
+QMainWindow：窗口包含菜单栏，工具栏，状态栏和标题栏，常用于构成主窗口，不能设置布局（使用setLayout()方法），因为它有自己的布局
+QWidget：窗口不确定，需要动态嵌入
+QDialog：对话框，短期任务
+
+QMainWindow中比较重要的方法
+方法 | 描述
+--- | ---
+addToolBar | 添加工具栏
+centralWidget | 返回窗口中心的一个控件，未设置时返回NULL
+menuBar | 返回主窗口的菜单栏
+setCentralWidget | 设置窗口中心的控件
+setStatusBar | 设置状态栏
+statusBar | 获得状态栏对象后，调用状态栏showMessage(message, int timeout=0)方法，显示状态栏信息，停留时间，单位毫秒，默认0表示一直显示
+
+### 案例
+将窗口放置在屏幕中间位置
+```
+def center(self):
+    screen = QDesktopWidget().screenGeometry()
+    size = self.geometry()
+    self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
+```
+
+关闭主窗口
+```
+app = QApplication.instance()
+app.quit()
+```
+
+设置图标
+```
+from PyQt5.QtGui import QIcon
+
+self.setWindowIcon(QIcon('./images/xxx.ico'))
+```
+
+设置气泡提示：QToolTip
+
+## QWidget
+设置区域大小
+可改变：
+QWidget.resize(width, height)
+不可改变：
+QWidget.setFixedSize(width, height)
+QWidget.setFixedWidth(width)
+QWidget.setFixedHeight(height)
+
+获取区域大小
+Qwidget.size()
+Qwidget.width()
+Qwidget.height()
+
+设置区域位置
+Qwidget.move(x, y)
+
+获取左上角坐标
+Qwidget.pos()
+
+同时改变大小和位置
+QWidget.setGeometry(x, y, width, height)
+获取窗口大小和位置
+QWidget.frameGeometry()
+
+## QLabel
 
 ## 参考资料
 https://lovesoo.org/2020/03/14/pyqt-getting-started/
