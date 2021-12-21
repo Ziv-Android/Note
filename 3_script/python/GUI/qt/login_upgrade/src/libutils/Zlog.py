@@ -13,7 +13,7 @@ class ZLog:
         fmt = logging.Formatter(fmt="%(asctime)s-%(levelname)s-%(name)s:  %(message)s", datefmt='%Y-%m-%d %H:%M:%S')
         self.filehandle.setFormatter(fmt)
 
-    def log_err(self, message='', name='', write=True):
+    def log_error(self, message='', name='', write=True):
         # 定义日志
         log_name = ''
         if name != '':
@@ -48,3 +48,10 @@ class ZLog:
         if write != True:
             return
         loggerhandle.debug(msg=message)
+
+
+if __name__ == "__main__":
+    log = ZLog()
+    log.log_info("info", "test_info")
+    log.log_debug("debug", "test")
+    log.log_err("err", "test")

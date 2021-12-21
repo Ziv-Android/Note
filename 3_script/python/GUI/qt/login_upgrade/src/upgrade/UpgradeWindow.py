@@ -15,6 +15,8 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(917, 755)
+        MainWindow.setMinimumSize(QtCore.QSize(917, 755))
+        MainWindow.setMaximumSize(QtCore.QSize(917, 755))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.upgrade_detail_TableWidget = QtWidgets.QTableWidget(self.centralwidget)
@@ -58,7 +60,7 @@ class Ui_MainWindow(object):
         self.download_file_Button.setObjectName("download_file_Button")
         self.horizontalLayout_File.addWidget(self.download_file_Button)
         self.layoutWidget2 = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget2.setGeometry(QtCore.QRect(10, 10, 381, 21))
+        self.layoutWidget2.setGeometry(QtCore.QRect(10, 10, 381, 22))
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.horizontalLayout_number = QtWidgets.QHBoxLayout(self.layoutWidget2)
         self.horizontalLayout_number.setContentsMargins(0, 0, 0, 0)
@@ -77,6 +79,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_number.addWidget(self.password_lineEdit)
         self.message_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.message_lineEdit.setGeometry(QtCore.QRect(10, 30, 901, 20))
+        self.message_lineEdit.setFocusPolicy(QtCore.Qt.NoFocus)
         self.message_lineEdit.setObjectName("message_lineEdit")
         MainWindow.setCentralWidget(self.centralwidget)
 

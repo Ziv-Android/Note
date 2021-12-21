@@ -10,6 +10,18 @@
     <height>755</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>917</width>
+    <height>755</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>917</width>
+    <height>755</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>云升级</string>
   </property>
@@ -141,7 +153,7 @@
       <x>10</x>
       <y>10</y>
       <width>381</width>
-      <height>21</height>
+      <height>22</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_number">
@@ -175,6 +187,9 @@
       <width>901</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
     </property>
    </widget>
   </widget>

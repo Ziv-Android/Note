@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import os
 import sys
 
 import execjs
 import requests
 from requests_toolbelt.multipart import encoder
+from .Zlog import *
+# from .aes_js import *
 
 # 支持admin:admin登录
 user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
@@ -19,7 +23,7 @@ class SessionClient:
     def __init__(self, url, username, password):
         self.url = url
         self.ses = None
-        # self.log = ZLog()
+        self.log = ZLog()
         self.is_login = False       # 登录判断
         self.username = username
         self.password = password
@@ -58,32 +62,35 @@ class SessionClient:
             # en_key = '天天'
             url = self.url + "/request.php"
             print(url)
+            self.log.log_info(f"login request HTTPClient {url}")
             # 对应request.php，数据为json
             en_key = 'secret08'
             user_pwd = '{}:{}'.format(self.username, self.password)
             print(user_pwd)
             aes_user_pwd = self.aes_pwd(user_pwd, en_key)
-            print(user_info % aes_user_pwd)
-            self.ses = requests.session()
+            print(aes_user_pwd)
             login_info = user_info % aes_user_pwd
             print(login_info)
+            self.ses = requests.session()
             resp = requests.post(url=url, data=login_info, timeout=10)
+            resp.encoding = 'utf-8'
             # resp = self.ses.post(url, user_info % aes_user_pwd, timeout=10)
             print(resp.status_code)
             if resp.status_code == 200:
                 self.is_login = True
-                # self.log.log_info("login success", "HTTPClient")
+                self.log.log_info(f"login success HTTPClient {resp.content.decode()}")
                 print(self.ses.cookies)
                 print("login success", "HTTPClient")
             else:
-                # self.log.log_error("login failed", "HTTPClient")
+                self.log.log_error(f"login failed HTTPClient {resp.status_code}")
                 print("login failed", "HTTPClient")
 
             result = resp.content.decode()
             print(result)
             return result
-        except Exception:
-            print("login Exception")
+        except Exception as e:
+            self.log.log_error(f"login failed {e}")
+            print("login Exception", e)
             if not self.ses:
                 self.close()
             return None
@@ -96,21 +103,23 @@ class SessionClient:
             print(url)
             print(self.ses.cookies)
             resp = self.ses.post(url=url, data=device_info, timeout=10)
+            resp.encoding = 'utf-8'
             # resp = self.ses.post(url, user_info % aes_user_pwd, timeout=10)
             print(resp.status_code)
             if resp.status_code == 200:
                 self.is_login = True
-                # self.log.log_info("login success", "HTTPClient")
+                self.log.log_info("info success", "HTTPClient")
                 print("request success", "HTTPClient")
             else:
-                # self.log.log_error("login failed", "HTTPClient")
+                self.log.log_error("info failed", "HTTPClient")
                 print("request failed", "HTTPClient")
 
             result = resp.content.decode()
             print(result)
             return result
-        except Exception:
-            print("login Exception")
+        except Exception as e:
+            self.log.log_error(f"info failed {e}")
+            print("info Exception")
             if not self.ses:
                 self.close()
             return None
@@ -151,15 +160,17 @@ class SessionClient:
             }
             print(headers)
             resp = self.ses.post(url, data=m, headers=headers, timeout=600)
+            resp.encoding = 'utf-8'
             print(resp.status_code, resp.content)
             if resp.status_code == 200:
-                # self.log.log_info("success: " + filename, "update")
+                self.log.log_info("success: " + filename, "update")
                 print("success: " + filename, "update")
             else:
-                # self.log.log_err("failed: " + filename, "update")
+                self.log.log_err("failed: " + filename, "update")
                 print("failed: " + filename, "update")
             return resp.status_code, resp.content.decode()
         except Exception as e:
+            self.log.log_err(f"update Exception {filename} {e}")
             print("update Exception", e)
             if self.ses:
                 self.close()
