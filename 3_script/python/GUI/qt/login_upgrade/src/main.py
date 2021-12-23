@@ -26,7 +26,8 @@ total_data = []
 failed_data = []
 success_data = []
 
-url_sn_to_ip = "http://118.31.4.231:8000/pdns"
+# url_sn_to_ip = "http://118.31.4.231:8000/pdns"
+url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
 
 username = ""
 password = ""
@@ -164,7 +165,7 @@ class UpgradeThread(QThread):
         super(UpgradeThread, self).__init__()
         print("UpgradeThread", "init", "创建QThread线程，防止界面卡死")
         self.pool = QThreadPool.globalInstance()
-        self.pool.setMaxThreadCount(100)
+        self.pool.setMaxThreadCount(2)
         self.log = ZLog()
 
     def run(self):
