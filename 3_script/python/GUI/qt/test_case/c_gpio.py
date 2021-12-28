@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import json
 import time
 from libutils.webclient import WEBClient
@@ -58,6 +60,31 @@ cmd_tmp = '''{
             }
         }'''
 
+cmd_io_out_tmp = '''{
+            "module":"EVS_BUS_REQUEST",
+            "type":"evs_ctrl_gpioout",
+            "body":{
+                "source":%d,
+                "gpio_out_status":%d,
+                "out_delay_times":1000
+            }
+        }'''
+
+cmd_io_out_value = '''{
+            "module":"EVS_BUS_REQUEST",
+            "type":"evs_get_gpioout",
+            "body":{
+                "source":%d
+            }
+        }'''
+
+cmd_io_in_value = '''{
+            "module":"EVS_BUS_REQUEST",
+            "type":"evs_get_gpioin",
+            "body":{
+                "source":%d
+            }
+        }'''
 
 def c_gpio(webc, opera, type, number, status):
     cmd = cmd_tmp % (opera, type, number, status)
@@ -75,32 +102,65 @@ def c_gpio(webc, opera, type, number, status):
 
 def c_gpio_set(webc, number, status):
     ret, resp = c_gpio(webc, 1, 2, number, status)
+    print("c_gpio_set", ret, resp)
     return ret
 
 
 def c_gpio_get(webc, type, number):
     ret, resp = c_gpio(webc, 2, type, number, 0)
+    print("c_gpio_get", ret, resp)
     if ret == 200:
         print(resp)
         jr = json.loads(resp)
         return int(jr['body']['io_status'])
     return -1
 
+def c_gpio_out(webc,source, status):
+    cmd = cmd_io_out_tmp % (source, status)
+    if webc == None:
+        print('webc none')
+        return 404, None
 
-# webc = WEBClient('http://192.168.6.30', 'admin', 'admin')
-# out_num = 1
-# ret = c_gpio_set(webc, out_num, 1)
-# time.sleep(0.2)
-# ret = c_gpio_get(webc, 2, out_num)
-# print("ret IO-OUT:%d" % ret)
-# ret = c_gpio_get(webc, 1, 0)  # io-0
-# print("ret IO-IN:%d" % ret)
-# time.sleep(1)
-# ret = c_gpio_set(webc, out_num, 0)
-# time.sleep(0.2)
-# ret = c_gpio_get(webc, 2, out_num)
-# print("ret IO-OUT:%d" % ret)
-# ret = c_gpio_get(webc, 1, 0)  # io-0
-# print("ret IO-IN:%d" % ret)
+    ret = False
+    if webc.login():
+        ret, resp = webc.posts(cmd)
+    if ret == 200:
+        print(resp)
+        jr = json.loads(resp)
+        return int(jr['state'])
+    return -1
+
+def c_io_out_get(webc, source):
+    cmd = cmd_io_out_value % (source)
+    if webc == None:
+        print('webc none')
+        return 404, None
+
+    ret = False
+    if webc.login():
+        ret, resp = webc.posts(cmd)
+
+    if ret == 200:
+        print(resp)
+        jr = json.loads(resp)
+        return int(jr['body']['gpio_out_status'])
+    return -1
+
+
+def c_io_in_get(webc, source):
+    cmd = cmd_io_in_value % (source)
+    if webc == None:
+        print('webc none')
+        return 404, None
+
+    ret = False
+    if webc.login():
+        ret, resp = webc.posts(cmd)
+
+    if ret == 200:
+        print(resp)
+        jr = json.loads(resp)
+        return int(jr['body']['gpio_in_status'])
+    return -1
 
 

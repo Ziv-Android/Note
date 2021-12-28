@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import json
 import time
 
@@ -95,18 +97,19 @@ def cfg_factory_param_product(webc, lens, dlens):
 
 # 双目，接了485的=1.100，未接485=1.101
 def cfg_factory_param_dlens(devs, username, password):
-    gateway = '255.255.255.0'
-    netmask = '192.168.111.1'
+    gateway = '192.168.1.11'
+    netmask = '255.255.128.0'
     temp_host = ['192.168.111.34', '192.168.111.32', '192.168.111.33']
 
     i = 0
 
+    # dev = {'addr': '192.168.106.24', 's': '92714594-0bd132c8', 'sh': 2456896916, 'sl': 198259400, 'bv': 0, 'timeout': 5}
     dev = devs[0]
     print('update %s host %s' % (dev['s'], temp_host[i]))
-    objdll.VzLPRClient_UpdateNetworkParam(dev['sl'], dev['sh'],
-                                          temp_host[i].encode('utf-8'),
-                                          gateway.encode('utf-8'),
-                                          netmask.encode('utf-8'))
+    objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
+                                           temp_host[i].encode('utf-8'),
+                                           gateway.encode('utf-8'),
+                                           netmask.encode('utf-8'))
 
     url = 'http://%s' % temp_host[0]
     webc = WEBClient(url, username, password)
@@ -120,7 +123,7 @@ def cfg_factory_param_dlens(devs, username, password):
         ret, data = c_rs485_read(webc, 0)
         if data == 'OK':
             print('update %s host %s' % (dev['s'], temp_host[1]))
-            objdll.VzLPRClient_UpdateNetworkParam(dev['sl'], dev['sh'],
+            objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
                                                   temp_host[1].encode('utf-8'),
                                                   gateway.encode('utf-8'),
                                                   netmask.encode('utf-8'))
@@ -128,7 +131,8 @@ def cfg_factory_param_dlens(devs, username, password):
             i = 2   # 另一台是远端1.101
         else:
             print('update %s host %s' % (dev['s'], temp_host[2]))
-            objdll.VzLPRClient_UpdateNetworkParam(dev['sl'], dev['sh'],
+
+            objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
                                                   temp_host[2].encode('utf-8'),
                                                   gateway.encode('utf-8'),
                                                   netmask.encode('utf-8'))
@@ -139,7 +143,7 @@ def cfg_factory_param_dlens(devs, username, password):
     # 另一台设置
     dev = devs[1]
     print('update %s host[%d] %s' % (dev['s'], i, temp_host[i]))
-    objdll.VzLPRClient_UpdateNetworkParam(dev['sl'], dev['sh'],
+    objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
                                           temp_host[i].encode('utf-8'),
                                           gateway.encode('utf-8'),
                                           netmask.encode('utf-8'))

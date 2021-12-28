@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import sys
 import time
 import ctypes
@@ -5,11 +7,8 @@ import socket
 import struct
 import threading
 
+import netifaces
 
-try:
-    import netifaces
-except:
-    print('netifaces')
 
 class CFindDevice(threading.Thread):
     def __init__(self, pwm=None):
@@ -122,9 +121,12 @@ class CFindDevice(threading.Thread):
             return addrs
 
     def set_addrs(self, addrs):
-        print('laddrs %s addrs %s' % (self.local_addrs[0], addrs[0]))
-        if self.local_addrs[0] != addrs[0]:
-            self.local_addrs = addrs
+        if len(addrs) == 0 or len(self.local_addrs) == 0:
+            return
+        else:
+            print('laddrs %s addrs %s' % (self.local_addrs[0], addrs[0]))
+            if self.local_addrs[0] != addrs[0]:
+                self.local_addrs = addrs
     
     #
     def get_devices(self):

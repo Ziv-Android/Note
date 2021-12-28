@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from libutils.webclient import WEBClient
 
 '''
@@ -115,3 +117,4 @@ def c_ptz_stop_lr(webc):
 def c_ptz_reset(webc):
     ret = c_ptz(webc, 128, -1)
     print('c_ptz_reset %d' % ret)
+    return ret == 200

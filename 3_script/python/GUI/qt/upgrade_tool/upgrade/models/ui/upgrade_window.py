@@ -14,6 +14,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
     upgrade_signal = pyqtSignal()
     cancel_signal = pyqtSignal()
     table_cell_change = pyqtSignal()
+    table_double_clicked = pyqtSignal()
 
     def __init__(self):
         super(UpgradeWindow, self).__init__()
@@ -50,5 +51,6 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
         self.upgrade_Button.clicked.connect(self.upgrade_signal)
         self.cancel_Button.clicked.connect(self.cancel_signal)
         # 表单cell变化
+        self.upgrade_detail_TableWidget.doubleClicked.connect(self.table_double_clicked)
         self.upgrade_detail_TableWidget.cellChanged.connect(self.table_cell_change)
 

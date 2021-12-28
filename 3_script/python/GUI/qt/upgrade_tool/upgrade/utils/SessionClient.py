@@ -19,21 +19,18 @@ def read_aes_file():
     path = os.path.join(os.path.abspath('../..'), "assets", "Aes.js")
     # path = os.path.join(os.getcwd()) + "\\assets\\Aes.js"
     print("read_aes_file:", path)
-    aes_script = ''
+
     # 打开JS文件
     with open(path, 'r', encoding='utf-8') as of:
-        line = of.readline()
-        while line:
-            aes_script = aes_script + line
-            line = of.readline()
-        return aes_script
+        aes_script = of.read()
+
+    return aes_script
 
 
 # 生成aes加密结果
 def aes_pwd(user_pwd, en_key):
-    js_str = read_aes_file()
-    js_exec = execjs.compile(js_str)  # 加载JS文件
-    decode_str = js_exec.call('AesCtr.encrypt', user_pwd, en_key, 128)
+    js_context = execjs.compile(read_aes_file())  # 加载JS文件
+    decode_str = js_context.call('AesCtr.encrypt', user_pwd, en_key, 128)
     return decode_str
 
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # from oqc_tool import Ui_MainWindow
 import _thread
 
@@ -83,14 +85,17 @@ class W231ExternGPIO(QtWidgets.QWidget, Ui_W231ExternGPIO):
             return {}
 
         in_sta = {}
-        ret = c_gpio_set(webc, out_num, out_sta)
+        ret = c_gpio_out(webc, out_num, out_sta)
         if ret != 200:
             print('c_gpio_set %d failed' % out_num)
             return in_sta
 
+        if self.num_ioin == 0:
+            return {0: out_sta}
+
         time.sleep(0.1)
         for i in range(self.num_ioin):
-            sta = c_gpio_get(webc, 1, i)  # io-0
+            sta = c_io_out_get(webc, 1, i)  # io-0
             self.gpio_signal.emit(i, sta, -1, 0)
             in_sta[i] = sta
         return in_sta
@@ -150,6 +155,7 @@ class W231ExternGPIO(QtWidgets.QWidget, Ui_W231ExternGPIO):
         webc = self.pwm.http_client_handle()
         if webc is None:
             return False
+        return True
         old = c_gpio_get(webc, 3, 0)
         self.reset_signal.emit(old)
         # self.reset_update_state(old)

@@ -1,12 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # from oqc_tool import Ui_MainWindow
 import ctypes
 import time
+import os
 import _thread
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
 from oqc_tool import *
 from oqc_tool.cfg_factory_param_hs import *
+from oqc_tool.cfg_device_info import *
 from oqc_tool.ui_w22_video_check_hs import Ui_W22VideoCheck
 
 
@@ -16,10 +20,13 @@ from oqc_tool.w222_video_led import W222VideoLed
 from oqc_tool.w223_video_lens import W223VideoLens
 from oqc_tool.w224_video_ptz import W224VideoPTZ
 
+from libutils.wordreport import *
+
 
 class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
     name = 'video'
     auto_test_signal = pyqtSignal(str, str)  # 自定义信号对象。参数str就代表这个信号可以传一个字符串
+    auto_test_finish_signal = pyqtSignal(str)  # 自定义信号对象。参数str就代表这个信号可以传一个字符串
 
     # config:需要测试的内容; hs=high side
     def __init__(self, pwm, config="hs_lens_ircut_ptz"):
@@ -34,6 +41,7 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.usercase = {}
         self.config = config
         self.auto_test_signal.connect(self.test_case_update_state)
+        self.auto_test_finish_signal.connect(self.test_case_finish_state)
 
         self.vdo_ircut = W221VideoIRCUT(self)
         self.pTestCaseVLayout.addWidget(self.vdo_ircut)
@@ -78,7 +86,7 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
             print("can't show video")
 
     def http_client_handle(self):
-        return self.pwm.http_client_handle();
+        return self.pwm.http_client_handle()
 
     # 自动测试
     def widget_init(self):
@@ -110,6 +118,12 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         elif tt == '定制协议':
             self.protocol_config()
 
+    # 请求设备信息-序列号sn
+    def device_info(self):
+        print('device_config')
+        webc = self.http_client_handle()
+        return get_device_info(webc)
+
     # 产品
     # 定制协议
     def protocol_config(self):
@@ -118,9 +132,9 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         pname = cc.get_conf_pname(cus)
         if pname == '':
             print("don't need set protocol")
-            return
+            return True
         webc = self.http_client_handle()
-        cfg_factory_param_customer(webc,
+        return cfg_factory_param_customer(webc,
                                    cc.get_conf_pname(cus),
                                    cc.get_conf_library(cus))
 
@@ -131,28 +145,37 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         cp, pro = self.pwm.get_product()
         print(cp.get_desc())
         webc = self.http_client_handle()
-        cfg_factory_param_product(webc,
+        return cfg_factory_param_product(webc,
                                   cp.get_capacity_num('lens'),
                                   cp.get_capacity_num('dlens'))
 
     def autotest_stop(self):
         print('video autotest_stop')
         self.autotest_state = 5
+        self.pwm.w21_dat.pAutotestButton.setText("开始测试(F8)")
+
+    def autotest_reset(self):
+        print('video autotest_reset')
+        self.autotest_state = 0
+        self.pwm.w21_dat.pAutotestButton.setText("开始测试(F8)")
 
     #
-    def autotest_start(self, host, username, password):
+    def autotest_start(self, host, username, password, i):
         self.widget_init()
+        if self.autotest_state == 0 or self.autotest_state == 5:
+            self.pwm.w21_dat.pAutotestButton.setText("停止测试(F8)")
+
         print('video start_autotest %s %s %s' % (host, username, password))
         if self.autotest_state == 1:
             print('has been in the test')
-            self.autotest_state = 5
+            self.autotest_stop()
             return
 
         self.autotest_state = 1
         try:
             self.show_video(host, username, password)
             _thread.start_new_thread(self.autotest_usercase_traversal,
-                                     ("autotest", host, username, password,))
+                                     ("autotest", host, username, password, i))
         except:
             print("can't start thread")
 
@@ -167,28 +190,59 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
                 break
 
     # 自动
-    def autotest_usercase_traversal(self, tname, host, username, password):
-        print("video autotest_usercase_traversal %s %s %s %s " % (tname, host, username, password))
+    def autotest_usercase_traversal(self, tname, host, username, password, i):
+        print("video autotest_usercase_traversal %s %s %s %s " % (tname, host, username, password), i)
 
+        if i == 0:
+            print("video autotest_usercase_traversal i=", i)
+            report_doc.report_start(time.time())
+            report_doc.report_sn(self.device_info())
+        params = report_doc.get_empty_params()
+
+        if self.autotest_state == 5:
+            print("停止测试状态")
+            return False
         # '镜头配置'
         i = 0
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.lens_config()
+        ret = self.lens_config()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        params[self.testcase[i]] = "成功"
         self.auto_test_signal.emit(self.testcase[i], '成功')
         time.sleep(1)
 
+        if self.autotest_state == 5:
+            print("停止测试状态")
+            return False
         # '定制协议'
         i = i+1
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.protocol_config()
+        ret = self.protocol_config()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        params[self.testcase[i]] = "成功"
         self.auto_test_signal.emit(self.testcase[i], '成功')
         time.sleep(1)
 
         # '云台复位'
         i = i+1
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_ptz.ptz_reset()
+        ret = self.vdo_ptz.ptz_reset()
         time.sleep(15)
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '镜头最小焦'
@@ -199,6 +253,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.vdo_lens.lens_zoom_out()
         self.vdo_lens.lens_auto_focus()
         time.sleep(30)
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '镜头最大焦'
@@ -209,6 +265,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.vdo_lens.lens_zoom_in()
         self.vdo_lens.lens_auto_focus()
         time.sleep(30)
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # 'IRCUT夜间'
@@ -216,6 +274,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.auto_test_signal.emit(self.testcase[i], '开始')
         self.vdo_ircut.ircut_night()
         time.sleep(1)
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # 'IRCUT白天'
@@ -223,6 +283,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.auto_test_signal.emit(self.testcase[i], '开始')
         self.vdo_ircut.ircut_day()
         time.sleep(1)
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-上'
@@ -232,6 +294,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.vdo_ptz.ptz_up()
         time.sleep(8)
         self.vdo_ptz.ptz_up()
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-下'
@@ -241,6 +305,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.vdo_ptz.ptz_down()
         time.sleep(16)
         self.vdo_ptz.ptz_down()
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台复位1'
@@ -249,6 +315,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         time.sleep(1)
         self.vdo_ptz.ptz_reset()
         time.sleep(15)
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-左'
@@ -257,6 +325,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.vdo_ptz.ptz_left()
         time.sleep(8)
         self.vdo_ptz.ptz_left()
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-右'
@@ -265,6 +335,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.vdo_ptz.ptz_right()
         time.sleep(16)
         self.vdo_ptz.ptz_right()
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台复位2'
@@ -272,6 +344,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.auto_test_signal.emit(self.testcase[i], '开始')
         self.vdo_ptz.ptz_reset()
         time.sleep(15)
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '镜头最小焦1'
@@ -282,6 +356,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.vdo_lens.lens_zoom_out()
         self.vdo_lens.lens_auto_focus()
         time.sleep(30)
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '补光灯'
@@ -295,7 +371,31 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         time.sleep(1)
         self.vdo_led.led_ctrl(-1)
         time.sleep(1)
+        params[self.testcase[i]] = "成功"
         self.auto_test_signal.emit(self.testcase[i], '成功')
-        self.autotest_state = 0
 
+        self.autotest_reset()
+        report_doc.report_video(params)
+
+        time.sleep(0.5)
+        self.auto_test_finish_signal.emit("video finish")
+
+    def test_case_finish_state(self, result):
+        print(f"all test case finish {result}, switch -> {self.pwm.w23_ext.name}")
+        self.pwm.pTestStackWidget.setCurrentIndex(1)
+        self.pwm.w21_dat.start_autotest_click(1)
+        report_doc.delete_pic()
+
+    def save_pic_in_path(self, count=0):
+        _pic_path = os.path.join(os.getcwd(), "doc", "pic")
+        if not os.path.exists(_pic_path):
+            os.makedirs(_pic_path)
+        filename = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime((time.time()))) + ".jpg"
+        path = os.path.join(_pic_path, filename)
+        result = objdll.VzLPRClient_SaveSnapImageToJpeg(self.sdk_hdl, path.encode('gb2312'))
+        if result != 0:
+            self.save_pic_in_path(count + 1)
+            if count > 3:
+                return "图片获取失败"
+        return path
 

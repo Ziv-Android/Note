@@ -1,3 +1,5 @@
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # from oqc_tool import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
@@ -78,12 +80,12 @@ class W2TestWidget(QtWidgets.QWidget, Ui_W2TestWidget):
             return None
 
     # 自动测试开始
-    def autotest_start(self, host, username, password):
+    def autotest_start(self, host, username, password, i):
         cur_wdg = self.pTestStackWidget.currentWidget()
         if cur_wdg == self.w22_vdo:
-            self.w22_vdo.autotest_start(host, username, password)
+            self.w22_vdo.autotest_start(host, username, password, i)
         elif cur_wdg == self.w23_ext:
-            self.w23_ext.autotest_start(host, username, password)
+            self.w23_ext.autotest_start(host, username, password, i)
 
     # def show_video(self, host, username, password):
     #     self.w22_vdo.show_video(host, username, password)

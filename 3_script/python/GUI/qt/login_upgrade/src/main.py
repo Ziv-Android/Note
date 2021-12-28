@@ -468,6 +468,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         item_version.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
         self.upgrade_detail_TableWidget.setItem(line_num, 4, item_version)
         self.upgrade_detail_TableWidget.cellChanged.connect(self.table_cell_edit_callback)
+        QApplication.processEvents()
 
     # 数据初始化
     def read_data_from_init(self):

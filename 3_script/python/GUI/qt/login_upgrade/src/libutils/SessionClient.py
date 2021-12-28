@@ -53,7 +53,6 @@ class SessionClient:
     '''
     登录
     '''
-
     def login(self):
         if self.isLogin:
             return
@@ -123,7 +122,6 @@ class SessionClient:
     :param filename 升级文件abs路径
     :return http状态值，response数据
     '''
-
     def update(self, filename, callback):
         self.login()
         try:

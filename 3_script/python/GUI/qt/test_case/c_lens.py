@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import time
 from libutils.webclient import WEBClient
 
@@ -118,7 +120,7 @@ def c_lens_focus_out(webc, value=25):
     return motor, runmode
 
 
-# webc = WEBClient("http://192.168.6.30", "admin", "admin")
+# webc = WEBClient("http://192.168.115.30", "admin", "admin")
 # ret = webc.login()
 # if ret:
 #     c_lens_autofocus(webc)

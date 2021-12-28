@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # from oqc_tool import Ui_MainWindow
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets

@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import _thread
 from PyQt5 import QtCore, QtGui, QtWidgets
 from libutils.finddevice import CFindDevice
 from oqc_tool.cfg_factory_param_hs import *
@@ -8,6 +11,7 @@ from oqc_tool.ui_w21_dev_and_test import Ui_W21DevAndTest
 class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
     def __init__(self, pwm):
         super().__init__()
+        self.is_search = False
         self.setupUi(self)
         self.pwm = pwm
         # 找设备
@@ -38,7 +42,7 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
         item.setText('video')
         self.pTestListWidget.addItem(item)
         self.pTestListWidget.addItem('interface')
-        # self.pTestListWidget.addItem('result')
+        self.pTestListWidget.addItem('result')
         self.pTestListWidget.setCurrentItem(item)
 
     def widget_init(self):
@@ -54,7 +58,6 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
 
     #
     def search_device(self):
-        self.is_search = False
         addrs = []
         addrs.append(self.pLocalHostCBox.currentText())
         self.fdev.set_addrs(addrs)
@@ -91,10 +94,10 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
     #                         self.pPasswordEdit.text())
 
     #
-    def start_autotest_click(self):
+    def start_autotest_click(self, i=0):
         self.pwm.autotest_start(self.pDevHostEdit.text(),
                                 self.pUsernameEdit.text(),
-                                self.pPasswordEdit.text())
+                                self.pPasswordEdit.text(), i)
 
     # 测试窗口
     def test_widget_switch(self, item):
@@ -104,7 +107,10 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
     def dlens_exchange_host(self):
         print('双目更改IP地址')
         devs = self.fdev.get_devices()
-        cfg_factory_param_dlens(list(devs.values()),
-                                self.pUsernameEdit.text(),
-                                self.pPasswordEdit.text())
+        # devs = {}
+        try:
+            _thread.start_new_thread(cfg_factory_param_dlens,
+                                     (list(devs.values()), self.pUsernameEdit.text(), self.pPasswordEdit.text()))
+        except:
+            print("can't start thread")
 

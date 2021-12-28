@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # from oqc_tool import Ui_MainWindow
 import _thread
 import time
@@ -37,7 +39,7 @@ class W224VideoPTZ(QtWidgets.QWidget, Ui_W224VideoPTZ):
 
     def ptz_reset(self):
         webc = self.pwm.http_client_handle()
-        c_ptz_reset(webc)
+        return c_ptz_reset(webc)
 
     #
     def ptz_up(self):

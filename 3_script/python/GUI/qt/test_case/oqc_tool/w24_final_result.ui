@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1094</width>
-    <height>753</height>
+    <width>1085</width>
+    <height>713</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="pFinalGLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
