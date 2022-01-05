@@ -42,11 +42,11 @@ class Utils(QMainWindow, ToolWindow.Ui_MainWindow):
             QtWidgets.QMessageBox.warning(self, "警告", "图片Base64信息有误")
             return
         imageData = base64.b64decode(img_base64_str)
-        with open("temp.png", "wb") as picf:
+        with open("assets/img/temp.png", "wb") as picf:
             picf.write(imageData)
 
         print("decode", imageData)
-        png = QtGui.QPixmap("temp.png")
+        png = QtGui.QPixmap("assets/img/temp.png")
         print("decode", png)
         self.label_img.setPixmap(png)
 
