@@ -41,14 +41,16 @@ def cfg_factory_param_customer(webc, name, library):
     if ret != 200:
         print('webc.posts rcmd failed.')
         return False
+    try:
+        jl = json.loads(resp)
+        pname = jl['body']['platform_name']
+        libname = jl['body']['lib_name']
+        if name != pname or library != libname:
+            return False
 
-    jl = json.loads(resp)
-    pname = jl['body']['platform_name']
-    libname = jl['body']['lib_name']
-    if name != pname or library != libname:
+        return True
+    except:
         return False
-
-    return True
 
 
 # {"type":"set_lens_mode","module":"SERIAL_COMM_MSG","body":{"mode":0,"max_plate_num":3,"is_double":0}}:
@@ -84,70 +86,101 @@ def cfg_factory_param_product(webc, lens, dlens):
         print('product webc.posts rcmd failed.')
         return False
 
-    print(resp)
-    jl = json.loads(resp)
-    mode = int(jl['body']['mode'])
-    is_double = int(jl['body']['is_double'])
-    if mode != lens or dlens != is_double:
-        print('mode != type or dlens != is_double')
-        return False
+    try:
+        print(resp)
+        jl = json.loads(resp)
+        mode = int(jl['body']['mode'])
+        is_double = int(jl['body']['is_double'])
+        if mode != lens or dlens != is_double:
+            print('mode != type or dlens != is_double')
+            return False
 
-    return True
+        return True
+    except:
+        return False
 
 
 # 双目，接了485的=1.100，未接485=1.101
-def cfg_factory_param_dlens(devs, username, password):
+def cfg_factory_param_dlens(devs, username, password, callback=None):
     gateway = '192.168.1.11'
     netmask = '255.255.128.0'
-    temp_host = ['192.168.111.34', '192.168.111.32', '192.168.111.33']
+    temp_host = ['192.168.1.98', '192.168.1.99']
+    host_on_camera = ['192.168.1.100', '192.168.1.101']
 
-    i = 0
+    for time_index in range(30):
+        time.sleep(1)
+        if len(devs) >= 2:
+            break
 
-    # dev = {'addr': '192.168.106.24', 's': '92714594-0bd132c8', 'sh': 2456896916, 'sl': 198259400, 'bv': 0, 'timeout': 5}
+    if len(devs) < 2:
+        if callback is not None:
+            callback("修改失败", host_on_camera[0])
+        return
+
+    print('update %s host %s' % (devs[0]['s'], temp_host[0]))
+    objdll.VzLPRClient_UpdateNetworkParam(devs[0]['sh'], devs[0]['sl'],
+                                          temp_host[0].encode('utf-8'),
+                                          gateway.encode('utf-8'),
+                                          netmask.encode('utf-8'))
+    print('update %s host %s' % (devs[1]['s'], temp_host[1]))
+    objdll.VzLPRClient_UpdateNetworkParam(devs[1]['sh'], devs[1]['sl'],
+                                          temp_host[1].encode('utf-8'),
+                                          gateway.encode('utf-8'),
+                                          netmask.encode('utf-8'))
+
     dev = devs[0]
-    print('update %s host %s' % (dev['s'], temp_host[i]))
-    objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
-                                           temp_host[i].encode('utf-8'),
-                                           gateway.encode('utf-8'),
-                                           netmask.encode('utf-8'))
-
+    camera_index = 0
     url = 'http://%s' % temp_host[0]
     webc = WEBClient(url, username, password)
-    for i in range(20):
+    for time_index in range(30):
         time.sleep(1)
-
         if not webc.login():
+            print("waiting", temp_host[0], "restart", time_index)
             continue
+
         c_rs485_write(webc, 0, '$001,01&')
         time.sleep(1)
         ret, data = c_rs485_read(webc, 0)
         if data == 'OK':
-            print('update %s host %s' % (dev['s'], temp_host[1]))
+            # 近端1.100
+            camera_index = 1
+            print('update %s host %s' % (dev['s'], host_on_camera[0]))
             objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
-                                                  temp_host[1].encode('utf-8'),
+                                                  host_on_camera[0].encode('utf-8'),
                                                   gateway.encode('utf-8'),
                                                   netmask.encode('utf-8'))
-            cfg_factory_param_product(webc, 0, 1)   # 近端，双目
-            i = 2   # 另一台是远端1.101
+            cfg_factory_param_product(webc, 0, 1)  # 近端，双目
         else:
-            print('update %s host %s' % (dev['s'], temp_host[2]))
-
+            # 远端1.101
+            camera_index = 0
+            print('update %s host %s' % (dev['s'], host_on_camera[1]))
             objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
-                                                  temp_host[2].encode('utf-8'),
+                                                  host_on_camera[1].encode('utf-8'),
                                                   gateway.encode('utf-8'),
                                                   netmask.encode('utf-8'))
-            cfg_factory_param_product(webc, 1, 1)   # 远端，双目
-            i = 1   # 另一台是近端1.100
+            cfg_factory_param_product(webc, 1, 1)  # 远端，双目
         break
 
     # 另一台设置
     dev = devs[1]
-    print('update %s host[%d] %s' % (dev['s'], i, temp_host[i]))
+    print('update %s host[%d] %s' % (dev['s'], camera_index, host_on_camera[camera_index]))
     objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
-                                          temp_host[i].encode('utf-8'),
+                                          host_on_camera[camera_index].encode('utf-8'),
                                           gateway.encode('utf-8'),
                                           netmask.encode('utf-8'))
-    if i == 2:
-        cfg_factory_param_product(webc, 1, 1)  # 远端，双目
-    else:
-        cfg_factory_param_product(webc, 0, 1)  # 近端，双目
+    url = 'http://%s' % host_on_camera[camera_index]
+    webc = WEBClient(url, username, password)
+    for time_index in range(30):
+        time.sleep(1)
+        if not webc.login():
+            print("waiting", host_on_camera[camera_index], "restart", time_index)
+            continue
+
+        if camera_index == 1:
+            cfg_factory_param_product(webc, 1, 1)  # 远端，双目
+        else:
+            cfg_factory_param_product(webc, 0, 1)  # 近端，双目
+        break
+
+    if callback is not None:
+        callback("修改成功", host_on_camera[0])

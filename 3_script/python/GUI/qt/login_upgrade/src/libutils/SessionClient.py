@@ -93,7 +93,7 @@ class SessionClient:
         except Exception as e:
             self.log.log_error("SessionClient", f"login exception: {e}")
             self.close()
-            return False
+            return None
 
     def info(self):
         self.login()

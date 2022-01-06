@@ -71,6 +71,7 @@ def c_ptz(webc, ctrl, value):
 def c_ptz_keep(webc, ctrl):
     ret = c_ptz(webc, ctrl, -1)
     print('c_ptz_keep %d ctrl=%d' % (ret, ctrl))
+    return ret
 
 
 # 上
@@ -91,6 +92,7 @@ def c_ptz_down(webc):
 def c_ptz_stop_ud(webc):
     ret = c_ptz(webc, 8, -1)
     print('c_ptz_stop_ud %d' % ret)
+    return ret
 
 
 # 左
@@ -111,6 +113,7 @@ def c_ptz_right(webc):
 def c_ptz_stop_lr(webc):
     ret = c_ptz(webc, 64, -1)
     print('c_ptz_stop_lr %d' % ret)
+    return ret
 
 
 # 复位

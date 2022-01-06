@@ -3,12 +3,12 @@
 
 '''
 # set
-{"type":"ss_set_rj45_net","module":"SS_BUS_REQUEST","body":{"dhcp":0,"ip":"192.168.115.30","netmask":"255.255.128.0","gateway":"192.168.1.1","dns":"114.114.114.114","dns2":"8.8.8.8","https_en":0,"http_port":80,"rtsp_port":8557}}
+{"type":"ss_set_rj45_net","module":"SS_BUS_REQUEST","body":{"dhcp":0,"ip":"192.168.1.100","netmask":"255.255.128.0","gateway":"192.168.1.1","dns":"114.114.114.114","dns2":"8.8.8.8","https_en":0,"http_port":80,"rtsp_port":8557}}
 {"err_msg":"All done","state":200,"type":"ss_set_rj45_net"}
 
 # get
 {"type":"ss_get_rj45_net","module":"SS_BUS_REQUEST"}:
-{"body":{"dhcp":0,"dns":"114.114.114.114","dns2":"8.8.8.8","gateway":"192.168.1.1","http_port":80,"https_en":0,"ip":"192.168.115.30","netmask":"255.255.128.0","rtsp_port":8557},"err_msg":"All done","state":200,"type":"ss_get_rj45_net"}
+{"body":{"dhcp":0,"dns":"114.114.114.114","dns2":"8.8.8.8","gateway":"192.168.1.1","http_port":80,"https_en":0,"ip":"192.168.1.100","netmask":"255.255.128.0","rtsp_port":8557},"err_msg":"All done","state":200,"type":"ss_get_rj45_net"}
 '''
 from libutils.webclient import WEBClient
 

@@ -16,6 +16,7 @@ from oqc_tool.w232_extern_serial import W232ExternSerial
 from oqc_tool.ui_w23_extern_device import Ui_W23ExternDevice
 
 from libutils.wordreport import *
+from c_rs485 import *
 
 
 #
@@ -48,6 +49,7 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
     def widget_init(self):
         # 产品相关
         cp, pro = self.pwm.get_product()
+        self.dlens = cp.get_capacity_num('dlens')
         print("widget_init", "reset", cp.get_capacity_num(self.ext_gpio.name_reset),
               "ioin", cp.get_capacity_num(self.ext_gpio.name_ioin),
               "ioout", cp.get_capacity_num(self.ext_gpio.name_ioout))
@@ -59,6 +61,7 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         self.pTestCaseLWdg.clear()
         self.testcase = [
             'IO-测试',
+            '485连接',
             '复位按键',
             '串口通信',
             # '网口信息',
@@ -76,6 +79,9 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
     def autotest_reset(self):
         print('video autotest_reset')
         self.autotest_state = 0
+        self.pTestCaseLWdg.clear()
+        for tt in self.testcase:
+            self.pTestCaseLWdg.addItem(tt)
         self.pwm.w21_dat.pAutotestButton.setText("开始测试(F8)")
 
     #
@@ -93,7 +99,6 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         self.host = host
         self.username = username
         self.password = password
-
 
         try:
             self.autotest_state = 1
@@ -123,6 +128,8 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         params = report_doc.get_empty_params()
         # 'IO-测试'
         i = 0
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         ret = self.ext_gpio.autotest_usercase_gpio()
         if not ret:
@@ -133,8 +140,27 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         params[self.testcase[i]] = "成功"
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
+        # '485连接测试'
+        i = i + 1
+        if self.autotest_state == 5:
+            return False
+        url = 'http://%s' % host
+        webc = WEBClient(url, username, password)
+        self.auto_test_signal.emit(self.testcase[i], '开始')
+        c_rs485_write(webc, 0, '$001,01&')
+        time.sleep(1)
+        ret, data = c_rs485_read(webc, 0)
+
+        if data != 'OK':
+            params[self.testcase[i]] = "未连接"
+            self.auto_test_signal.emit(self.testcase[i], '未连接')
+        params[self.testcase[i]] = "成功"
+        self.auto_test_signal.emit(self.testcase[i], '成功')
+
         # '复位按键'
-        i = i+1
+        i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         ret = self.ext_gpio.autotest_usercase_reset()
         if not ret:
@@ -146,19 +172,27 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '串口通信'
-        i = i+1
-        self.auto_test_signal.emit(self.testcase[i], '开始')
-        ret = self.ext_serial.autotest_usercase()
-        if not ret:
-            params[self.testcase[i]] = "失败"
-            self.auto_test_signal.emit(self.testcase[i], '失败')
-            self.autotest_stop()
+        i = i + 1
+        if self.autotest_state == 5:
             return False
-        params[self.testcase[i]] = "成功"
-        self.auto_test_signal.emit(self.testcase[i], '成功')
+        self.auto_test_signal.emit(self.testcase[i], '开始')
+        if self.ext_serial.num_serial <= 0:
+            params[self.testcase[i]] = "跳过"
+            self.auto_test_signal.emit(self.testcase[i], '跳过')
+        else:
+            ret = self.ext_serial.autotest_usercase()
+            if not ret:
+                params[self.testcase[i]] = "失败"
+                self.auto_test_signal.emit(self.testcase[i], '失败')
+                self.autotest_stop()
+                return False
+            params[self.testcase[i]] = "成功"
+            self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '网口信息'
         # i = i+1
+        # if self.autotest_state == 5:
+        #     return False
         # self.auto_test_signal.emit(self.testcase[i], '开始')
         # # ret = self.ext_serial.autotest_usercase(self.webc)
         # time.sleep(1)
@@ -169,7 +203,9 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         # self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '日志读取'
-        i = i+1
+        i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         ret = self.ext_log.autotest_usercase()
         time.sleep(1)
@@ -182,33 +218,65 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '恢复出厂'
-        # i = i+1
-        # self.auto_test_signal.emit(self.testcase[i], '开始')
-        # webc = self.http_client_handle()
-        # ret = c_factory(webc, 2)
-        # time.sleep(0.5)
-        # if not ret:
-        #     params[self.testcase[i]] = "失败"
-        #     self.auto_test_signal.emit(self.testcase[i], '失败')
-        #     self.autotest_state = 5
-        # params[self.testcase[i]] = "成功"
-        # self.auto_test_signal.emit(self.testcase[i], '成功')
+        i = i + 1
+        if self.autotest_state == 5:
+            return False
+        self.auto_test_signal.emit(self.testcase[i], '开始')
+        if self.dlens == 0:
+            self.pwm.w22_vdo.close_sdk_hdl()
+            self.pwm.w21_dat.pLoginButton.setText("设备登录")
+        else:
+            if host == "192.168.1.101":
+                self.pwm.w22_vdo.close_sdk_hdl()
+                self.pwm.w21_dat.pLoginButton.setText("设备登录")
 
-        self.autotest_reset()
+        webc = self.http_client_handle()
+        ret = c_factory(webc, 2)
+        time.sleep(0.5)
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_state = 5
+            return False
+        params[self.testcase[i]] = "成功"
+        self.auto_test_signal.emit(self.testcase[i], '成功')
 
         report_doc.report_extern(params)
         report_doc.report_end("通过", time.time())
 
         time.sleep(0.5)
         report_doc.save_doc()
-        self.auto_test_finish_signal.emit("extern finish")
+        self.auto_test_finish_signal.emit(host)
 
-    def test_case_finish_state(self, result):
-        print(f"all test case finish {result}, switch -> {self.pwm.w24_ret.name}")
-        self.pwm.pTestStackWidget.setCurrentIndex(2)
-        source, content = report_doc.doc2html()
-        print(f"output: {source}")
-        self.pwm.w24_ret.final_log.show_result_html(source)
+    def test_case_finish_state(self, host):
+        print(f"all test case finish {host}, switch -> {self.pwm.w24_ret.name}")
+        self.autotest_reset()
+        if self.dlens == 0:
+            source, content = report_doc.doc2html()
+            print(f"output: {source}")
+            # 单目
+            self.pwm.pTestStackWidget.setCurrentIndex(2)
+            self.pwm.w24_ret.final_log.show_result_html(source)
+            return
+
+        if host == "192.168.1.100":
+            report_doc.add_compose_file(report_doc.get_report_file_path())
+            report_doc.reset_flag()
+            # 双目，切换至第二个摄像头测试
+            self.pwm.pTestStackWidget.setCurrentIndex(0)
+            self.pwm.w21_dat.pDevHostEdit.setText("192.168.1.101")
+            self.pwm.w21_dat.start_autotest_click(0)
+        else:
+            report_doc.add_compose_file(report_doc.get_report_file_path())
+            files = report_doc.get_compose_files()
+            print(files)
+            report_doc.compose_doc(files)
+            source, content = report_doc.doc2html()
+            print(f"output: {source}")
+            report_doc.clear_compose_file()
+            # 切换至结果页并显示报告
+            self.pwm.pTestStackWidget.setCurrentIndex(2)
+            self.pwm.w24_ret.final_log.show_result_html(source)
 
     # 请求设备信息-序列号sn
     def device_info(self):

@@ -24,8 +24,8 @@ class W221VideoIRCUT(QtWidgets.QWidget, Ui_W221VideoIRCUT):
     # IR-CUT
     def ircut_day(self):
         webc = self.pwm.http_client_handle()
-        c_ircut_day(webc)
+        return c_ircut_day(webc)
 
     def ircut_night(self):
         webc = self.pwm.http_client_handle()
-        c_ircut_night(webc)
+        return c_ircut_night(webc)

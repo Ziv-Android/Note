@@ -86,6 +86,7 @@ cmd_io_in_value = '''{
             }
         }'''
 
+
 def c_gpio(webc, opera, type, number, status):
     cmd = cmd_tmp % (opera, type, number, status)
     # print('c_gpio %s' % cmd)
@@ -111,11 +112,17 @@ def c_gpio_get(webc, type, number):
     print("c_gpio_get", ret, resp)
     if ret == 200:
         print(resp)
-        jr = json.loads(resp)
-        return int(jr['body']['io_status'])
+        if resp is None or len(resp) == 0:
+            return False
+        try:
+            jr = json.loads(resp)
+            return int(jr['body']['io_status'])
+        except:
+            return -1
     return -1
 
-def c_gpio_out(webc,source, status):
+
+def c_gpio_out(webc, source, status):
     cmd = cmd_io_out_tmp % (source, status)
     if webc == None:
         print('webc none')
@@ -126,9 +133,15 @@ def c_gpio_out(webc,source, status):
         ret, resp = webc.posts(cmd)
     if ret == 200:
         print(resp)
-        jr = json.loads(resp)
-        return int(jr['state'])
+        if resp is None or len(resp) == 0:
+            return False
+        try:
+            jr = json.loads(resp)
+            return int(jr['state'])
+        except:
+            return -1
     return -1
+
 
 def c_io_out_get(webc, source):
     cmd = cmd_io_out_value % (source)
@@ -142,8 +155,15 @@ def c_io_out_get(webc, source):
 
     if ret == 200:
         print(resp)
-        jr = json.loads(resp)
-        return int(jr['body']['gpio_out_status'])
+        if resp is None or len(resp) == 0:
+            return False
+        try:
+            jr = json.loads(resp)
+            if int(jr['state']) == 404:
+                return False
+            return int(jr['body']['gpio_out_status'])
+        except:
+            return False
     return -1
 
 
@@ -159,8 +179,13 @@ def c_io_in_get(webc, source):
 
     if ret == 200:
         print(resp)
-        jr = json.loads(resp)
-        return int(jr['body']['gpio_in_status'])
+        if resp is None or len(resp) == 0:
+            return False
+        try:
+            jr = json.loads(resp)
+            if int(jr['state']) == 404:
+                return False
+            return int(jr['body']['gpio_in_status'])
+        except:
+            return False
     return -1
-
-

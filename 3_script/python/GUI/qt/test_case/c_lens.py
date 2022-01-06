@@ -73,19 +73,24 @@ def c_lens(webc, option, motor, runmode, value):
     # print(resp)
 
 
+# 镜头复位
+def c_lens_reset(webc):
+    return c_lens(webc, 0, 0, 0, 0)
+
+
 # 自动对焦
 def c_lens_autofocus(webc):
-    c_lens(webc, 5, 0, 0, 0)
+    return c_lens(webc, 5, 0, 0, 0)
 
 
 # 保持运动
 def c_lens_keep(webc, motor, runmode):
-    c_lens(webc, 3, motor, runmode, 0)
+    return c_lens(webc, 3, motor, runmode, 0)
 
 
 # 停止运动
 def c_lens_stop(webc, motor, runmode):
-    c_lens(webc, 4, motor, runmode, 0)
+    return c_lens(webc, 4, motor, runmode, 0)
 
 
 # zoom-in
@@ -120,7 +125,7 @@ def c_lens_focus_out(webc, value=25):
     return motor, runmode
 
 
-# webc = WEBClient("http://192.168.115.30", "admin", "admin")
+# webc = WEBClient("http://192.168.1.100", "admin", "admin")
 # ret = webc.login()
 # if ret:
 #     c_lens_autofocus(webc)

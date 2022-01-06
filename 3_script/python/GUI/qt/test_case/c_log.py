@@ -68,7 +68,7 @@ def c_log_sys(webc):
         return ret, resp
     return ret, None
 
-# webc = WEBClient('http://192.168.115.30', 'admin', 'admin')
+# webc = WEBClient('http://192.168.1.100', 'admin', 'admin')
 # ret, resp = c_log_sys(webc)
 # print(ret)
 # print(resp)

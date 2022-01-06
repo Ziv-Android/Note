@@ -95,7 +95,7 @@ class W231ExternGPIO(QtWidgets.QWidget, Ui_W231ExternGPIO):
 
         time.sleep(0.1)
         for i in range(self.num_ioin):
-            sta = c_io_out_get(webc, 1, i)  # io-0
+            sta = c_io_out_get(webc, i)  # io-0
             self.gpio_signal.emit(i, sta, -1, 0)
             in_sta[i] = sta
         return in_sta

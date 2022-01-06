@@ -26,8 +26,8 @@ total_data = []
 failed_data = []
 success_data = []
 
-# url_sn_to_ip = "http://118.31.4.231:8000/pdns"
-url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
+url_sn_to_ip = "http://118.31.4.231:8000/pdns"
+# url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
 
 username = ""
 password = ""
@@ -664,7 +664,7 @@ def isNetOk(server=("www.baidu.com", 443)):
 def requestSnToHost(sn):
     param = {'sn': sn, 'port': 80}
     resp = requests.get(url_sn_to_ip, params=param)
-    print("Worker", "requestSnToHost", "getHost", resp.status_code)
+    print("Worker", "requestSnToHost", "getHost", resp.status_code, resp.text)
     return resp.status_code, resp.text
 
 

@@ -46,45 +46,45 @@ class W224VideoPTZ(QtWidgets.QWidget, Ui_W224VideoPTZ):
         webc = self.pwm.http_client_handle()
         if self.ptz_up_sta == 1:
             self.ptz_up_sta = 0
-            c_ptz_stop_ud(webc)
+            return c_ptz_stop_ud(webc)
         elif self.ptz_up_sta == 0:
+            self.ptz_up_sta = 1
             ret = c_ptz_up(webc)
             time.sleep(0.2)
-            c_ptz_keep(webc, ret + 1)
-            self.ptz_up_sta = 1
+            return c_ptz_keep(webc, ret + 1)
 
     #
     def ptz_down(self):
         webc = self.pwm.http_client_handle()
         if self.ptz_down_sta == 1:
             self.ptz_down_sta = 0
-            c_ptz_stop_ud(webc)
+            return c_ptz_stop_ud(webc)
         elif self.ptz_down_sta == 0:
             self.ptz_down_sta = 1
             ret = c_ptz_down(webc)
             time.sleep(0.2)
-            c_ptz_keep(webc, ret + 1)
+            return c_ptz_keep(webc, ret + 1)
 
     #
     def ptz_left(self):
         webc = self.pwm.http_client_handle()
         if self.ptz_left_sta == 1:
             self.ptz_left_sta = 0
-            c_ptz_stop_lr(webc)
+            return c_ptz_stop_lr(webc)
         elif self.ptz_left_sta == 0:
             self.ptz_left_sta = 1
             ret = c_ptz_left(webc)
             time.sleep(0.2)
-            c_ptz_keep(webc, ret + 1)
+            return c_ptz_keep(webc, ret + 1)
 
     #
     def ptz_right(self):
         webc = self.pwm.http_client_handle()
         if self.ptz_right_sta == 1:
             self.ptz_right_sta = 0
-            c_ptz_stop_lr(webc)
+            return c_ptz_stop_lr(webc)
         elif self.ptz_right_sta == 0:
             self.ptz_right_sta = 1
             ret = c_ptz_right(webc)
             time.sleep(0.2)
-            c_ptz_keep(webc, ret + 1)
+            return c_ptz_keep(webc, ret + 1)

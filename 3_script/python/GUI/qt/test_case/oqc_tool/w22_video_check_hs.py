@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # from oqc_tool import Ui_MainWindow
 import ctypes
+import re
 import time
 import os
 import _thread
@@ -12,7 +13,6 @@ from oqc_tool import *
 from oqc_tool.cfg_factory_param_hs import *
 from oqc_tool.cfg_device_info import *
 from oqc_tool.ui_w22_video_check_hs import Ui_W22VideoCheck
-
 
 #
 from oqc_tool.w221_video_ircut import W221VideoIRCUT
@@ -32,11 +32,12 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
     def __init__(self, pwm, config="hs_lens_ircut_ptz"):
         super().__init__()
         self.setupUi(self)
+        self.is_485_pass = -1
 
         self.pwm = pwm
         self.sdk_hdl = 0
         self.vdo_hdl = 0
-        self.autotest_state = 0    # 0=未开始,1=开始,5=停止,8=完成
+        self.autotest_state = 0  # 0=未开始,1=开始,5=停止,8=完成
 
         self.usercase = {}
         self.config = config
@@ -75,6 +76,9 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
 
         try:
             self.close_sdk_hdl()
+            sn = self.device_info()
+            if not self.isLegalSn(sn):
+                return False
             self.sdk_hdl = objdll.VzLPRClient_Open(host.encode('utf-8'), 80,
                                                    username.encode('utf-8'),
                                                    password.encode('utf-8'))
@@ -82,8 +86,10 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
             if self.sdk_hdl != 0:
                 self.vdo_hdl = objdll.VzLPRClient_StartRealPlay(self.sdk_hdl, int(self.pShowVideoLabel.winId()))
                 print("objdll.VzLPRClient_StartRealPlay %d vdo_hdl %d" % (self.sdk_hdl, self.vdo_hdl))
+            return True
         except:
             print("can't show video")
+            return False
 
     def http_client_handle(self):
         return self.pwm.http_client_handle()
@@ -95,6 +101,7 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
             '镜头配置',
             '定制协议',
             '云台复位1',
+            '镜头复位',
             '镜头最小焦1',
             '镜头最大焦',
             'IRCUT夜间',
@@ -135,8 +142,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
             return True
         webc = self.http_client_handle()
         return cfg_factory_param_customer(webc,
-                                   cc.get_conf_pname(cus),
-                                   cc.get_conf_library(cus))
+                                          cc.get_conf_pname(cus),
+                                          cc.get_conf_library(cus))
 
     # 镜头
     # 镜头配置
@@ -146,8 +153,8 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         print(cp.get_desc())
         webc = self.http_client_handle()
         return cfg_factory_param_product(webc,
-                                  cp.get_capacity_num('lens'),
-                                  cp.get_capacity_num('dlens'))
+                                         cp.get_capacity_num('lens'),
+                                         cp.get_capacity_num('dlens'))
 
     def autotest_stop(self):
         print('video autotest_stop')
@@ -157,6 +164,9 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
     def autotest_reset(self):
         print('video autotest_reset')
         self.autotest_state = 0
+        self.pTestCaseLWdg.clear()
+        for tt in self.testcase:
+            self.pTestCaseLWdg.addItem(tt)
         self.pwm.w21_dat.pAutotestButton.setText("开始测试(F8)")
 
     #
@@ -199,11 +209,10 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
             report_doc.report_sn(self.device_info())
         params = report_doc.get_empty_params()
 
-        if self.autotest_state == 5:
-            print("停止测试状态")
-            return False
         # '镜头配置'
         i = 0
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         ret = self.lens_config()
         if not ret:
@@ -215,11 +224,10 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         self.auto_test_signal.emit(self.testcase[i], '成功')
         time.sleep(1)
 
-        if self.autotest_state == 5:
-            print("停止测试状态")
-            return False
         # '定制协议'
-        i = i+1
+        i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         ret = self.protocol_config()
         if not ret:
@@ -232,7 +240,9 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         time.sleep(1)
 
         # '云台复位'
-        i = i+1
+        i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         ret = self.vdo_ptz.ptz_reset()
         time.sleep(15)
@@ -245,13 +255,46 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
+        # '镜头复位'
+        i = i + 1
+        if self.autotest_state == 5:
+            return False
+        self.auto_test_signal.emit(self.testcase[i], '开始')
+        ret = self.vdo_lens.lens_reset()
+        time.sleep(5)
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        path = self.save_pic_in_path()
+        params[self.testcase[i]] = path
+        self.auto_test_signal.emit(self.testcase[i], '成功')
+
         # '镜头最小焦'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_lens.lens_zoom_out()
+        ret = self.vdo_lens.lens_zoom_out()
         time.sleep(5)
-        self.vdo_lens.lens_zoom_out()
-        self.vdo_lens.lens_auto_focus()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        ret = self.vdo_lens.lens_zoom_out()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        ret = self.vdo_lens.lens_auto_focus()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         time.sleep(30)
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
@@ -259,122 +302,270 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
 
         # '镜头最大焦'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_lens.lens_zoom_in()
+        ret = self.vdo_lens.lens_zoom_in()
         time.sleep(3)
-        self.vdo_lens.lens_zoom_in()
-        self.vdo_lens.lens_auto_focus()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        ret = self.vdo_lens.lens_zoom_in()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        ret = self.vdo_lens.lens_auto_focus()
         time.sleep(30)
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # 'IRCUT夜间'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_ircut.ircut_night()
+        ret = self.vdo_ircut.ircut_night()
         time.sleep(1)
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # 'IRCUT白天'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_ircut.ircut_day()
+        ret = self.vdo_ircut.ircut_day()
         time.sleep(1)
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-上'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         time.sleep(1)
-        self.vdo_ptz.ptz_up()
+        ret = self.vdo_ptz.ptz_up()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         time.sleep(8)
-        self.vdo_ptz.ptz_up()
+        ret = self.vdo_ptz.ptz_up()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-下'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
         time.sleep(2)
-        self.vdo_ptz.ptz_down()
+        ret = self.vdo_ptz.ptz_down()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         time.sleep(16)
-        self.vdo_ptz.ptz_down()
+        ret = self.vdo_ptz.ptz_down()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台复位1'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        time.sleep(1)
-        self.vdo_ptz.ptz_reset()
+        ret = self.vdo_ptz.ptz_reset()
         time.sleep(15)
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-左'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_ptz.ptz_left()
+        ret = self.vdo_ptz.ptz_left()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         time.sleep(8)
-        self.vdo_ptz.ptz_left()
+        ret = self.vdo_ptz.ptz_left()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台-右'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_ptz.ptz_right()
+        ret = self.vdo_ptz.ptz_right()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         time.sleep(16)
-        self.vdo_ptz.ptz_right()
+        ret = self.vdo_ptz.ptz_right()
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '云台复位2'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_ptz.ptz_reset()
+        ret = self.vdo_ptz.ptz_reset()
         time.sleep(15)
+        if not ret:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '镜头最小焦1'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_lens.lens_zoom_out()
+        ret = self.vdo_lens.lens_zoom_out()
         time.sleep(5)
-        self.vdo_lens.lens_zoom_out()
-        self.vdo_lens.lens_auto_focus()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        ret = self.vdo_lens.lens_zoom_out()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
+        ret = self.vdo_lens.lens_auto_focus()
+        if ret != 200:
+            params[self.testcase[i]] = "失败"
+            self.auto_test_signal.emit(self.testcase[i], '失败')
+            self.autotest_stop()
+            return False
         time.sleep(30)
         path = self.save_pic_in_path()
         params[self.testcase[i]] = path
         self.auto_test_signal.emit(self.testcase[i], '成功')
 
+        # '485测试'
+        if self.autotest_state == 5:
+            return False
+        url = 'http://%s' % host
+        webc = WEBClient(url, username, password)
+        self.auto_test_signal.emit(self.testcase[i], '开始')
+        c_rs485_write(webc, 0, '$001,01&')
+        time.sleep(1)
+        ret, data = c_rs485_read(webc, 0)
+        if data == 'OK':
+            self.is_485_pass = 1
+        else:
+            self.is_485_pass = 0
+
         # '补光灯'
         i = i + 1
+        if self.autotest_state == 5:
+            return False
         self.auto_test_signal.emit(self.testcase[i], '开始')
-        self.vdo_led.led_ctrl(10)
-        time.sleep(1)
-        self.vdo_led.led_ctrl(50)
-        time.sleep(1)
-        self.vdo_led.led_ctrl(100)
-        time.sleep(1)
-        self.vdo_led.led_ctrl(-1)
-        time.sleep(1)
-        params[self.testcase[i]] = "成功"
-        self.auto_test_signal.emit(self.testcase[i], '成功')
+        if self.is_485_pass == 1:
+            ret = self.vdo_led.led_ctrl(10)
+            time.sleep(1)
+            if ret != 200:
+                params[self.testcase[i]] = "失败"
+                self.auto_test_signal.emit(self.testcase[i], '失败')
+                self.autotest_stop()
+                return False
+            ret = self.vdo_led.led_ctrl(50)
+            time.sleep(1)
+            if ret != 200:
+                params[self.testcase[i]] = "失败"
+                self.auto_test_signal.emit(self.testcase[i], '失败')
+                self.autotest_stop()
+                return False
+            ret = self.vdo_led.led_ctrl(100)
+            time.sleep(1)
+            if ret != 200:
+                params[self.testcase[i]] = "失败"
+                self.auto_test_signal.emit(self.testcase[i], '失败')
+                self.autotest_stop()
+                return False
+            ret = self.vdo_led.led_ctrl(-1)
+            time.sleep(1)
+            if ret != 200:
+                params[self.testcase[i]] = "失败"
+                self.auto_test_signal.emit(self.testcase[i], '失败')
+                self.autotest_stop()
+                return False
+            params[self.testcase[i]] = "成功"
+            self.auto_test_signal.emit(self.testcase[i], '成功')
+        else:
+            params[self.testcase[i]] = "跳过"
+            self.auto_test_signal.emit(self.testcase[i], '跳过')
 
-        self.autotest_reset()
         report_doc.report_video(params)
 
         time.sleep(0.5)
@@ -382,6 +573,7 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
 
     def test_case_finish_state(self, result):
         print(f"all test case finish {result}, switch -> {self.pwm.w23_ext.name}")
+        self.autotest_reset()
         self.pwm.pTestStackWidget.setCurrentIndex(1)
         self.pwm.w21_dat.start_autotest_click(1)
         report_doc.delete_pic()
@@ -399,3 +591,7 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
                 return "图片获取失败"
         return path
 
+    def isLegalSn(self, sn):
+        result = re.match(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{8}", sn) is not None
+        print("isLegalSn", sn, result)
+        return result

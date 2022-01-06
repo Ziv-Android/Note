@@ -25,4 +25,4 @@ class W222VideoLed(QtWidgets.QWidget, Ui_W222VideoLed):
 
     def led_ctrl(self, value):
         webc = self.pwm.http_client_handle()
-        c_led(webc, value)
+        return c_led(webc, value)

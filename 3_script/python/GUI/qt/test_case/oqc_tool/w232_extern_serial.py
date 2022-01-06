@@ -47,8 +47,14 @@ class W232ExternSerial(QtWidgets.QWidget, Ui_W232ExternSerial):
         ret = False
         webc = self.pwm.http_client_handle()
         sdata = self.pRS0Edit.text()
-        ret, _ = c_rs485_write(webc, 1, sdata)
+        ret, _ = c_rs485_write(webc, 0, sdata)
         if ret != 200:
+            return False
+        try:
+            js = json.loads(_)
+            if js['state'] != 200:
+                return False
+        except:
             return False
 
         if self.num_serial == 2:

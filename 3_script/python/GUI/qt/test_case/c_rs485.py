@@ -74,14 +74,21 @@ def c_rs485_write(webc, num, data):
 def c_rs485_read(webc, num):
     ret, resp = c_rs485(webc, cmd_r_tmp, num, 'tt')
     if ret == 200:
-        jl = json.loads(resp)
         print(resp)
-        temp = jl['body']['rs485_data']
-        # print(temp)
-        # data = temp
-        data = base64.b64decode(temp).decode()
-        print(data)
-        return ret, data
+        if resp is None or len(resp) == 0:
+            return 404, None
+        try:
+            jl = json.loads(resp)
+            if int(jl['state']) != 200:
+                return jl['state'], None
+            temp = jl['body']['rs485_data']
+            # print(temp)
+            # data = temp
+            data = base64.b64decode(temp).decode()
+            print(data)
+            return ret, data
+        except:
+            return 404, None
     return ret, None
     # print(resp)
 

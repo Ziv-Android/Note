@@ -12,6 +12,7 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
     def __init__(self, pwm):
         super().__init__()
         self.is_search = False
+        self.is_open_video = False
         self.setupUi(self)
         self.pwm = pwm
         # 找设备
@@ -26,6 +27,9 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
 
         self.devs_time = QtCore.QTimer()
         self.devs_time.timeout.connect(self.device_list_update)
+
+        # 设备登录
+        self.pLoginButton.clicked.connect(self.login_click)
 
         # 自动测试按钮
         self.pAutotestButton.clicked.connect(self.start_autotest_click)
@@ -99,6 +103,21 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
                                 self.pUsernameEdit.text(),
                                 self.pPasswordEdit.text(), i)
 
+    def login_click(self):
+        if not self.is_open_video:
+            ret = self.pwm.w22_vdo.show_video(
+                self.pDevHostEdit.text(),
+                self.pUsernameEdit.text(),
+                self.pPasswordEdit.text()
+            )
+            if ret:
+                self.is_open_video = True
+                self.pLoginButton.setText("退出登录")
+        else:
+            self.is_open_video = False
+            self.pwm.w22_vdo.close_sdk_hdl()
+            self.pLoginButton.setText("设备登录")
+
     # 测试窗口
     def test_widget_switch(self, item):
         self.pwm.test_widget_switch(item.text())
@@ -109,8 +128,13 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
         devs = self.fdev.get_devices()
         # devs = {}
         try:
+            self.lExchangeIPResult.setText("正在修改")
             _thread.start_new_thread(cfg_factory_param_dlens,
-                                     (list(devs.values()), self.pUsernameEdit.text(), self.pPasswordEdit.text()))
+                                     (list(devs.values()), self.pUsernameEdit.text(), self.pPasswordEdit.text(),
+                                      self.dlens_exchange_host_result))
         except:
             print("can't start thread")
 
+    def dlens_exchange_host_result(self, result, ip):
+        self.lExchangeIPResult.setText(result)
+        self.pDevHostEdit.setText(ip)

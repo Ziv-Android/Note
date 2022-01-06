@@ -41,14 +41,14 @@ def c_ircut(webc, value):
 
 
 def c_ircut_day(webc):
-    c_ircut(webc, 1)
+    return c_ircut(webc, 1)
 
 
 def c_ircut_night(webc):
-    c_ircut(webc, 0)
+    return c_ircut(webc, 0)
 
 
-# webc = WEBClient("http://192.168.115.30", "admin", "admin")
+# webc = WEBClient("http://192.168.1.100", "admin", "admin")
 # ret = webc.login()
 # if ret:
 #     c_itcut_night(webc)

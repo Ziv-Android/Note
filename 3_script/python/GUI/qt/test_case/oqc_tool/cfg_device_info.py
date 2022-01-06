@@ -34,6 +34,7 @@ def get_device_info(webc):
         sn = jl['body']['serial_num']
     except Exception as e:
         print(e)
+        sn = "SN获取失败"
 
     if sn is None:
         sn = ""
