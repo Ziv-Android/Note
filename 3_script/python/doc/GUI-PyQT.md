@@ -88,59 +88,59 @@ int（有符号整型），long（长整型），float（浮点型），complex�
 字符串截取：`"abcdefg"[1:-2]` **左从0数，右从-1数**
 字符串运算：`+`字符串连接，`*`字符串重复
 
-字符串常用方法
-字符串去除空格：strip(), lstrip(), rstrip()
-字符串连接：`,` `+` `join()`
-字符串查找：find()
-字符串替换：replace(), replaceAll()
-字符串分割：split()
+字符串常用方法  
+字符串去除空格：strip(), lstrip(), rstrip()  
+字符串连接：`,` `+` `join()`  
+字符串查找：find()  
+字符串替换：replace(), replaceAll()  
+字符串分割：split()  
 字符串大小写转换：upper(), lower(), swapcase(), capitalize()
 
 ##### List
-列表操作包含以下函数：
-列表元素个数：len(list)
-列表最大值：max(list)
-列表最小值：min(list)
-元组转列表：list(seq)
+列表操作包含以下函数：  
+列表元素个数：len(list)  
+列表最大值：max(list)  
+列表最小值：min(list)  
+元组转列表：list(seq)  
 
 列表操作包含以下方法：
-列表添加：`list.append(), list.insert(index, obj), list.extend()`
-列表删除：`list.pop(), list.remove(), list.clear()`
-列表修改：`list[index] = xxx`
-列表查找：`list.index(), list.count()`
-列表排序：`list.sort()`
-列表反转：`list.reverse()`
+列表添加：`list.append(), list.insert(index, obj), list.extend()`  
+列表删除：`list.pop(), list.remove(), list.clear()`  
+列表修改：`list[index] = xxx`  
+列表查找：`list.index(), list.count()`  
+列表排序：`list.sort()`  
+列表反转：`list.reverse()`  
 
 ##### Tuple-只读
 用`(,)`表示，内部元素用`,`逗号隔开，不能二次赋值。
 
 ##### Dictionary
-key-value结构，又称关联数组或哈希表
-字典内置函数：
+key-value结构，又称关联数组或哈希表  
+字典内置函数：  
 字典key的个数：len()
 
-字典内置方法：
-字典添加：dict[key] = ""， dict.setdefault(key, default=None)
-字典删除：dict.pop(), dict.popItem(), dict.clear()
-字典修改：dict[key] = ""
-字典查找：dict.has_key(key), dict.items(), dict.keys(), dict.values(), dict.get(key, default=None)
-字典拷贝：dict.copy(), dict.fromkeys()
+字典内置方法：  
+字典添加：dict[key] = ""， dict.setdefault(key, default=None)  
+字典删除：dict.pop(), dict.popItem(), dict.clear()  
+字典修改：dict[key] = ""  
+字典查找：dict.has_key(key), dict.items(), dict.keys(), dict.values(), dict.get(key, default=None)  
+字典拷贝：dict.copy(), dict.fromkeys()  
 
 ##### 数据类型转换
-int(), 转整数
-long(), 转长整数
-float(), 转浮点数
-complex(), 转复数
-hex(), 十六进制
-otc(), 八进制
-chr(), 整数转字符
-unichr(), 整数转unicode字符
-ord(), 字符串转整数
-str(), 转字符串
-tuple(), 转元组
-list(), 转列表
-repr(), 转表达式
-eval(), 计算字符串中有效的python表达式，并返回一个对象
+int(), 转整数  
+long(), 转长整数  
+float(), 转浮点数  
+complex(), 转复数  
+hex(), 十六进制  
+otc(), 八进制  
+chr(), 整数转字符  
+unichr(), 整数转unicode字符  
+ord(), 字符串转整数  
+str(), 转字符串  
+tuple(), 转元组  
+list(), 转列表  
+repr(), 转表达式  
+eval(), 计算字符串中有效的python表达式，并返回一个对象  
 
 #### 流程控制
 ##### 判断
@@ -189,10 +189,10 @@ print(fun_add(1, 2))
 ```
 
 #### 类和实例
-类变量：class外共享，不管创建多少个实例，修改全局变化
+类变量：class外共享，不管创建多少个实例，修改全局变化  
 成员变量：self.aaa，class内使用，不同的实例使用各自的副本
 
-类方法：包含self参数
+类方法：包含self参数  
 两条下划线`__`表示私有变量/私有方法函数
 
 类的动态属性 property(get, set, del) / @property + @param.setter + @param.deleter
@@ -201,20 +201,20 @@ print(fun_add(1, 2))
 ctrl + R 预览窗口
 
 ### 属性编辑器
-objectName：控件对象名称
-geometry：相对坐标系
-sizePolicy：控件大小策略
-minimumSize：最小宽度，高度
-maximumSize：最大宽度，高度。如果下个让窗口或控件的大小固定，将minimumSize与maximumSize属性设置为相同值即可
-font：字体
-cousor，光标
-windowTitle：窗口标题
-windowIcon/icon：窗口图标/控件图标
-iconSize：图标大小
-toolTip：提示信息
-statusTip：任务栏提示信息
-text：控件文本
-shortcut：快捷键
+objectName：控件对象名称  
+geometry：相对坐标系  
+sizePolicy：控件大小策略  
+minimumSize：最小宽度，高度  
+maximumSize：最大宽度，高度。如果下个让窗口或控件的大小固定，将minimumSize与maximumSize属性设置为相同值即可  
+font：字体  
+cousor，光标  
+windowTitle：窗口标题  
+windowIcon/icon：窗口图标/控件图标  
+iconSize：图标大小  
+toolTip：提示信息  
+statusTip：任务栏提示信息  
+text：控件文本  
+shortcut：快捷键  
 
 ### 信号/槽编辑器
 为控件添加信号和槽函数，编辑控件的信号和槽函数
@@ -240,7 +240,7 @@ class XxWinodw(QMainWindow, Ui_MainWindow):
         super(Xxx, self).__init__()
         self.setupUi(self)
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     win = XxWinodw()
     win.show()
@@ -251,18 +251,18 @@ if __name__ = "__main__":
 ### 布局管理
 垂直，水平，栅格，表单
 
-命名
-doubleSpinBox_returns_min
+命名  
+doubleSpinBox_returns_min  
 doubleSpinBox_returns_max
 
-水平/垂直策略（QtWidgets.QSizePolicy）
-Fixed：窗口控件具有其sizeHint所提示的尺寸且尺寸不会再发生改变，即固定尺寸
-Minimum:窗口控件的sizeHint所提示的尺寸就是它的最小尺寸:该窗口控件不能被压缩得比这个值小，但可以变得更大。
-Maximum:窗口控件的sizeHint所提示的尺寸就是它的最大尺寸:该窗口控件不能变得比这个值大，但它可以被压缩到mintsizeHint给定的尺寸大小。 
-Preferred:窗口控件的sizeHint所提示的尺寸就是它的期望尺寸:该窗口控件可以缩小到minisizeHint所提示的尺寸，也可以变得比sizeHint所提示的尺寸还要大。
-Expanding:窗口控件可以缩小到minisizeHint所提示的尺寸，也可以变得比 sizeHint所提示的尺寸大，但它希望能够变得更大。
-MinimumExpanding:窗口控件的sizeHint所提示的尺寸就是它的最小尺寸:该窗口控件不能被压缩得比这个值还小，但它希望能够变得更大。
-Ignored:无视窗口控件的sizeHint和minisizeHint所提示的尺寸，按照默认来设置。
+水平/垂直策略（QtWidgets.QSizePolicy）  
+Fixed：窗口控件具有其sizeHint所提示的尺寸且尺寸不会再发生改变，即固定尺寸  
+Minimum:窗口控件的sizeHint所提示的尺寸就是它的最小尺寸:该窗口控件不能被压缩得比这个值小，但可以变得更大。  
+Maximum:窗口控件的sizeHint所提示的尺寸就是它的最大尺寸:该窗口控件不能变得比这个值大，但它可以被压缩到mintsizeHint给定的尺寸大小。  
+Preferred:窗口控件的sizeHint所提示的尺寸就是它的期望尺寸:该窗口控件可以缩小到minisizeHint所提示的尺寸，也可以变得比sizeHint所提示的尺寸还要大。  
+Expanding:窗口控件可以缩小到minisizeHint所提示的尺寸，也可以变得比 sizeHint所提示的尺寸大，但它希望能够变得更大。  
+MinimumExpanding:窗口控件的sizeHint所提示的尺寸就是它的最小尺寸:该窗口控件不能被压缩得比这个值还小，但它希望能够变得更大。  
+Ignored:无视窗口控件的sizeHint和minisizeHint所提示的尺寸，按照默认来设置。  
 
 参考百分比布局
 ```
@@ -298,9 +298,9 @@ self.label.setPixmap(QtGui.QPixmap(":/pic/images/python.jpg"))
 ```
 
 ## PyQt5基本窗口控件
-QMainWindow：窗口包含菜单栏，工具栏，状态栏和标题栏，常用于构成主窗口，不能设置布局（使用setLayout()方法），因为它有自己的布局
-QWidget：窗口不确定，需要动态嵌入
-QDialog：对话框，短期任务
+QMainWindow：窗口包含菜单栏，工具栏，状态栏和标题栏，常用于构成主窗口，不能设置布局（使用setLayout()方法），因为它有自己的布局  
+QWidget：窗口不确定，需要动态嵌入  
+QDialog：对话框，短期任务  
 
 QMainWindow中比较重要的方法
 方法 | 描述
@@ -337,28 +337,28 @@ self.setWindowIcon(QIcon('./images/xxx.ico'))
 设置气泡提示：QToolTip
 
 ## QWidget
-设置区域大小
-可改变：
-QWidget.resize(width, height)
-不可改变：
-QWidget.setFixedSize(width, height)
-QWidget.setFixedWidth(width)
-QWidget.setFixedHeight(height)
+设置区域大小  
+可改变：  
+QWidget.resize(width, height)  
+不可改变：  
+QWidget.setFixedSize(width, height)  
+QWidget.setFixedWidth(width)  
+QWidget.setFixedHeight(height)  
 
-获取区域大小
-Qwidget.size()
-Qwidget.width()
+获取区域大小  
+Qwidget.size()  
+Qwidget.width()  
 Qwidget.height()
 
-设置区域位置
+设置区域位置  
 Qwidget.move(x, y)
 
-获取左上角坐标
+获取左上角坐标  
 Qwidget.pos()
 
-同时改变大小和位置
-QWidget.setGeometry(x, y, width, height)
-获取窗口大小和位置
+同时改变大小和位置  
+QWidget.setGeometry(x, y, width, height)  
+获取窗口大小和位置  
 QWidget.frameGeometry()
 
 ## QLabel
