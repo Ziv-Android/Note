@@ -9,6 +9,7 @@ import execjs
 import requests
 from requests_toolbelt.multipart import encoder
 from .Zlog import *
+from signature import Signature
 
 # 支持admin:admin登录
 user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
@@ -22,10 +23,11 @@ class SessionClient:
     :param:password 密码
     """
 
-    def __init__(self, host, username, password):
+    def __init__(self, host, username, password, invalid_timer=6):
         self.host = host
         self.username = username
         self.password = password
+        self.sign = Signature(host, username, password, invalid_timer)
         self.session = None
         self.isLogin = False  # 登录判断
         self.log = ZLog()
@@ -58,6 +60,7 @@ class SessionClient:
             return
 
         try:
+            # http://192.168.30.125:19852/02880771-fce36ba5/login.php
             url = self.host + "/request.php"
             # 创建会话
             self.session = requests.session()
@@ -98,6 +101,7 @@ class SessionClient:
     def info(self):
         self.login()
         try:
+            # http://192.168.30.125:19852/02880771-fce36ba5/systemjson.php
             url = self.host + "/request.php"
             self.log.log_info("SessionClient", f"info request {url} {self.session.cookies}")
             self.log.log_info("SessionClient", f"info params: {device_info}")
@@ -141,7 +145,8 @@ class SessionClient:
             headers = {
                 'Content-Type': e.content_type,
             }
-            resp = self.session.post(url, data=m, headers=headers, timeout=60)
+            resp = requests.post(url, data=m, headers=headers, timeout=60)
+            resp.elapsed.total_seconds()
             self.log.log_info("SessionClient", f"update encode: {resp.encoding}")
             resp.encoding = 'utf-8'
             if resp.status_code == 200:

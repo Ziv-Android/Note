@@ -26,8 +26,16 @@ total_data = []
 failed_data = []
 success_data = []
 
-url_sn_to_ip = "http://118.31.4.231:8000/pdns"
+# 旧臻云接口（已废弃）
+# url_sn_to_ip = "http://118.31.4.231:8000/pdns"
 # url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
+# 新臻云接口
+test_base_host = 'http://nopen.vzpdns.com'
+test_access_key_id = 'Ceu8lKlf6125Rq0wSh8hyLwz5xWt0EBm'
+test_access_key_secret = 'iwn5D8v4HJ6mKquO7PJla90HWOg7twtC'
+
+_content = {'headers': {'Content-Type': 'application/json'}, 'path': '/openapi/v1/stp/user/devices/pdns/web',
+                   'method': 'GET', 'params': {'sn': "02880771-fce36ba5", 'type': 'text'}}
 
 username = ""
 password = ""

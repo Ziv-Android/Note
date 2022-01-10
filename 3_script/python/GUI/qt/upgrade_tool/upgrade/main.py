@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from PyQt5.QtWidgets import QApplication
-from models.ui.upgrade_window import UpgradeWindow
+from models.window_main import MainWindow
 
 if __name__ == "__main__":
     # 记录崩溃信息
@@ -13,10 +13,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    home = UpgradeWindow()
-    # 初始化数据/读取svc模板文件
-    home.read_data_from_init()
-    # 显示表格
+    home = MainWindow()
     home.show()
 
     sys.exit(app.exec_())

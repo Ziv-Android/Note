@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 import execjs
 import requests
 from requests_toolbelt.multipart import encoder
-from LogUtil import Log
+from log import Log
 
 # 支持admin:admin登录
 user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
