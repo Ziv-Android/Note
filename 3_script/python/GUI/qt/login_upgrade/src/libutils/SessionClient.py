@@ -9,7 +9,7 @@ import execjs
 import requests
 from requests_toolbelt.multipart import encoder
 from .Zlog import *
-from signature import Signature
+# from signature import Signature
 
 # 支持admin:admin登录
 user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
@@ -27,7 +27,7 @@ class SessionClient:
         self.host = host
         self.username = username
         self.password = password
-        self.sign = Signature(host, username, password, invalid_timer)
+        # self.sign = Signature(host, username, password, invalid_timer)
         self.session = None
         self.isLogin = False  # 登录判断
         self.log = ZLog()

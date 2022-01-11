@@ -387,7 +387,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         self.log.log_debug(f"UpgradeWindow create template file.")
         with open("template.csv", 'w', encoding='utf-8') as openf:
             csv_write = csv.writer(openf)
-            csv_head = ["SN"]
+            csv_head = ['序列号', '状态', '升级进度', '固件版本']
             csv_write.writerow(csv_head)
 
     # 增
