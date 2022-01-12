@@ -3,7 +3,7 @@
 import os
 from urllib.parse import urlparse
 
-from LogUtil import Log
+from log import Log
 
 # print(__file__)
 # print(os.path.abspath('../../temp'))

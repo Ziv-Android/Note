@@ -73,8 +73,12 @@ class Device:
         return request(timeout, **sign_result)
 
     def get_device_remote_url(self, sn, return_type='text', timeout=60):
-        content = {'headers': {'Content-Type': 'application/json'}, 'path': '/openapi/v1/stp/user/devices/pdns/web',
-                   'method': 'GET', 'params': {'sn': sn, 'type': 'text'}}
+        content = {
+            'headers': {'Content-Type': 'application/json'},
+            'path': '/openapi/v1/stp/user/devices/pdns/web',
+            'method': 'GET',
+            'params': {'sn': sn, 'type': 'text'}
+        }
         sign_result = self.sign.cal_signature(**content)
         return request(timeout, **sign_result)
 

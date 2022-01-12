@@ -9,11 +9,11 @@ import execjs
 import requests
 from requests_toolbelt.multipart import encoder
 from .Zlog import *
-# from signature import Signature
 
 # 支持admin:admin登录
 user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
 device_info = '{"type":"get_hwinfo","module":"BUS_WEB_REQUEST"}'
+device_info_rx = '{"type":"get_device_info"}'
 
 
 class SessionClient:
@@ -23,11 +23,10 @@ class SessionClient:
     :param:password 密码
     """
 
-    def __init__(self, host, username, password, invalid_timer=6):
+    def __init__(self, host, username, password):
         self.host = host
         self.username = username
         self.password = password
-        # self.sign = Signature(host, username, password, invalid_timer)
         self.session = None
         self.isLogin = False  # 登录判断
         self.log = ZLog()
@@ -37,12 +36,8 @@ class SessionClient:
         print(sys.argv[0])
         path = os.path.join(os.getcwd()) + "\\libutils\\Aes.js"
         print(path)
-        f = open(path, 'r', encoding='utf-8')  # 打开JS文件
-        line = f.readline()
-        htmlstr = ''
-        while line:
-            htmlstr = htmlstr + line
-            line = f.readline()
+        with open(path, 'r', encoding='utf-8') as of:
+            htmlstr = of.read()
         return htmlstr
 
     # 生成aes加密结果
@@ -57,11 +52,11 @@ class SessionClient:
     '''
     def login(self):
         if self.isLogin:
-            return
+            return True
 
         try:
             # http://192.168.30.125:19852/02880771-fce36ba5/login.php
-            url = self.host + "/request.php"
+            url = self.host + "/login.php"
             # 创建会话
             self.session = requests.session()
             # 根据请求url处理加密参数
@@ -79,43 +74,48 @@ class SessionClient:
             resp = self.session.post(url=url, data=login_info, timeout=10)
             self.log.log_info("SessionClient", f"login encode: {resp.encoding}")
             self.isLogin = False
-            result = None
             if resp.status_code == 200:
                 resp.encoding = 'utf-8'
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.log_info("SessionClient",
                                   f"login result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
-                if len(result) > 0:
+
+                if url_parsed.path.endswith("request.php"):
                     json_obj = json.loads(result)
                     state_code = json_obj['state']
                     if state_code == 200:
                         self.isLogin = True
+                else:
+                    self.isLogin = True
             else:
                 self.log.log_error("SessionClient", f"login error: code={resp.status_code}")
-            return result
+            return self.isLogin
         except Exception as e:
             self.log.log_error("SessionClient", f"login exception: {e}")
             self.close()
-            return None
+            return False
 
     def info(self):
         self.login()
         try:
             # http://192.168.30.125:19852/02880771-fce36ba5/systemjson.php
-            url = self.host + "/request.php"
+            url = self.host + "/systemjson.php"
             self.log.log_info("SessionClient", f"info request {url} {self.session.cookies}")
-            self.log.log_info("SessionClient", f"info params: {device_info}")
-            resp = self.session.post(url=url, data=device_info, timeout=10)
+            self.log.log_info("SessionClient", f"info params: {device_info_rx}")
+            resp = self.session.post(url=url, data=device_info_rx, timeout=10)
             self.log.log_info("SessionClient", f"info encode: {resp.encoding}")
             resp.encoding = 'utf-8'
             if resp.status_code == 200:
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.log_info("SessionClient",
                                   f"info result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
+
+                json_obj = json.loads(result)
+                version = json_obj['body']['soft_ver']
             else:
-                result = None
+                version = None
                 self.log.log_error("SessionClient", f"info error: code={resp.status_code}")
-            return result
+            return version
         except Exception as e:
             self.log.log_error("SessionClient", f"info failed {e}")
             self.close()
@@ -129,7 +129,8 @@ class SessionClient:
     def update(self, filename, callback):
         self.login()
         try:
-            url = self.host + "/update.php"
+            # http://192.168.30.127:18008/02880771-fce36ba5/upload.cgi
+            url = self.host + "/upload.cgi"
             name = filename.replace('\\', '/').split("/")[-1]
             self.log.log_info("SessionClient", f"update request {url} {self.session.cookies}")
             self.log.log_info("SessionClient", f"update params: {filename}, {name}")
@@ -160,10 +161,10 @@ class SessionClient:
                 else:
                     result = resp.content.decode(encoding="UTF-8")
                 self.log.log_error("SessionClient", f"update failed: {result}")
-            return resp.status_code, result
+            return resp.status_code
         except Exception as e:
             self.log.log_error("SessionClient", f"update exception: {filename} {e}")
-            return 404, None
+            return 404
         finally:
             self.close()
 

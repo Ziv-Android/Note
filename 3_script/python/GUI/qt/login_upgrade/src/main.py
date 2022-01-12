@@ -1,24 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
-import time
 import csv
-import random
 import re
-import json
 import socket
 import cgitb
 
-import requests
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QBrush, QPalette, QStandardItemModel, QMovie
+from PyQt5.QtCore import Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal
 from PyQt5.QtWidgets import *
 
 from upgrade.UpgradeWindow import Ui_MainWindow as Upgrade_Ui
 
+from libutils.NormalClient import *
 from libutils.SessionClient import *
 from libutils.Zlog import *
+
+from urllib.parse import urlparse
 
 # 序列号list
 temp = []
@@ -31,14 +28,11 @@ success_data = []
 # url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
 # 新臻云接口
 test_base_host = 'http://nopen.vzpdns.com'
-test_access_key_id = 'Ceu8lKlf6125Rq0wSh8hyLwz5xWt0EBm'
-test_access_key_secret = 'iwn5D8v4HJ6mKquO7PJla90HWOg7twtC'
+test_access_key_id = 'KihoeTFJ62d755z5xSoK5AGGeygPWX7P'
+test_access_key_secret = 'JJAs0qJAOeazJtXpbhnmEODNzj3kmwja'
 
-_content = {'headers': {'Content-Type': 'application/json'}, 'path': '/openapi/v1/stp/user/devices/pdns/web',
-                   'method': 'GET', 'params': {'sn': "02880771-fce36ba5", 'type': 'text'}}
-
-username = ""
-password = ""
+username = "admin"
+password = "admin"
 file_path = ""
 
 count_active = 0
@@ -63,7 +57,6 @@ class Worker(QRunnable):
         print("Worker", "init", "创建Worker", self.thread_name)
         self.line = -1
         self.data = None
-        self.session_host = ""
         self.log = ZLog()
 
     def setData(self, i, _data):
@@ -81,61 +74,51 @@ class Worker(QRunnable):
     def run(self):
         global username, password
         self.signal.active_count.emit(1)
-
-        code, host = requestSnToHost(self.data['sn'])
-        host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
-        if code == 200:
-            if isLegalIp(host):
-                self.data['host'] = "http://" + host
-                self.session_host = self.data['host']
-        else:
-            self.data['state'] = "序列号错误"
-            self.signal.progress.emit(self.line, self.data)
-            self.signal.active_count.emit(-1)
-            return
-
-        # self.session_host = "http://192.168.1.88"
-        print("Worker", self.thread_name, "getHost", self.session_host)
-        self.log.log_debug(f"Worker {self.thread_name} get host：{self.data['sn']} -> {self.session_host}")
-        if len(self.session_host) == 0:
+        self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
+        # 获取地址
+        if self.data["host"] == "":
+            code, host = requestSnToHost(self.data['sn'])
+            host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
+            if code == 200:
+                if isLegalIp(host):
+                    self.data['host'] = host
+            else:
+                self.data['state'] = "序列号错误"
+                self.signal.progress.emit(self.line, self.data)
+                self.signal.active_count.emit(-1)
+                return
+        print("Worker", self.thread_name, "getHost", self.data["host"])
+        self.log.log_debug(f"Worker {self.thread_name} get host：{self.data['sn']} -> {self.data['host']}")
+        if len(self.data["host"]) == 0:
             self.data['state'] = "离线"
             self.signal.progress.emit(self.line, self.data)
             self.signal.active_count.emit(-1)
             return
-        client = SessionClient(self.session_host, username, password)
+        # 创建请求并登录
+        client = SessionClient(self.data["host"], username, password)
         info_json = client.login()
         self.log.log_debug(f"Worker {self.thread_name} login：{info_json}")
-        if info_json is None:
+        if not info_json:
             self.data['state'] = "登陆失败"
             self.signal.progress.emit(self.line, self.data)
             self.signal.active_count.emit(-1)
             return
-        json_obj = json.loads(info_json)
-        state_code = json_obj['state']
-        if state_code == 200:
-            self.data['state'] = "在线"
-        print("Worker", self.thread_name, "login", state_code)
-        self.log.log_debug(f"Worker {self.thread_name} login：{state_code} -> {self.session_host}")
-
-        info_json = client.info()
-        self.log.log_debug(f"Worker {self.thread_name} info：{info_json}")
+        self.data['state'] = "在线"
+        # 获取版本
+        version = client.info()
+        self.log.log_debug(f"Worker {self.thread_name} info：{version}")
         if info_json is None:
             self.data['state'] = "离线"
             self.signal.progress.emit(self.line, self.data)
             self.signal.active_count.emit(-1)
             return
-        json_obj = json.loads(info_json)
-        version = json_obj['body']['soft_ver']
-        print("Worker", self.thread_name, "info version:", version)
         self.data['version'] = version
         self.signal.progress.emit(self.line, self.data)
         time.sleep(0.5)
-
-        state_code, content = client.update(file_path, self.progress_change)
-        self.log.log_debug(f"Worker {self.thread_name} update：{state_code} -> {content}")
-        print("Worker", self.thread_name, "update:", state_code, content)
-        client.close()
-
+        # 升级
+        state_code = client.update(file_path, self.progress_change)
+        self.log.log_debug(f"Worker {self.thread_name} update：{state_code}")
+        print("Worker", self.thread_name, "update:", state_code)
         if state_code == 200:
             self.data['state'] = "已升级"
             self.data['priority'] = 9
@@ -154,6 +137,7 @@ class Worker(QRunnable):
                     exist = True
             if not exist:
                 failed_data.append(self.data)
+        client.close()
 
         self.signal.progress.emit(self.line, self.data)
         self.signal.active_count.emit(-1)
@@ -169,11 +153,12 @@ class UpgradeThread(QThread):
     '''
     通过线程，创建线程池
     '''
+
     def __init__(self):
         super(UpgradeThread, self).__init__()
         print("UpgradeThread", "init", "创建QThread线程，防止界面卡死")
         self.pool = QThreadPool.globalInstance()
-        self.pool.setMaxThreadCount(2)
+        self.pool.setMaxThreadCount(5)
         self.log = ZLog()
 
     def run(self):
@@ -207,19 +192,21 @@ class GetInfoWorker(QObject):
     def run(self):
         net_state = isNetOk()
         print("GetInfoWorker", "net state", net_state)
-        code, host = requestSnToHost(self.data['sn'])
-        host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
-        if code == 200:
-            if isLegalIp(host):
-                self.data['state'] = "在线"
-                self.data['host'] = "http://" + host
+        self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
+        if self.data["host"] == "":
+            code, host = requestSnToHost(self.data['sn'])
+            host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
+            if code == 200:
+                if host is not None and len(host) > 0:
+                    self.data['state'] = "在线"
+                    self.data['host'] = host
+                else:
+                    self.data['state'] = "离线"
+                    self.data['priority'] = 5
             else:
                 self.data['state'] = "离线"
                 self.data['priority'] = 5
-        else:
-            self.data['state'] = "离线"
-            self.data['priority'] = 5
-        self.progress.emit(self.line, self.data)
+            self.progress.emit(self.line, self.data)
 
         global username, password
         if len(username) == 0 or len(password) == 0:
@@ -229,21 +216,19 @@ class GetInfoWorker(QObject):
         # host = "http://192.168.1.88"
         print("GetInfoWorker", "host", host)
         client = SessionClient(self.data['host'], username, password)
-        info_json = client.info()
-        if info_json is None:
-            info_json = ""
+        version = client.info()
+        if version is None:
+            version = ""
 
-        if len(info_json) == 0:
+        if len(version) == 0:
             self.data['state'] = "离线"
             self.data['priority'] = 3
         else:
             self.data['priority'] = 6
-            json_obj = json.loads(info_json)
-            version = json_obj['body']['soft_ver']
             print("GetInfoWorker", "info version:", version)
             self.data['version'] = version
         self.progress.emit(self.line, self.data)
-        self.finished.emit(info_json)  # 发出结束的信号
+        self.finished.emit(version)  # 发出结束的信号
 
 
 # 升级窗口
@@ -298,6 +283,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         print("UpgradeWindow", "table_head_message_change_callback", "更新头部信息", msg)
         self.log.log_debug(f"UpgradeWindow update head msg {msg}")
         self.message_lineEdit.setText(msg)
+        QApplication.processEvents()
 
     # cell内容变化监听
     def table_cell_edit_callback(self, row, col):
@@ -312,9 +298,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
             else:
                 data = {'sn': item_sn, 'state': "序列号错误", 'progress': "", 'version': "", "host": "", "priority": 4}
             self.database_update(total_data, data, row)
-
             self.log.log_debug(f"UpgradeWindow table item changed {row}, {data['sn']}")
-
             self.table_head_message_change_callback()
 
     # 获取cell内容
@@ -328,19 +312,21 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         net_state = isNetOk()
         print("GetInfoWorker", "net state", net_state)
         self.log.log_debug(f"UpgradeWindow get online info, net state: {net_state}, {data['sn']}")
-        code, host = requestSnToHost(data['sn'])
-        host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
-        self.log.log_debug(f"UpgradeWindow get online info, request: {code} -> {host}")
-        if code == 200:
-            if isLegalIp(host):
-                data['state'] = "在线"
-                data['host'] = "http://" + host
+        data['host'] = "http://192.168.30.127:18008/02880771-fce36ba5"
+        if data['host'] == "":
+            code, host = requestSnToHost(data['sn'])
+            host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
+            self.log.log_debug(f"UpgradeWindow get online info, request: {code} -> {host}")
+            if code == 200:
+                if isLegalIp(host):
+                    data['state'] = "在线"
+                    data['host'] = host
+                else:
+                    data['state'] = "离线"
+                    data['priority'] = 5
             else:
                 data['state'] = "离线"
                 data['priority'] = 5
-        else:
-            data['state'] = "离线"
-            data['priority'] = 5
 
         global username, password
         self.get_username_password()
@@ -354,31 +340,21 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         client = SessionClient(data['host'], username, password)
         info_json = client.login()
         self.log.log_debug(f"GetInfoWorker login：{info_json}")
-        if info_json is None:
-            info_json = ""
 
-        if len(info_json) == 0:
+        if not info_json:
             data['state'] = "登陆失败"
             data['priority'] = 3
         else:
-            json_obj = json.loads(info_json)
-            state_code = json_obj['state']
-            if state_code == 200:
-                data['state'] = "在线"
-            print("GetInfoWorker login", state_code)
+            data['state'] = "在线"
 
-            info_json = client.info()
-            self.log.log_debug(f"GetInfoWorker info：{info_json}")
-            if info_json is None:
-                info_json = ""
+            version = client.info()
+            self.log.log_debug(f"GetInfoWorker info：{version}")
 
-            if len(info_json) == 0:
+            if version is None or len(version) == 0:
                 data['state'] = "离线"
                 data['priority'] = 3
             else:
                 data['priority'] = 6
-                json_obj = json.loads(info_json)
-                version = json_obj['body']['soft_ver']
                 print("GetInfoWorker", "info version:", version)
                 data['version'] = version
 
@@ -486,6 +462,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
             total_data.append({'sn': "请输入序列号", 'state': "", 'progress': "", 'version': "", "host": "", "priority": 10})
 
         self.table_show_data(total_data)
+        QApplication.processEvents()
 
     # 数据全量更新
     def table_show_data(self, items):
@@ -498,6 +475,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
             if i > row:
                 self.upgrade_detail_TableWidget.insertRow(i)
             self.update_data(i, each_item)
+            QApplication.processEvents()
 
     def read_data_from_csv(self, csv_iterator):
         global total_data, password, username
@@ -514,6 +492,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
                 if sn not in temp:
                     temp.append(sn)
                     _temp.append({'sn': sn, 'state': "", 'progress': "", 'version': "", "host": "", "priority": 6})
+            QApplication.processEvents()
 
         print("UpgradeWindow", "read_data_from_csv", "数据文件导入：", len(_temp))
 
@@ -523,6 +502,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
                 if len(_temp) > 0:
                     self.database_update(total_data, _temp[0], _i)
                     _temp.remove(_temp[0])
+            QApplication.processEvents()
 
         for _item in _temp:
             self.database_add(total_data, _item)
@@ -533,6 +513,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         while len(total_data) < 100:
             total_data.append({'sn': "请输入序列号", 'state': "", 'progress': "", 'version': "", "host": "", "priority": 10})
         print("UpgradeWindow", "read_data_from_csv", "数据补足：", len(total_data))
+        QApplication.processEvents()
 
     # def read_data_from_table(self):
     #     global total_data
@@ -613,6 +594,7 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
                 # print("cvs文件数据：", list(sn_file))
                 self.read_data_from_csv(sn_file)
                 self.table_show_data(total_data)
+        QApplication.processEvents()
 
     def update_finish(self):
         global total_data, success_data, failed_data
@@ -631,15 +613,22 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         print("用户名/密码：", username, password)
 
 
+def get_url_host(url):
+    return urlparse(url).netloc
+
+
 def isLegalSn(sn):
     result = re.match(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{8}", sn) is not None
     print("UpgradeWindow", "isLegalSn", sn, result)
     return result
 
+
 def isLegalIp(ip):
-    result = re.match(r'((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}:?\d*', ip) is not None
+    result = re.match(r'((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}:?\d*',
+                      ip) is not None
     print("UpgradeWindow", "isLegalIp", ip, result)
     return result
+
 
 def check_json_format(raw_msg):
     """
@@ -656,6 +645,7 @@ def check_json_format(raw_msg):
     else:
         return False
 
+
 def isNetOk(server=("www.baidu.com", 443)):
     s = socket.socket()
     s.settimeout(3)
@@ -669,9 +659,10 @@ def isNetOk(server=("www.baidu.com", 443)):
     except Exception as e:
         return False
 
+
 def requestSnToHost(sn):
-    param = {'sn': sn, 'port': 80}
-    resp = requests.get(url_sn_to_ip, params=param)
+    client = NormalClient(test_base_host, test_access_key_id, test_access_key_secret)
+    resp = client.get_device_remote_url(sn)
     print("Worker", "requestSnToHost", "getHost", resp.status_code, resp.text)
     return resp.status_code, resp.text
 
@@ -696,3 +687,4 @@ if __name__ == "__main__":
 # 参考资料
 # Qt线程池问题：https://blog.csdn.net/weixin_38587278/article/details/106430250
 # 懒人图库（gif进度条）：https://www.lanrentuku.com/gif/a/loading_3.html
+# QApplication.processEvents()

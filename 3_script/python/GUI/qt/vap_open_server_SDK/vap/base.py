@@ -13,6 +13,7 @@ def get(url, **kwargs):
     """封装get方法"""
     try:
         result = requests.get(url, **kwargs)
+        print(kwargs)
         print(result.status_code)
         return {'code': 0, 'message': 'success', 'data': return_data(result)}
     except Exception as e:

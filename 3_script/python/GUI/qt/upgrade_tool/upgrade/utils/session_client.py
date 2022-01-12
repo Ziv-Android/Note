@@ -54,7 +54,7 @@ class SessionClient:
     # 登录
     def login(self):
         if self.isLogin:
-            return
+            return True
         try:
             url = self.host + "/request.php"
             # 创建会话
@@ -72,6 +72,7 @@ class SessionClient:
             self.log.i("SessionClient", f"login params: {login_info}")
             # login请求
             resp = self.session.post(url=url, data=login_info, timeout=10)
+            resp.encoding = "UTF-8"
             self.log.i("SessionClient", f"login encode: {resp.encoding}")
             self.isLogin = False
             if resp.status_code == 200:
@@ -79,11 +80,11 @@ class SessionClient:
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.i("SessionClient",
                            f"login result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
-                if len(result) > 0:
-                    json_obj = json.loads(result)
-                    state_code = json_obj['state']
-                    if state_code == 200:
-                        self.isLogin = True
+
+                json_obj = json.loads(result)
+                state_code = json_obj['state']
+                if state_code == 200:
+                    self.isLogin = True
             else:
                 self.log.e("SessionClient", f"login error: code={resp.status_code}")
             return self.isLogin
@@ -93,7 +94,7 @@ class SessionClient:
             return False
 
     # 获取设备信息
-    def info(self):
+    def get_version(self):
         self.login()
         try:
             url = self.host + "/request.php"
@@ -106,10 +107,13 @@ class SessionClient:
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.i("SessionClient",
                            f"info result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
+
+                json_obj = json.loads(result)
+                version = json_obj['body']['soft_ver']
             else:
-                result = None
+                version = None
                 self.log.e("SessionClient", f"info error: code={resp.status_code}")
-            return result
+            return version
         except Exception as e:
             self.log.e("SessionClient", f"info failed {e}")
             self.close()
@@ -149,10 +153,11 @@ class SessionClient:
                 else:
                     result = resp.content.decode(encoding="UTF-8")
                 self.log.e("SessionClient", f"update failed: {result}")
-            return resp.status_code, result
+
+            return resp.status_code
         except Exception as e:
             self.log.e("SessionClient", f"update exception: {filename} {e}")
-            return 404, None
+            return 404
         finally:
             self.close()
 

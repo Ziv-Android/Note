@@ -89,13 +89,21 @@ class Signature(object):
 
 if __name__ == '__main__':
     open_base_host = 'http://nopen.vzpdns.com'
-    access_key = '8dlP5tsD2115Q2ec9fCkX2wHSIIlhCO8'
-    access_secret = 'y1nSm6Th6VAtWAN0dGBFwiEq0c02Sb57'
-    kw = {'path': '/openapi/v1/stp/user/devices/vurl',
-          'method': 'GET',
-          'params': {'sn': '6593d05e-34c85fbd', 'type': 'flv'}
+    # access_key = '8dlP5tsD2115Q2ec9fCkX2wHSIIlhCO8'
+    # access_secret = 'y1nSm6Th6VAtWAN0dGBFwiEq0c02Sb57'
+    access_key = '7e9peQ8C1125A7Cz4LVFJl61jxFtHs0F'
+    access_secret = 'ZfATtI0jK9uclIEwcHJ7JLAj7rRX1mgY'
+
+    # kw = {'path': '/openapi/v1/stp/user/devices/vurl',
+    #       'method': 'GET',
+    #       'params': {'sn': '6593d05e-34c85fbd', 'type': 'flv'}
+    #       }
+    kw = {'path': '/openapi/v1/stp/user/devices',
+          'method': 'POST',
+          'json': '[{"sn":"12345678-87654321","group_id":0,"username":"admin","password":"admin","remark":""}]',
           }
     signature = Signature(open_base_host, access_key, access_secret, 6)
     result = signature.cal_signature(**kw)
+    print(result)
     req = base
     print(req.request(timeout=60, **result))
