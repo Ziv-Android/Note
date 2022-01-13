@@ -14,6 +14,7 @@ from log import Log
 # log.w("sanbian")
 url_parsed = urlparse("http://192.168.0.11:1234/library.php?username=111")
 print(url_parsed)
+print(f"{url_parsed.scheme}://{url_parsed.netloc}/{url_parsed.path}")
 
 path = os.path.join(os.path.abspath('../..'), "assets", "Aes.js")
 print(path)

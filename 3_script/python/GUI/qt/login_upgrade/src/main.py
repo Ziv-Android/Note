@@ -3,13 +3,15 @@
 import csv
 import re
 import socket
+import struct
+import zlib
 import cgitb
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal
 from PyQt5.QtWidgets import *
 
-from upgrade.UpgradeWindow import Ui_MainWindow as Upgrade_Ui
+from upgrade.ui_upgrade import Ui_MainWindow
 
 from libutils.NormalClient import *
 from libutils.SessionClient import *
@@ -25,15 +27,23 @@ success_data = []
 
 # 旧臻云接口（已废弃）
 # url_sn_to_ip = "http://118.31.4.231:8000/pdns"
+# 中台接口
 # url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
 # 新臻云接口
-test_base_host = 'http://nopen.vzpdns.com'
-test_access_key_id = 'KihoeTFJ62d755z5xSoK5AGGeygPWX7P'
-test_access_key_secret = 'JJAs0qJAOeazJtXpbhnmEODNzj3kmwja'
+# test_base_host = 'http://nopen.vzpdns.com'
+base_host = 'http://open.vzpdns.com'
 
-username = "admin"
-password = "admin"
+# test_access_key_id = 'KihoeTFJ62d755z5xSoK5AGGeygPWX7P'
+# test_access_key_secret = 'JJAs0qJAOeazJtXpbhnmEODNzj3kmwja'
+# test_access_key_id = 'Ceu8lKlf6125Rq0wSh8hyLwz5xWt0EBm'
+# test_access_key_secret = 'iwn5D8v4HJ6mKquO7PJla90HWOg7twtC'
+access_key_id = ''
+access_key_secret = ''
+username = ""
+password = ""
+
 file_path = ""
+file_version = ""
 
 count_active = 0
 shouldUpdateInfo = True
@@ -72,16 +82,21 @@ class Worker(QRunnable):
         self.signal.progress.emit(self.line, self.data)
 
     def run(self):
-        global username, password
+        global username, password, file_version
         self.signal.active_count.emit(1)
-        self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
+        # self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
         # 获取地址
         if self.data["host"] == "":
-            code, host = requestSnToHost(self.data['sn'])
+            host = requestSnToHost(self.data['sn'])
             host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
-            if code == 200:
-                if isLegalIp(host):
-                    self.data['host'] = host
+            if host.startswith("http"):
+                self.data['host'] = host
+                self.signal.progress.emit(self.line, self.data)
+            elif host.startswith("access_error"):
+                self.data['state'] = "access异常"
+                self.signal.progress.emit(self.line, self.data)
+                self.signal.active_count.emit(-1)
+                return
             else:
                 self.data['state'] = "序列号错误"
                 self.signal.progress.emit(self.line, self.data)
@@ -89,7 +104,7 @@ class Worker(QRunnable):
                 return
         print("Worker", self.thread_name, "getHost", self.data["host"])
         self.log.log_debug(f"Worker {self.thread_name} get host：{self.data['sn']} -> {self.data['host']}")
-        if len(self.data["host"]) == 0:
+        if self.data["host"] == "":
             self.data['state'] = "离线"
             self.signal.progress.emit(self.line, self.data)
             self.signal.active_count.emit(-1)
@@ -104,6 +119,7 @@ class Worker(QRunnable):
             self.signal.active_count.emit(-1)
             return
         self.data['state'] = "在线"
+        self.signal.progress.emit(self.line, self.data)
         # 获取版本
         version = client.info()
         self.log.log_debug(f"Worker {self.thread_name} info：{version}")
@@ -115,12 +131,17 @@ class Worker(QRunnable):
         self.data['version'] = version
         self.signal.progress.emit(self.line, self.data)
         time.sleep(0.5)
+        # 检查版本
+        if self.data['version'] != "" and file_version == version:
+            self.log.log_debug(f"Worker {self.thread_name} 已经是当前版本")
+            return
         # 升级
-        state_code = client.update(file_path, self.progress_change)
-        self.log.log_debug(f"Worker {self.thread_name} update：{state_code}")
-        print("Worker", self.thread_name, "update:", state_code)
-        if state_code == 200:
+        state = client.update(file_path, self.progress_change)
+        self.log.log_debug(f"Worker {self.thread_name} update：{state}")
+        print("Worker", self.thread_name, "update:", state)
+        if state:
             self.data['state'] = "已升级"
+            self.data['version'] = file_version
             self.data['priority'] = 9
             exist = False
             for _item in success_data:
@@ -192,17 +213,15 @@ class GetInfoWorker(QObject):
     def run(self):
         net_state = isNetOk()
         print("GetInfoWorker", "net state", net_state)
-        self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
+        # self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
         if self.data["host"] == "":
-            code, host = requestSnToHost(self.data['sn'])
+            host = requestSnToHost(self.data['sn'])
             host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
-            if code == 200:
-                if host is not None and len(host) > 0:
-                    self.data['state'] = "在线"
-                    self.data['host'] = host
-                else:
-                    self.data['state'] = "离线"
-                    self.data['priority'] = 5
+            if host.startswith("http"):
+                self.data['state'] = "在线"
+                self.data['host'] = host
+            elif host.startswith("access_error"):
+                self.data['state'] = "access异常"
             else:
                 self.data['state'] = "离线"
                 self.data['priority'] = 5
@@ -213,7 +232,6 @@ class GetInfoWorker(QObject):
             print("GetInfoWorker", "check username/password", "用户名/密码错误")
             return
 
-        # host = "http://192.168.1.88"
         print("GetInfoWorker", "host", host)
         client = SessionClient(self.data['host'], username, password)
         version = client.info()
@@ -232,7 +250,7 @@ class GetInfoWorker(QObject):
 
 
 # 升级窗口
-class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
+class UpgradeWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # 定义信号
     upgrade_data_signal = pyqtSignal(int, dict)
     message_data_signal = pyqtSignal(str)
@@ -293,7 +311,6 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
             # 只响应SN单元格列的变化
             item_sn = self.get_item_data_safety(self.upgrade_detail_TableWidget.item(row, 1))
             if isLegalSn(item_sn):
-                self.get_username_password()
                 data = {'sn': item_sn, 'state': "", 'progress': "", 'version': "", "host": "", "priority": 8}
             else:
                 data = {'sn': item_sn, 'state': "序列号错误", 'progress': "", 'version': "", "host": "", "priority": 4}
@@ -312,18 +329,17 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         net_state = isNetOk()
         print("GetInfoWorker", "net state", net_state)
         self.log.log_debug(f"UpgradeWindow get online info, net state: {net_state}, {data['sn']}")
-        data['host'] = "http://192.168.30.127:18008/02880771-fce36ba5"
+        # data['host'] = "http://192.168.30.127:18008/02880771-fce36ba5"
         if data['host'] == "":
-            code, host = requestSnToHost(data['sn'])
+            self.get_access_key_id_secret()
+            host = requestSnToHost(data['sn'])
             host = host.replace('\n', '').replace('\r', '').replace(' ', '').strip()
-            self.log.log_debug(f"UpgradeWindow get online info, request: {code} -> {host}")
-            if code == 200:
-                if isLegalIp(host):
-                    data['state'] = "在线"
-                    data['host'] = host
-                else:
-                    data['state'] = "离线"
-                    data['priority'] = 5
+            self.log.log_debug(f"UpgradeWindow get online info, request: {host}")
+            if host.startswith("http"):
+                data['state'] = "在线"
+                data['host'] = host
+            elif host.startswith("access_error"):
+                data['state'] = "access异常"
             else:
                 data['state'] = "离线"
                 data['priority'] = 5
@@ -361,10 +377,17 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
     def download_template_file(self):
         print("UpgradeWindow", "download_template_file", "下载模板文件")
         self.log.log_debug(f"UpgradeWindow create template file.")
-        with open("template.csv", 'w', encoding='utf-8') as openf:
+        QApplication.processEvents()
+        global total_data
+        with open("template.csv", 'w', encoding='utf-8', newline="") as openf:
             csv_write = csv.writer(openf)
             csv_head = ['序列号', '状态', '升级进度', '固件版本']
             csv_write.writerow(csv_head)
+
+            for _item in total_data:
+                if isLegalSn(_item['sn']):
+                    row = [_item['sn'], _item['state'], _item['progress'], _item['version']]
+                    csv_write.writerow(row)
 
     # 增
     def database_add(self, database, data, index=-1):
@@ -486,12 +509,17 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
         # 添加文件数据
         for cvs_line in csv_iterator:
             print("UpgradeWindow", "read_data_from_cvs", 'sn:', cvs_line, type(cvs_line))
+            if len(cvs_line) <= 0:
+                continue
             sn = cvs_line[0].strip()
             # 判断SN是否合法, 检查去重
             if isLegalSn(sn):
                 if sn not in temp:
                     temp.append(sn)
                     _temp.append({'sn': sn, 'state': "", 'progress': "", 'version': "", "host": "", "priority": 6})
+                else:
+                    index = temp.index(sn)
+                    self.database_update(total_data, total_data[index], index)
             QApplication.processEvents()
 
         print("UpgradeWindow", "read_data_from_csv", "数据文件导入：", len(_temp))
@@ -536,19 +564,19 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
 
     ########################################################################################################
     def exec_upgrade(self):
-        global total_data
+        global total_data, file_path, file_version
         print("UpgradeWindow", "exec_upgrade", "执行升级")
-        global file_path
+
         file_path, file_format = QFileDialog.getOpenFileName(self, '选择文件', '', 'Excel files(*.bin)')
         self.log.log_debug(f"UpgradeWindow exec upgrade, {file_path}")
         print("UpgradeWindow", "exec_upgrade", file_path, file_format)
         if len(file_path) == 0:
             return
 
-        # self.username_lineEdit.setText('admin')
-        # self.password_lineEdit.setText('admin')
-
+        file_version = get_local_upgrade_file_version(file_path)
+        self.get_access_key_id_secret()
         self.get_username_password()
+
         if len(username) == 0 or len(password) == 0:
             QtWidgets.QMessageBox.warning(self, "错误", "用户名/密码错误")
             print("UpgradeWindow", "exec_upgrade", "用户名/密码错误")
@@ -606,15 +634,17 @@ class UpgradeWindow(QtWidgets.QMainWindow, Upgrade_Ui):
     def get_username_password(self):
         print("UpgradeWindow", "get_username_password", "获取用户名密码")
         # 用户名/密码
-        global username
+        global username, password
         username = self.username_lineEdit.text()
-        global password
         password = self.password_lineEdit.text()
         print("用户名/密码：", username, password)
 
-
-def get_url_host(url):
-    return urlparse(url).netloc
+    def get_access_key_id_secret(self):
+        print("UpgradeWindow", "get_access_key_id_secret", "获取Access信息")
+        global access_key_id, access_key_secret
+        access_key_id = self.access_key_id_lineEdit.text()
+        access_key_secret = self.access_key_secret_lineEdit.text()
+        print("用户名/密码：", username, password)
 
 
 def isLegalSn(sn):
@@ -661,10 +691,28 @@ def isNetOk(server=("www.baidu.com", 443)):
 
 
 def requestSnToHost(sn):
-    client = NormalClient(test_base_host, test_access_key_id, test_access_key_secret)
+    if access_key_id == "" or access_key_secret == "":
+        return "access_error"
+    # client = NormalClient(test_base_host, test_access_key_id, test_access_key_secret)
+    client = NormalClient(base_host, access_key_id, access_key_secret)
+    # rx - http://192.168.30.127:32287/02880771-fce36ba5/?userdata=pdns
     resp = client.get_device_remote_url(sn)
-    print("Worker", "requestSnToHost", "getHost", resp.status_code, resp.text)
-    return resp.status_code, resp.text
+    print("Worker", "requestSnToHost", "getHost", resp)
+    return resp
+
+
+def get_local_upgrade_file_version(path):
+    version_bin = "."
+    with open(path, "rb") as of:
+        data = of.read(64)
+        num = struct.unpack("<H", data[62:64])
+        if num[0] == 0:
+            for index in range(20, 36, 4):
+                num = struct.unpack("<I", data[index:index + 4])
+                version_bin += f"{num}."
+        elif num[0] == 160:
+            version_bin = f'{struct.unpack("B", data[24:25])}.{struct.unpack("B", data[25:26])}.{struct.unpack("<H", data[26:28])}.{struct.unpack("<I", data[28:32])}.'
+    return version_bin[:-1]
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
-from PyQt5.Qt import QApplication, QWidget, QThread, pyqtSignal
 import sys
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QWidget
+
 from api import *
 import os
 import cgitb

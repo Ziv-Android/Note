@@ -85,10 +85,10 @@ if __name__ == '__main__':
     # sign = create_signature(access_key_secret, signature_content_2)
     # print("sign:", sign)
 
-    # access_key_id = 'Ceu8lKlf6125Rq0wSh8hyLwz5xWt0EBm'
-    # access_key_secret = 'iwn5D8v4HJ6mKquO7PJla90HWOg7twtC'
-    access_key_id = 'KihoeTFJ62d755z5xSoK5AGGeygPWX7P'
-    access_key_secret = 'JJAs0qJAOeazJtXpbhnmEODNzj3kmwja'
+    access_key_id = 'Ceu8lKlf6125Rq0wSh8hyLwz5xWt0EBm'
+    access_key_secret = 'iwn5D8v4HJ6mKquO7PJla90HWOg7twtC'
+    # access_key_id = 'KihoeTFJ62d755z5xSoK5AGGeygPWX7P'
+    # access_key_secret = 'JJAs0qJAOeazJtXpbhnmEODNzj3kmwja'
     # # signature_content = create_signature_content("get", "path", "json_data", "application/json", 10)
     # signature_content = create_signature_content("get", create_path("check", {"age": 18, "sex": "女"}))
     # sign = create_signature(access_key_secret, signature_content)
@@ -96,7 +96,8 @@ if __name__ == '__main__':
     # print("sign", sign)
 
     client = Client(open_base_host, access_key_id, access_key_secret)
-    client.get_device_remote_url(sn='02880771-fce36ba5')
+    # client.get_device_remote_url(sn='02880771-fce36ba5')
+    client.get_device_remote_url(sn='4e1d79e8-e4150075')
 
     # signature = Signature(open_base_host, access_key_id, access_key_secret, 6)
     # result = signature.cal_signature(**kw)

@@ -3,10 +3,12 @@
 import datetime
 import hmac
 import base64
+import json
 import time
 from hashlib import sha1, md5
 
 import requests
+from urllib.parse import urlparse
 
 
 def create_signature_content(method, path, content_md5="", content_type="", expires=0):
@@ -39,6 +41,19 @@ def create_signature(key, content):
     return base64.b64encode(hmac_code).decode()
 
 
+def get_path(url):
+    try:
+        if url.startswith("http"):
+            url_parsed = urlparse(url)
+            path = f"{url_parsed.scheme}://{url_parsed.netloc}{url_parsed.path}"
+            print(path[:-1])
+            return path[:-1]
+        return ""
+    except Exception as e:
+        print("get_path exception", e)
+        return ""
+
+
 class NormalClient:
     def __init__(self, base_host, access_key_id, access_key_secret, invalid_timer=6):
         self.base_host = base_host
@@ -60,7 +75,9 @@ class NormalClient:
             params = {**params, **sign_path_params}
             print(params)
             result = requests.get(url, params, timeout=60)
-            return result
+            if result is not None and len(result.text) > 0:
+                return get_path(result.text)
+            return ""
         except Exception as e:
-            print("get_device_remote_url", e)
+            print("get_device_remote_url exception", e)
             return ""

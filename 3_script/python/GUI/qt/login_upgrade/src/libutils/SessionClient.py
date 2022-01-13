@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -56,7 +57,8 @@ class SessionClient:
 
         try:
             # http://192.168.30.125:19852/02880771-fce36ba5/login.php
-            url = self.host + "/login.php"
+            # url = self.host + "/login.php"
+            url = self.host + "/request.php"
             # 创建会话
             self.session = requests.session()
             # 根据请求url处理加密参数
@@ -72,10 +74,10 @@ class SessionClient:
             self.log.log_info("SessionClient", f"login params: {login_info}")
             # login请求
             resp = self.session.post(url=url, data=login_info, timeout=10)
+            resp.encoding = 'utf-8'
             self.log.log_info("SessionClient", f"login encode: {resp.encoding}")
             self.isLogin = False
             if resp.status_code == 200:
-                resp.encoding = 'utf-8'
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.log_info("SessionClient",
                                   f"login result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
@@ -99,12 +101,13 @@ class SessionClient:
         self.login()
         try:
             # http://192.168.30.125:19852/02880771-fce36ba5/systemjson.php
-            url = self.host + "/systemjson.php"
+            # url = self.host + "/systemjson.php"
+            url = self.host + "/request.php"
             self.log.log_info("SessionClient", f"info request {url} {self.session.cookies}")
-            self.log.log_info("SessionClient", f"info params: {device_info_rx}")
-            resp = self.session.post(url=url, data=device_info_rx, timeout=10)
-            self.log.log_info("SessionClient", f"info encode: {resp.encoding}")
+            self.log.log_info("SessionClient", f"info params: {device_info}")
+            resp = self.session.post(url=url, data=device_info, timeout=10)
             resp.encoding = 'utf-8'
+            self.log.log_info("SessionClient", f"info encode: {resp.encoding}")
             if resp.status_code == 200:
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.log_info("SessionClient",
@@ -130,7 +133,8 @@ class SessionClient:
         self.login()
         try:
             # http://192.168.30.127:18008/02880771-fce36ba5/upload.cgi
-            url = self.host + "/upload.cgi"
+            # url = self.host + "/upload.cgi"
+            url = self.host + "/update.php"
             name = filename.replace('\\', '/').split("/")[-1]
             self.log.log_info("SessionClient", f"update request {url} {self.session.cookies}")
             self.log.log_info("SessionClient", f"update params: {filename}, {name}")
@@ -147,13 +151,13 @@ class SessionClient:
                 'Content-Type': e.content_type,
             }
             resp = requests.post(url, data=m, headers=headers, timeout=60)
-            resp.elapsed.total_seconds()
-            self.log.log_info("SessionClient", f"update encode: {resp.encoding}")
             resp.encoding = 'utf-8'
+            self.log.log_info("SessionClient", f"update encode: {resp.encoding}, {resp.elapsed.total_seconds()}")
+            self.log.log_info("SessionClient", f"upload result: code={resp.status_code}, content={resp.content.decode()}")
             if resp.status_code == 200:
                 result = resp.content.decode(encoding="UTF-8")
-                self.log.log_info("SessionClient",
-                            f"upload result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
+                self.log.log_info("SessionClient", f"upload success: cookies={self.session.cookies}, content={result}")
+                return True
             else:
                 self.log.log_error("SessionClient", f"update failed: {resp.status_code} {filename}")
                 if resp.content is None:
@@ -161,10 +165,10 @@ class SessionClient:
                 else:
                     result = resp.content.decode(encoding="UTF-8")
                 self.log.log_error("SessionClient", f"update failed: {result}")
-            return resp.status_code
+            return False
         except Exception as e:
             self.log.log_error("SessionClient", f"update exception: {filename} {e}")
-            return 404
+            return False
         finally:
             self.close()
 
