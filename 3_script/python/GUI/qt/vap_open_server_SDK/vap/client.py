@@ -96,8 +96,7 @@ if __name__ == '__main__':
     # print("sign", sign)
 
     client = Client(open_base_host, access_key_id, access_key_secret)
-    # client.get_device_remote_url(sn='02880771-fce36ba5')
-    client.get_device_remote_url(sn='4e1d79e8-e4150075')
+    client.get_device_remote_url(sn='01716584-1e081e49')
 
     # signature = Signature(open_base_host, access_key_id, access_key_secret, 6)
     # result = signature.cal_signature(**kw)
