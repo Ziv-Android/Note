@@ -25,8 +25,8 @@ success_data = []
 # 中台接口
 # url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
 # 新臻云接口
-test_base_host = 'http://nopen.vzpdns.com'
-# base_host = 'http://open.vzpdns.com'
+# test_base_host = 'http://nopen.vzpdns.com'
+base_host = 'https://open.vzicloud.com'
 
 # test_access_key_id = 'KihoeTFJ62d755z5xSoK5AGGeygPWX7P'
 # test_access_key_secret = 'JJAs0qJAOeazJtXpbhnmEODNzj3kmwja'
@@ -699,7 +699,7 @@ def requestSnToHost(sn):
     if access_key_id == "" or access_key_secret == "":
         return "access_error"
     # client = NormalClient(test_base_host, test_access_key_id, test_access_key_secret)
-    client = NormalClient(test_base_host, access_key_id, access_key_secret)
+    client = NormalClient(base_host, access_key_id, access_key_secret)
     # rx - http://192.168.30.127:32287/02880771-fce36ba5/?userdata=pdns
     resp = client.get_device_remote_url(sn)
     print("Worker", "requestSnToHost", "getHost", resp)
