@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\tool_text_json.ui'
+# Form implementation generated from reading ui file 'tool_text_json.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -22,15 +22,30 @@ class Ui_WidgetJson(object):
         self.textEdit = QtWidgets.QTextEdit(WidgetJson)
         self.textEdit.setObjectName("textEdit")
         self.horizontalLayout.addWidget(self.textEdit)
-        self.textBrowser = QtWidgets.QTextBrowser(WidgetJson)
-        self.textBrowser.setObjectName("textBrowser")
-        self.horizontalLayout.addWidget(self.textBrowser)
+        self.treeView = QtWidgets.QTreeView(WidgetJson)
+        self.treeView.setObjectName("treeView")
+        self.horizontalLayout.addWidget(self.treeView)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.pushButton = QtWidgets.QPushButton(WidgetJson)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout_2.addWidget(self.pushButton)
+        self.formatBtn = QtWidgets.QPushButton(WidgetJson)
+        self.formatBtn.setObjectName("formatBtn")
+        self.horizontalLayout_2.addWidget(self.formatBtn)
+        self.reduceBtn = QtWidgets.QPushButton(WidgetJson)
+        self.reduceBtn.setObjectName("reduceBtn")
+        self.horizontalLayout_2.addWidget(self.reduceBtn)
+        self.escapedBtn = QtWidgets.QPushButton(WidgetJson)
+        self.escapedBtn.setObjectName("escapedBtn")
+        self.horizontalLayout_2.addWidget(self.escapedBtn)
+        self.unescapedBtn = QtWidgets.QPushButton(WidgetJson)
+        self.unescapedBtn.setObjectName("unescapedBtn")
+        self.horizontalLayout_2.addWidget(self.unescapedBtn)
+        self.unicodeToChineseBtn = QtWidgets.QPushButton(WidgetJson)
+        self.unicodeToChineseBtn.setObjectName("unicodeToChineseBtn")
+        self.horizontalLayout_2.addWidget(self.unicodeToChineseBtn)
+        self.chineseToUnicodeBtn = QtWidgets.QPushButton(WidgetJson)
+        self.chineseToUnicodeBtn.setObjectName("chineseToUnicodeBtn")
+        self.horizontalLayout_2.addWidget(self.chineseToUnicodeBtn)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.cleanBtn = QtWidgets.QPushButton(WidgetJson)
@@ -44,5 +59,10 @@ class Ui_WidgetJson(object):
     def retranslateUi(self, WidgetJson):
         _translate = QtCore.QCoreApplication.translate
         WidgetJson.setWindowTitle(_translate("WidgetJson", "Form"))
-        self.pushButton.setText(_translate("WidgetJson", "Format"))
-        self.cleanBtn.setText(_translate("WidgetJson", "Clean"))
+        self.formatBtn.setText(_translate("WidgetJson", "格式化"))
+        self.reduceBtn.setText(_translate("WidgetJson", "压缩"))
+        self.escapedBtn.setText(_translate("WidgetJson", "转义"))
+        self.unescapedBtn.setText(_translate("WidgetJson", "去转义"))
+        self.unicodeToChineseBtn.setText(_translate("WidgetJson", "Unicode转中文"))
+        self.chineseToUnicodeBtn.setText(_translate("WidgetJson", "中文转Unicode"))
+        self.cleanBtn.setText(_translate("WidgetJson", "清空"))
