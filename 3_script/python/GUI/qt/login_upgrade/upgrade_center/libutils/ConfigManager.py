@@ -5,9 +5,10 @@ import configparser
 
 
 class ConfigManager:
-    def __init__(self):
+    def __init__(self, path):
         self.cfg = configparser.ConfigParser()
-        path = os.path.join(os.getcwd(), "configs", "config.ini")
+        if path is None:
+            path = os.path.join(os.getcwd(), "configs", "config.ini")
         if not os.path.exists(path):
             return
 

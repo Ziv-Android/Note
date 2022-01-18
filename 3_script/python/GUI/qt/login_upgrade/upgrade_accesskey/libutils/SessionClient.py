@@ -35,7 +35,8 @@ class SessionClient:
     # 读取aes工具文件
     def aes_file(self):
         print(sys.argv[0])
-        path = os.path.join(os.getcwd()) + "\\libutils\\Aes.js"
+        path = os.path.join(os.getcwd(), "assets", "Aes.js")
+        # path = os.path.join(os.getcwd()) + "\\libutils\\Aes.js"
         print(path)
         with open(path, 'r', encoding='utf-8') as of:
             htmlstr = of.read()

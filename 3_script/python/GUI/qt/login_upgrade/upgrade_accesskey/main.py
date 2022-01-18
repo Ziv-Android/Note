@@ -25,7 +25,7 @@ success_data = []
 # 中台接口
 # url_sn_to_ip = "http://119.3.146.99/webapi/v1/pdns"
 # 新臻云接口
-# test_base_host = 'http://nopen.vzpdns.com'
+# base_host = 'http://nopen.vzpdns.com'
 base_host = 'https://open.vzicloud.com'
 
 # test_access_key_id = 'KihoeTFJ62d755z5xSoK5AGGeygPWX7P'

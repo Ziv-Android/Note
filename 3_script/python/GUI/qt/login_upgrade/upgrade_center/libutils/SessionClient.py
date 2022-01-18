@@ -39,7 +39,7 @@ class SessionClient:
     :param:username 用户名
     :param:password 密码
     """
-    def __init__(self, host, username, password):
+    def __init__(self, host, username, password, config_path=None):
         self.host = host
         self.username = username
         self.password = password
@@ -47,11 +47,11 @@ class SessionClient:
         self.config = None
         self.isLogin = False  # 登录判断
         self.log = ZLog()
-        self.read_config()
+        self.read_config(config_path)
 
-    def read_config(self):
+    def read_config(self, path):
         global user_info, device_info, url_login, url_info, url_upgrade
-        self.config = ConfigManager()
+        self.config = ConfigManager(path)
         try:
             user_info = self.config.get_params_user_info()
             device_info = self.config.get_params_device_info()
@@ -59,7 +59,7 @@ class SessionClient:
             url_info = self.config.get_path_info()
             url_upgrade = self.config.get_path_upgrade()
         except Exception as e:
-            pass
+            print("SessionClient read_config exception", e)
         finally:
             del self.config
 

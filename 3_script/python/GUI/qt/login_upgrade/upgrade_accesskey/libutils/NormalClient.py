@@ -75,9 +75,11 @@ class NormalClient:
             params = {**params, **sign_path_params}
             print(params)
             result = requests.get(url, params, timeout=60)
-            if result is not None and len(result.text) > 0:
-                return get_path(result.text)
-            return ""
+            if result is None:
+                return ""
+            if result.status_code != 200 or len(result.text) <= 0:
+                return ""
+            return get_path(result.text)
         except Exception as e:
             print("get_device_remote_url exception", e)
             return ""

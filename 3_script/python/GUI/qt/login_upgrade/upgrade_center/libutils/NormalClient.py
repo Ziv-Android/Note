@@ -61,10 +61,10 @@ class NormalClient:
         self.access_key_secret = access_key_secret
         self.invalid_timer = invalid_timer
 
-    def get_device_remote_url(self, sn):
+    def get_device_remote_url(self, sn, path="/openapi/v1/stp/user/devices/pdns/web"):
         try:
             method = "GET"
-            sign_path_url = "/openapi/v1/stp/user/devices/pdns/web"
+            sign_path_url = path
             sign_path_params = {'sn': sn, 'type': "text"}
             sign_path = create_path(sign_path_url, sign_path_params)
             sign_expires = create_expires(self.invalid_timer)
@@ -75,9 +75,11 @@ class NormalClient:
             params = {**params, **sign_path_params}
             print(params)
             result = requests.get(url, params, timeout=60)
-            if result is not None and len(result.text) > 0:
-                return get_path(result.text)
-            return ""
+            if result is None:
+                return ""
+            if result.status_code != 200 or len(result.text) <= 0:
+                return ""
+            return get_path(result.text)
         except Exception as e:
             print("get_device_remote_url exception", e)
             return ""

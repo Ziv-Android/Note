@@ -35,6 +35,7 @@ access_key_secret = ''
 username = ''
 password = ''
 
+config_file_path = None
 file_path = ''
 file_version = ''
 
@@ -49,18 +50,19 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
     message_data_signal = pyqtSignal(str)
 
     def __init__(self):
+        global config_file_path
         super(UpgradeWindow, self).__init__()
         self.upgradeThread = None
         self.loading_widget = None
         self.config = None
         self.log = ZLog()
-        self.read_config()
         self.setup_ui()
-        self.table_bind_signal_event()
+        self.read_config(config_file_path)
 
-    def read_config(self):
+    def read_config(self, path):
         global url_pdns, access_switch, access_key_id, access_key_secret, username, password
-        self.config = ConfigManager()
+        print("UpgradeWindow", "read_config", path)
+        self.config = ConfigManager(path)
         try:
             url_pdns = self.config.get_url_pdns()
             access_switch = int(self.config.get_switch_use_access())
@@ -69,17 +71,15 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
                 access_key_secret = self.config.get_account_access_key_secret()
             username = self.config.get_account_username()
             password = self.config.get_account_password()
-            id = len(access_key_id)
+            self.update_setting()
         except Exception as e:
             pass
         finally:
             del self.config
 
     # 绑定UI事件
-    def table_bind_signal_event(self):
+    def update_setting(self):
         global access_switch, access_key_id, access_key_secret, username, password
-        print("UpgradeWindow", "table_bind_signal_event", "绑定信号")
-        self.upgrade_data_signal.connect(self.update_data)
         if access_switch != 1:
             self.access_key_id_label.setVisible(False)
             self.access_key_id_lineEdit.setVisible(False)
@@ -122,6 +122,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
         self.upgrade_detail_TableWidget.setRowCount(101)
         self.upgrade_detail_TableWidget.cellChanged.connect(self.table_cell_edit_callback)
         # self.upgrade_detail_TableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.upgrade_data_signal.connect(self.update_data)
 
     # 更新message头信息
     def table_head_message_change_callback(self):
@@ -155,6 +156,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
             return table_item.text()
 
     def request_device_online_state(self, data):
+        global username, password, config_file_path
         net_state = isNetOk()
         print("GetInfoWorker", "net state", net_state)
         self.log.log_debug(f"UpgradeWindow get online info, net state: {net_state}, {data['sn']}")
@@ -177,7 +179,6 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
             self.log.log_debug("UpgradeWindow get online info, access异常")
             return
 
-        global username, password
         self.get_username_password()
         if len(username) == 0 or len(password) == 0:
             print("GetInfoWorker", "check username/password", "用户名/密码错误")
@@ -186,7 +187,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
 
         # host = "http://192.168.1.88"
         print("GetInfoWorker", "host", data['host'])
-        client = SessionClient(data['host'], username, password)
+        client = SessionClient(data['host'], username, password, config_file_path)
         info_json = client.login()
         self.log.log_debug(f"GetInfoWorker login：{info_json}")
 
@@ -438,7 +439,13 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
         self.close()
 
     def exec_setting(self):
+        global config_file_path
         print("UpgradeWindow", "exec_setting", "执行设置")
+        config_file_path, file_format = QFileDialog.getOpenFileName(self, '选择文件', '', 'Excel files(*.ini)')
+        if config_file_path is None or config_file_path == '':
+            config_file_path = None
+        else:
+            self.read_config(config_file_path)
 
     def add_data_from_csv_file(self):
         global total_data
@@ -477,7 +484,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
         global access_key_id, access_key_secret
         access_key_id = self.access_key_id_lineEdit.text()
         access_key_secret = self.access_key_secret_lineEdit.text()
-        print("用户名/密码：", username, password)
+        print("access key id/secret：", access_key_id, access_key_secret)
 
 
 class WorkerSignal(QObject):
@@ -513,7 +520,7 @@ class Worker(QRunnable):
         self.signal.progress.emit(self.line, self.data)
 
     def run(self):
-        global username, password, file_version
+        global username, password, file_version, config_file_path
         self.signal.active_count.emit(1)
         # self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
         # 获取地址
@@ -541,7 +548,7 @@ class Worker(QRunnable):
             self.signal.active_count.emit(-1)
             return
         # 创建请求并登录
-        client = SessionClient(self.data["host"], username, password)
+        client = SessionClient(self.data["host"], username, password, config_file_path)
         info_json = client.login()
         self.log.log_debug(f"Worker {self.thread_name} login：{info_json}")
         if not info_json:
@@ -648,6 +655,7 @@ class GetInfoWorker(QObject):
         self.log = ZLog()
 
     def run(self):
+        global username, password, config_file_path
         net_state = isNetOk()
         print("GetInfoWorker", "net state", net_state)
         # self.data["host"] = "http://192.168.30.127:18008/02880771-fce36ba5"
@@ -664,13 +672,12 @@ class GetInfoWorker(QObject):
                 self.data['priority'] = 5
             self.progress.emit(self.line, self.data)
 
-        global username, password
         if len(username) == 0 or len(password) == 0:
             print("GetInfoWorker", "check username/password", "用户名/密码错误")
             return
 
         print("GetInfoWorker", "host", host)
-        client = SessionClient(self.data['host'], username, password)
+        client = SessionClient(self.data['host'], username, password, config_file_path)
         version = client.info()
         if version is None:
             version = ""
@@ -741,9 +748,15 @@ def requestSnToHost(sn):
         if access_key_id == "" or access_key_secret == "":
             return "access_error"
         # client = NormalClient(test_base_host, test_access_key_id, test_access_key_secret)
-        client = NormalClient(url_pdns, access_key_id, access_key_secret)
+        url_parsed = urlparse(url_pdns)
+        url_host = f"{url_parsed.scheme}://{url_parsed.netloc}"
+        url_path = url_parsed.path
+        client = NormalClient(url_host, access_key_id, access_key_secret)
         # rx - http://192.168.30.127:32287/02880771-fce36ba5/?userdata=pdns
-        resp = client.get_device_remote_url(sn)
+        if url_path == "":
+            resp = client.get_device_remote_url(sn)
+        else:
+            resp = client.get_device_remote_url(sn, url_path)
         print("Worker", "requestSnToHost", "getHost", resp)
         return resp
 
