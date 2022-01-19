@@ -13,6 +13,7 @@ from tool_image_base64 import WidgetImageBase64
 from tool_text_aes import WidgetAES
 from tool_text_json import WidgetJson
 from tool_text_timestamp import WidgetTimestamp
+from tool_text_rsa import WidgetRSA
 
 
 class TMainWindow(QMainWindow, Ui_MainWindow):
@@ -24,12 +25,14 @@ class TMainWindow(QMainWindow, Ui_MainWindow):
         self.tab_text_aes = WidgetAES()
         self.tab_text_json = WidgetJson()
         self.tab_text_timestamp = WidgetTimestamp()
+        self.tab_text_rsa = WidgetRSA()
 
         # self.tabWidget.currentChanged.connect(self.on_current_changed)
         self.tabWidget.addTab(self.tab_image_base64, "图片Base64")
         self.tabWidget.addTab(self.tab_text_aes, "AES加密")
         self.tabWidget.addTab(self.tab_text_json, "Json格式化")
         self.tabWidget.addTab(self.tab_text_timestamp, "时间戳")
+        self.tabWidget.addTab(self.tab_text_rsa, "RSA加密")
 
 
 if __name__ == '__main__':

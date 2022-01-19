@@ -33,74 +33,84 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="label_algorithm">
        <property name="text">
-        <string>AES加密方式</string>
+        <string>加密算法</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="comboBox_algorithm"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="label_mode">
+       <property name="text">
+        <string>算法模式</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_mode"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_padding">
        <property name="text">
         <string>填充</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_2"/>
+      <widget class="QComboBox" name="comboBox_padding"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="label_block_length">
        <property name="text">
         <string>数据块</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_3"/>
+      <widget class="QComboBox" name="comboBox_block_length"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="label_password">
        <property name="text">
         <string>密码</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="lineEdit_password"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="label_iv_offset">
        <property name="text">
         <string>偏移量</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_2"/>
+      <widget class="QLineEdit" name="lineEdit_iv_offset"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="label_output">
        <property name="text">
         <string>输出</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_4"/>
+      <widget class="QComboBox" name="comboBox_output"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_7">
+      <widget class="QLabel" name="label_char_set">
        <property name="text">
         <string>字符集</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_5"/>
+      <widget class="QComboBox" name="comboBox_charset"/>
      </item>
      <item>
       <spacer name="horizontalSpacer_5">
@@ -136,9 +146,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pushButton_encrypt">
        <property name="text">
-        <string>AES加密</string>
+        <string>加密</string>
        </property>
       </widget>
      </item>
@@ -156,9 +166,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="pushButton_decrypt">
        <property name="text">
-        <string>AES解密</string>
+        <string>解密</string>
        </property>
       </widget>
      </item>

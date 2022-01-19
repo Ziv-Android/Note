@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'tool_text_json.ui'
+# Form implementation generated from reading ui file '.\tool_text_json.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #

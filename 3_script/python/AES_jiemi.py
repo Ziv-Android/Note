@@ -1,4 +1,5 @@
-from Cryptodome.Cipher import AES
+from Cryptodome.Cipher import AES, DES, Blowfish, DES3, CAST, ChaCha20, ARC2, ARC4
+from Cryptodome.PublicKey import RSA
 from Cryptodome.Util.Padding import pad, unpad  # 填充方式
 from binascii import b2a_hex, a2b_hex
 import base64

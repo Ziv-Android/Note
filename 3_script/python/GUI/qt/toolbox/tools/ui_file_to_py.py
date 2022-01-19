@@ -9,7 +9,7 @@ def ex(cmd):
 
 
 def ui_to_py():
-    ui_files = glob.glob(os.path.join("ui/", "*.ui"))
+    ui_files = glob.glob(os.path.join(".", "*.ui"))
     print(ui_files)
     for ui_file in ui_files:
         file_name = ui_file[2:-2] + "py"
