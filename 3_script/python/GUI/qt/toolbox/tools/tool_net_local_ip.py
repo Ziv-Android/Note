@@ -18,7 +18,7 @@ class WidgetLocalDevice(QWidget, Ui_WidgetLocalDevice):
         super().__init__()
         self.setupUi(self)
 
-        self.comboBox.addItem(get_ip())
+        self.comboBox.addItems(get_ip())
         self.searchBtn.clicked.connect(self.start_search)
 
     def start_search(self):

@@ -2,5 +2,6 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/GUI/qt/mqtt/mqjtxx.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/GUI/qt/net_interface_test/socket/tcp_interface_auto_func.txt" charset="GBK" />
   </component>
 </project>

@@ -1,0 +1,1625 @@
+
+    def set_factorydefault(self, cmd_string_data=None):
+        """
+        恢复设备默认配置：set_factorydefault
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_factorydefault","id":"1548","body":{"factorydefault":0}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_factorydefault'
+        assert data.get('state_code') == 200
+        
+        
+
+    def getsn(self, cmd_string_data=None):
+        """
+        获取设备的序列号: getsn
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"getsn","id":"123456"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'getsn'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_hw_board_version(self, cmd_string_data=None):
+        """
+        获取设备的硬件版本信息: get_hw_board_version
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_hw_board_version","id":"12"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_hw_board_version'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_device_timestamp(self, cmd_string_data=None):
+        """
+        获取设备当前时间戳: get_device_timestamp
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_device_timestamp","id":"999999"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_device_timestamp'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_time(self, cmd_string_data=None):
+        """
+        设置系统时间：set_time
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_time","id":"132156","timestring":"2015-03-1720:47:02"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_time'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_networkparam(self, cmd_string_data=None):
+        """
+        设置网络参数：set_networkparam
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_networkparam","id":"132156","body":{"ip":"192.168.1.177","netmask":"255.255.255.0","gateway":"192.168.1.1","dns":"0.0.0.0"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_networkparam'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_networkparam(self, cmd_string_data=None):
+        """
+        获取网络参数：get_networkparam
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_networkparam","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_networkparam'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_centerserver_net(self, cmd_string_data=None):
+        """
+        设置中心服务器网络参数：set_centerserver_net
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_centerserver_net","id":"132156","body":{"hostname":"192.168.1.106","port":80,"enable_ssl":false,"ssl_port":443,"http_timeout":5}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_centerserver_net'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_user_default_cfg(self, cmd_string_data=None):
+        """
+        设置当前配置为用户默认配置：set_user_default_cfg
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_user_default_cfg","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_user_default_cfg'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_adminpass(self, cmd_string_data=None):
+        """
+        修改设备admin密码：set_adminpass
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_adminpass","id":"132156","body":{"old_pass":"asgwe4AGSAD45","new_pass":"fdas213asfdgad"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_adminpass'
+        assert data.get('state_code') == 200
+        
+        
+
+    def reboot_dev(self, cmd_string_data=None):
+        """
+        重启设备:reboot_dev
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"reboot_dev","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'reboot_dev'
+        assert data.get('state_code') == 200
+        
+        
+
+    def jasauthtime_rsp(self, cmd_string_data=None):
+        """
+        建安顺APP过期设置：jasauthtime，jasauthtime_rsp
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"jasauthtime_rsp","id":"132156","year":2017,"mon":12,"day":12,"hour":13,"min":14,"sec":49}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'jasauthtime_rsp'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_denoise(self, cmd_string_data=None):
+        """
+        对DM8127的单板：获取降噪模式和降噪强度：get_denoise
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_denoise","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_denoise'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_denoise(self, cmd_string_data=None):
+        """
+        对DM8127的单板：设置降噪模式和降噪强度：set_denoise
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_denoise","id":"132156","body":{"mode":1,"strength":0}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_denoise'
+        assert data.get('state_code') == 200
+        
+        
+
+    def startfocusandzoom(self, cmd_string_data=None):
+        """
+        开始自动聚焦：startfocusandzoom
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"startfocusandzoom","id":"1548","body":{"value":1}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'startfocusandzoom'
+        assert data.get('state_code') == 200
+        
+        
+
+    def stopfocusandzoom(self, cmd_string_data=None):
+        """
+        停止自动聚焦：stopfocusandzoom
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"stopfocusandzoom","id":"1548"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'stopfocusandzoom'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_product_info(self, cmd_string_data=None):
+        """
+        获取设备版本信息: get_product_info
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_product_info","id":"123456"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_product_info'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_4g_param(self, cmd_string_data=None):
+        """
+        获取设备4G参数信息: get_4g_param
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_4g_param","id":"123456"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_4g_param'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_4g_param_set_apn(self, cmd_string_data=None):
+        """
+        设置设备4G参数信息: set_4g_param_setapn
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_4g_param","id":"12345","body":{"sub_cmd":"set_apn","apn_param":{"apnaddr":"192.168.1.12","username":"apn_user","passwd":"apn_pass","authentication":0}}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_4g_param'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_4g_param_set_4g_reset(self, cmd_string_data=None):
+        """
+        	设置设备4G参数信息: set_4g_param_reset
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_4g_param","id":"12345","body":{"sub_cmd":"set_4g_reset"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_4g_param'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_dev_name(self, cmd_string_data=None):
+        """
+        设置设备名称: set_dev_name
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_dev_name","id":"12345","body":{"title":"Ivs"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_dev_name'
+        assert data.get('state_code') == 200
+        
+        
+
+    def ivsresult(self, cmd_string_data=None):
+        """
+        配置推送数据方式: ivsresult
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"ivsresult","id":"123","enable":true,"format":"json","image":true,"image_type":0}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'ivsresult'
+        assert data.get('state_code') == 200
+        
+        
+
+    def getivsresult(self, cmd_string_data=None):
+        """
+        获取最近一次识别结果: getivsresult
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"getivsresult","image":true,"format":"json"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'getivsresult'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def trigger(self, cmd_string_data=None):
+        """
+        手动触发车牌识别：trigger
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"trigger"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'trigger'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_max_rec_id(self, cmd_string_data=None):
+        """
+        获取记录最大id: get_max_rec_id
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_max_rec_id","id":"123"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_max_rec_id'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_record(self, cmd_string_data=None):
+        """
+        获取历史记录: get_record
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_record","id":2,"format":"json","image":true}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_record'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_image(self, cmd_string_data=None):
+        """
+        获取记录图片: get_image、get_offline_image
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_image","id":2}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_image'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_snapshot(self, cmd_string_data=None):
+        """
+        抓取当前图片get_snapshot
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_snapshot","id":"123456"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_snapshot'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_rtsp_uri(self, cmd_string_data=None):
+        """
+        获取视频播放的uri: get_rtsp_uri
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_rtsp_uri","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_rtsp_uri'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_virloop_para(self, cmd_string_data=None):
+        """
+        获取虚拟线圈参数：get_virloop_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_virloop_para","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_virloop_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_virloop_para(self, cmd_string_data=None):
+        """
+        设置虚拟线圈参数：set_virloop_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"virtualloop":{"max_plate_width":400,"min_plate_width":45,"dir":0,"trigger_gap":10,"virtualloop_num":1,"loop":[{"id":0,"enable":true,"point_num":4,"point":[{"x":2400,"y":12000},{"x":13984,"y":12000},{"x":15984,"y":14000},{"x":400,"y":14000}]}]}},"cmd":"set_virloop_para","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_virloop_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_virloop_prop(self, cmd_string_data=None):
+        """
+        获取虚拟线圈属性：get_virloop_prop
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_virloop_prop","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_virloop_prop'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_reco_para(self, cmd_string_data=None):
+        """
+        获取识别区域参数：get_reco_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_reco_para","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_reco_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_reco_para(self, cmd_string_data=None):
+        """
+        设置识别区域参数：set_reco_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"recognition_area":{"polygon_num":1,"polygon":[{"id":1,"enable":true,"point_num":4,"point":[{"x":4096,"y":4096},{"x":12288,"y":4096},{"x":13926,"y":13926},{"x":2457,"y":13926}]}]}},"cmd":"set_reco_para","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_reco_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_reco_prop(self, cmd_string_data=None):
+        """
+        获取识别区域属性：get_reco_prop
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_reco_prop","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_reco_prop'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_alg_result_para(self, cmd_string_data=None):
+        """
+        获取算法识别参数： get_alg_result_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_result_para","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_result_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_alg_result_para(self, cmd_string_data=None):
+        """
+        设置算法识别参数： set_alg_result_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_alg_result_para","id":"132156","body":{"snap_resolution":0,"snap_image_quality":100,"out_result_type":1,"recognition_type":1,"province":1,"run_mode":0,"alg_version":"2016LPRALG","time_zone":0,"reco_dis":0}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_alg_result_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_alg_result_prop(self, cmd_string_data=None):
+        """
+        获取算法识别参数属性： get_alg_result_prop
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_result_prop","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_result_prop'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_led_para(self, cmd_string_data=None):
+        """
+        设置LED参数： set_led_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"led_level":2,"led_mode":3,"time_ctrl":[{"id":0,"led_level":2,"time_begin":"00:00:00","time_end":"02:03:34","timectrl_enable":true},{"id":1,"led_level":6,"time_begin":"02:03:34","time_end":"09:02:23","timectrl_enable":true}]},"cmd":"set_led_para","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_led_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_led_para(self, cmd_string_data=None):
+        """
+        获取LED参数： get_led_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_led_para","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_led_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_led_prop(self, cmd_string_data=None):
+        """
+        获取LED属性： get_led_prop
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_led_prop","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_led_prop'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def ioctl_resp(self, cmd_string_data=None):
+        """
+        控制IO输出: ioctl, ioctl_resp
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"ioctl_resp","id":"132156","delay":500,"io":0,"value":2}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'ioctl_resp'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_gpio_value(self, cmd_string_data=None):
+        """
+        获取IO输入状态: get_gpio_value
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_gpio_value","id":"123","gpio":0}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_gpio_value'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_gpio_out_value(self, cmd_string_data=None):
+        """
+        获取IO输出状态: get_gpio_out_value
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_gpio_out_value","id":"123","gpio":0}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_gpio_out_value'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def auto_focus_rsp(self, cmd_string_data=None):
+        """
+        自动聚焦: auto_focus, auto_focus_rsp
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"auto_focus_rsp","id":"123"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'auto_focus_rsp'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_diskinfo(self, cmd_string_data=None):
+        """
+        获取存储设备信息: get_diskinfo
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_diskinfo","id":"123"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_diskinfo'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_serial_para(self, cmd_string_data=None):
+        """
+        获取串口参数: get_serial_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_serial_para","id":"123","serial_port":0}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_serial_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_serial_para(self, cmd_string_data=None):
+        """
+        设置串口参数: set_serial_para
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"baud_rate":37100,"data_bits":8,"parity":1,"stop_bits":2},"cmd":"set_serial_para","id":"123","serial_port":0}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_serial_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_oem_sn_info(self, cmd_string_data=None):
+        """
+        设置客户定制sn序列号
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_oem_sn_info","id":"1324567","body":{"oem_sn":"1234-5689"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_oem_sn_info'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_oem_sn_info(self, cmd_string_data=None):
+        """
+        获取客户定制SN序列号
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_oem_sn_info","id":"1324567"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_oem_sn_info'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_io_lock_status(self, cmd_string_data=None):
+        """
+        设置Gpio口锁定状态
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_io_lock_status","id":"1234568","body":[{"ioout":0,"status":0}]}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_io_lock_status'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_io_lock_status(self, cmd_string_data=None):
+        """
+        获取gpio口锁定状态
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_io_lock_status","id":"1234569"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_io_lock_status'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_traffic_lights(self, cmd_string_data=None):
+        """
+        获取交通灯状态【熵基R5D定制】
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_traffic_lights"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_traffic_lights'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_traffic_lights(self, cmd_string_data=None):
+        """
+        设置交通灯功能【熵基R5D定制】
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_traffic_lights","body":{"enable":1,"green_gpio":1,"red_gpio":0,"time":15000}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_traffic_lights'
+        assert data.get('state_code') == 200
+        
+        
+
+    def response_online_rsp(self, cmd_string_data=None):
+        """
+        通知在线消息:response_online, response_online_rsp
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"response_online_rsp","id":"123"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'response_online_rsp'
+        assert data.get('state_code') == 200
+        
+        
+
+    def ttransmission(self, cmd_string_data=None):
+        """
+        配置透明通道: ttransmission
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"ttransmission","id":"999999","subcmd":"send","datalen":6,"data":"QUJDREVG","comm":"rs485-3"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'ttransmission'
+        assert data.get('state_code') == 200
+        
+        
+
+    def reg_offline_check(self, cmd_string_data=None):
+        """
+        将当前TCP客户端注册为脱机检测的响应终端。
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"reg_offline_check","id":"999999","interval":2}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'reg_offline_check'
+        assert data.get('state_code') == 200
+        
+        
+
+    def reg_offline_check_cancel(self, cmd_string_data=None):
+        """
+        取消脱机注册: reg_offline_check
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"reg_offline_check","id":"999999","sucmd":"cancel"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'reg_offline_check'
+        assert data.get('state_code') == 200
+        
+        
+
+    def register_offline_event(self, cmd_string_data=None):
+        """
+        注册脱机事件：register_offline_event
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"register_offline_event","id":"132156","body":{"register_status":1}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'register_offline_event'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_offline_status(self, cmd_string_data=None):
+        """
+        获取脱机状态：get_offline_status
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_offline_status","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_offline_status'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def register_push_channel(self, cmd_string_data=None):
+        """
+        注册OpenSDK监听推送：register_push_channel 
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"register_push_channel","id":"132156","body":{"register_status":1}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'register_push_channel'
+        assert data.get('state_code') == 200
+        
+        
+
+    def white_list_operator_update_or_add(self, cmd_string_data=None):
+        """
+        增加或者更新白名单：update_or_add
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"white_list_operator","id":"123","operator_type":"update_or_add","dldb_rec":{"create_time":"2015-10-1012:30:40","enable_time":"2015-10-2012:30:40","overdue_time":"2016-10-2012:30:40","enable":1,"plate":"京A12345","time_seg_enable":1,"seg_time":"2016-10-2012:30:40","need_alarm":1,"vehicle_code":"3254ASFDSFSD","vehicle_comment":"HELOOworadf","customer_id":144413212}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'white_list_operator'
+        assert data.get('state_code') == 200
+        
+        
+
+    def white_list_operator_select(self, cmd_string_data=None):
+        """
+        以车牌号查询白名单：plate
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"white_list_operator","id":"999999","operator_type":"select","plate":"川A07273","sub_type":"plate"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'white_list_operator'
+        assert data.get('state_code') == 200
+        
+        
+
+    def white_list_operator_delete(self, cmd_string_data=None):
+        """
+        白名单删除：delete
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"white_list_operator","id":"999999","operator_type":"delete","plate":"京A12345"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'white_list_operator'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_ems(self, cmd_string_data=None):
+        """
+        获取加密方式：get_ems
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_ems","id":"999999"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_ems'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_encrypt_key(self, cmd_string_data=None):
+        """
+        用户根据主密钥获取用户密码；
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_encrypt_key","id":"999999","prime_key":"Vg0MgpeBCOzzCxbsQ68V2NHd0Zk="}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_encrypt_key'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def reset_encrypt_key(self, cmd_string_data=None):
+        """
+        用户根据主密钥重新设置用户密码：用户在忘记自己设置的密码时可根据主密钥重新设置自己的密码
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"reset_encrypt_key","id":"999999","new_encrypt_key":"j6NrhO8gWFKU0O8mk8+A/g==","prime_key":"Vg0MgpeBCOzzCxbsQ68V2NHd0Zk="}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'reset_encrypt_key'
+        assert data.get('state_code') == 200
+        
+        
+
+    def change_encrypt_key(self, cmd_string_data=None):
+        """
+        将旧的用户密码修改成新的用户密码或者将默认的用户密码修改成新的用户密码
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"change_encrypt_key","id":"999999","encrypt_key":"OB46x4SOg0ZTXa9BDFGh/i5LAfQ=","new_encrypt_key":"sZuBTdl+Fy0HjgFJ/yDmSA=="}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'change_encrypt_key'
+        assert data.get('state_code') == 200
+        
+        
+
+    def enable_encrypt(self, cmd_string_data=None):
+        """
+        注意：m_id : 0 为不加密，encrypt_key需传入用户密码（加密后的），而非主密钥
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"enable_encrypt","encrypt_key":"9k1t5PhnUXlfgJKgHmcswU3PIp8=","id":"999999","m_id":1}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'enable_encrypt'
+        assert data.get('state_code') == 200
+        
+        
+
+    def device_active_settings_set_device_active_status(self, cmd_string_data=None):
+        """
+        设置启用授权后，超过相机授权时间后，相机不再推送识别结果；
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"device_active_settings","id":"123","body":{"type":"set_device_active_status","active_status":1,"active_time":60,"authentication":"asdgzxb"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'device_active_settings'
+        assert data.get('state_code') == 200
+        
+        
+
+    def device_active_settings_get_device_active_status(self, cmd_string_data=None):
+        """
+        获取设备有效时间：device_active_settings
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"device_active_settings","id":"123","body":{"type":"get_device_active_status"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'device_active_settings'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_user_data(self, cmd_string_data=None):
+        """
+        设置用户私有数据：set_user_data
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_user_data","id":"123","body":{"data":"MTMyNDU2Nzg5"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_user_data'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_user_data(self, cmd_string_data=None):
+        """
+        获取用户私有数据：get_user_data
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_user_data","id":"123"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_user_data'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def dg_json_request_get_cdvzid(self, cmd_string_data=None):
+        """
+        我们当前将每一个设备的名称定义为vzid ，用来标记这一台设备
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"get_cdvzid"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_current_device_name(self, cmd_string_data=None):
+        """
+        得到当前设备名称：get_current_device_name
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"get_current_device_name"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_ovzid(self, cmd_string_data=None):
+        """
+        得到在线设备信息，不含自己：get_ovzid
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"get_ovzid"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_online_devices(self, cmd_string_data=None):
+        """
+        得到在线设备信息，含自己：online_devices
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"online_devices"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_avzid(self, cmd_string_data=None):
+        """
+        得到所有连接设备信息：get_avzid
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"get_avzid"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_agdi(self, cmd_string_data=None):
+        """
+        得到当前组网内所有设备信息：get_agdi
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"get_agdi"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_current_records_size(self, cmd_string_data=None):
+        """
+        得到当前设备记录size：current_records_size
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"current_records_size"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_records_sparate_input(self, cmd_string_data=None):
+        """
+        多少条，可以随便指定一个可以传输的范围，32最好。然后在回复的消息中，会告诉当前设备有多少条记录。这样的分页机制，让用户可以更好的开发自己的应用
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"input_begin_pos":0,"input_end_pos":8,"type":"records_sparate_input"},"cmd":"dg_json_request","id":"123456789"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_records_sparate_output(self, cmd_string_data=None):
+        """
+        得到出口设备记录：records_sparate_output
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"output_records_begin_pos":0,"output_records_end_pos":8,"type":"records_sparate_output"},"cmd":"dg_json_request","id":"123456789"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_input(self, cmd_string_data=None):
+        """
+        使能设备组网：enable_devicegroup
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"enable_devicegroup","vzid":{"enable_group":true,"ip_addr":"192.168.7.22","name":"bHk=&MTkyLjE2OC43LjIy#","sn":"56a8872e-2c5f7863","type":"input"}}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_input(self, cmd_string_data=None):
+        """
+        功能和2.8.10一致
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"set_device_type_enable","vzid":{"enable_group":true,"ip_addr":"192.168.7.22","name":"bHk=&MTkyLjE2OC43LjIy#","sn":"56a8872e-2c5f7863","type":"input"}}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_search_plate(self, cmd_string_data=None):
+        """
+        查找车牌信息：search_plate
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"search_plate","plate":"川A12345","record_type":"input","record_state":5}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_device_match_mode(self, cmd_string_data=None):
+        """
+        获取组网匹配模式：get_device_match_mode
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"get_device_match_mode"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_set_device_match_mode(self, cmd_string_data=None):
+        """
+        设置组网匹配模式: set _device_match_mode
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"set_device_match_mode","mode":"fuzzy_mode"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_group_shared_io(self, cmd_string_data=None):
+        """
+        得到组网共享IO：get_group_shared_io
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"get_group_shared_io"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_set_group_shared_io(self, cmd_string_data=None):
+        """
+        设置组网共享IO：set_group_shared_io
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"set_group_shared_io","value":1}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def enable_dg_result(self, cmd_string_data=None):
+        """
+        识别结果消息分成了两种类型一种类型是入口设备的识别结果消息，一种是出口设备的识别结果消息。用户首先需要开启允许接收组网识别结果消息，未来，如果有车牌识别消息到来，用户才会接收到出/入口消息
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"enable_dg_result","enable":true,"id":"123456"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'enable_dg_result'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_reset_database(self, cmd_string_data=None):
+        """
+        清除组网数据：reset_database
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"type":"reset_database"},"cmd":"dg_json_request","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_group_cfg(self, cmd_string_data=None):
+        """
+        得到当前组网内部所有设备配置：get_group_cfg
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"type":"get_group_cfg"},"cmd":"dg_json_request","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_input(self, cmd_string_data=None):
+        """
+        设置当前组网内部所有设备配置：set_group_cfg
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"dg_json_request","id":"132156","body":{"type":"set_group_cfg","vzid":{"enable_group":true,"ip_addr":"192.168.7.22","name":"bHk=&MTkyLjE2OC43LjIy#","sn":"56a8872e-2c5f7863","type":"input"},"group_cfg":[{"enable_group":true,"ip_addr":"192.168.1.2","name":"bHk=&asdg4231#","sn":"1238872e-2c5fasdv","type":"input","connect_status":2},{"enable_group":true,"ip_addr":"192.168.22.12","name":"bHk=&456sdg13#","sn":"asxc887e-2cafasdv","type":"input","connect_status":2}]}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def dg_json_request_get_img_by_id(self, cmd_string_data=None):
+        """
+        根据ID获取组网图片：get_img_by_id
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"image_id":79509,"image_type":1,"sn":"ef69b450-21bf3bff","type":"get_img_by_id"},"cmd":"dg_json_request","id":"132156"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'dg_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def start_login(self, cmd_string_data=None):
+        """
+        请求开始登录:start_login
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"start_login","id":"123456"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'start_login'
+        assert data.get('state_code') == 200
+        
+        
+
+    def login_authentication(self, cmd_string_data=None):
+        """
+        登录认证: login_authentication
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"login_authentication","id":"13245","authentication":"12345789"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'login_authentication'
+        assert data.get('state_code') == 200
+        
+        
+
+    def playserver_json_request_ps_get_voice_info(self, cmd_string_data=None):
+        """
+        获取当前语音文件列表：playserver_json_request
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"playserver_json_request","id":"132156","body":{"type":"ps_get_voice_info","voice_type":3}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'playserver_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def playserver_json_request_ps_set_voice_config(self, cmd_string_data=None):
+        """
+        设置语音默认参数：playserver_json_request
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"playserver_json_request","id":"132156","body":{"type":"ps_set_voice_config","voice_defalut_interval":1,"voice_defalut_volume":1,"voice_defalut_male":1}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'playserver_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def playserver_json_request_ps_get_voice_config(self, cmd_string_data=None):
+        """
+        获取语音默认参数：playserver_json_request
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"playserver_json_request","id":"132156","body":{"type":"ps_get_voice_config"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'playserver_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def playserver_json_request_ps_voice_play(self, cmd_string_data=None):
+        """
+        播放语音参数：playserver_json_request
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"playserver_json_request","id":"132156","body":{"type":"ps_voice_play","voice":"agaasg","voice_interval":1,"voice_volume":1,"voice_male":1}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'playserver_json_request'
+        assert data.get('state_code') == 200
+        
+        
+
+    def start_talk(self, cmd_string_data=None):
+        """
+        此语音对讲命令只是控制命令，具体的语音对讲信息通过双方协商的端口通信；
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"start_talk","id":"1234","body":{"window_size":640}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'start_talk'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_led_show(self, cmd_string_data=None):
+        """
+        设置LED显示内容：set_led_show
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_led_show","id":"12365","body":{"led_enable":1,"led_content":{"led_proto":1,"led_status":1,"led_refresh_time":1,"led_line_num":4,"line_content":[{"show_mode":1,"show_content":"5qyi6L+O5YWJ5Li0"},{"show_mode":1,"show_content":"5qyi6L+O5YWJ5Li0"},{"show_mode":1,"show_content":"5qyi6L+O5YWJ5Li0"},{"show_mode":1,"show_content":"5qyi6L+O5YWJ5Li0"}]},"voice_mode":1,"voice_content":{"voice_volume":2,"voice_welcom":1,"voice_tag":1,"play_content":"5qyi6L+O5YWJ5Li0"},"car_info":{"park_time":32,"payment_amount":9,"car_type":1,"car_plate":"5qyi6L+O5YWJ5Li0"}}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_led_show'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_led_show(self, cmd_string_data=None):
+        """
+        获取LED显示内容：get_led_show
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_led_show","id":"12365"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_led_show'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_led_serial_port(self, cmd_string_data=None):
+        """
+        获取LED数据传输使用串口号：get_led_serial_port
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_led_serial_port","id":"12365"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_led_serial_port'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_led_serial_port(self, cmd_string_data=None):
+        """
+        设置LED数据传输使用串口号：set_led_serial_port
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_led_serial_port","body":{"use_serial_port":1},"id":12365}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_led_serial_port'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_osd_para(self, cmd_string_data=None):
+        """
+        设置用户自定义OSD
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_osd_para","body":{"user_osd":{"user_osd_param":[{"id":0,"display":1,"color":0,"front_size":3,"text":"56ys5LiA6KGM"},{"id":1,"display":1,"color":1,"front_size":3,"text":"c2Vjb25kIGxpbmU="},{"id":2,"display":1,"color":2,"front_size":3,"text":"dGjkuInooYw="},{"id":3,"display":1,"color":3,"front_size":3,"text":"56ys5Zub6KGMT1NEIFRDUCA="}],"x_pos":10,"y_pos":10}}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_osd_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_custom_user_info(self, cmd_string_data=None):
+        """
+        获取自定义信息: get_custom_user_info
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_custom_user_info","id":"123456"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_custom_user_info'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_custom_user_info(self, cmd_string_data=None):
+        """
+        设置用户自定义信息: set_custom_user_info
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_custom_user_info","id":"132456","body":{"manufacturer":"SJ-1","data":{"ver":1,"is_zoom":0,"class":1}}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_custom_user_info'
+        assert data.get('state_code') == 200
+        
+        
+
+    def user_get_mate_info(self, cmd_string_data=None):
+        """
+        通过R3获取指定伴侣机的配置信息：user_get_mate_info
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"user_get_mate_info","id":"12345693"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'user_get_mate_info'
+        assert data.get('state_code') == 200
+        
+        
+
+    def user_get_rtsp_info(self, cmd_string_data=None):
+        """
+        通过R3获取伴侣机的Rtsp代理信息:user_get_rtsp_info
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"user_get_rtsp_info","id":"12345694","body":{"sn":"e7cc75b8-d5774474"}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'user_get_rtsp_info'
+        assert data.get('state_code') == 200
+        
+        
+
+    def user_request_talkback(self, cmd_string_data=None):
+        """
+        通过R3获取伴侣机的语音代理信息:user_request_talkback
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"user_request_talkback","id":"1234569","body":{"sn":"e7cc75b8-d5774474","window_size":320}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'user_request_talkback'
+        assert data.get('state_code') == 200
+        
+        
+
+    def log_search(self, cmd_string_data=None):
+        """
+        通过Tcp获取日志指定的日志:log_search
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"log_search","id":"12345697","body":{"start_time":1627315200,"end_time":1627401599,"qtype":1,"max_id":0,"min_id":0,"start_id":0}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'log_search'
+        assert data.get('state_code') == 200
+        
+        
+
+    def stay_event_enable(self, cmd_string_data=None):
+        """
+        设置Rg人车滞留事件上报使能:stay_event_enable
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"stay_event_enable","id":"12345701","body":{"enable":true,"format":"json","image":true,"image_type":0}}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'stay_event_enable'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_alg_para_cross_line_bind_prm(self, cmd_string_data=None):
+        """
+        获取RG绊线绑定算法参数
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_para","body":{"rule_chn":2,"alg_prm_type":"cross_line_bind_prm"},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def get_alg_para_car_motion_prm(self, cmd_string_data=None):
+        """
+        获取车通行折返事件
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm"},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_alg_para_car_motion_prm(self, cmd_string_data=None):
+        """
+        设置车通行折返事件
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm","param":{"car_motion_prm":{"car_pass_event":{"is_area1":1,"is_area2":1,"is_open":1},"car_retrace_event":{"is_open":1},"is_open":1}}},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_alg_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_alg_para_nonv_stay_prm(self, cmd_string_data=None):
+        """
+        非车滞留事件获取
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_para","body":{"rule_chn":3,"alg_prm_type":"nonv_stay_prm"},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_alg_para_nonv_stay_prm(self, cmd_string_data=None):
+        """
+        非车滞留事件设置
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_alg_para","body":{"rule_chn":3,"alg_prm_type":"nonv_stay_prm","param":{"nonv_stay_prm":{"is_open":1,"nonv_stay_time":{"enable":1,"time":10},"nonv_width":{"max":150,"min":20}}}},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_alg_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_alg_para_person_stay_prm(self, cmd_string_data=None):
+        """
+        获取人滞留事件
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_para","body":{"rule_chn":1,"alg_prm_type":"person_stay_prm"},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_alg_para_person_stay_prm(self, cmd_string_data=None):
+        """
+        设置人滞留事件
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_alg_para","body":{"rule_chn":1,"alg_prm_type":"person_stay_prm","param":{"person_stay_prm":{"is_open":1,"person_stay_time":{"enable":1,"time":10},"person_width":{"max":600,"min":50}}}},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_alg_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_alg_para_car_stay_prm(self, cmd_string_data=None):
+        """
+        获取车滞留事件参数
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_stay_prm"},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_alg_para_car_stay_prm(self, cmd_string_data=None):
+        """
+        设置车滞留事件参数
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_stay_prm","param":{"car_stay_prm":{"car_stay_time":{"enable":1,"time":10},"car_width":{"max":1920,"min":50},"is_open":1}}},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_alg_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def get_alg_para_flag_motion_prm(self, cmd_string_data=None):
+        """
+        获取道闸事件参数
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"get_alg_para","body":{"rule_chn":4,"alg_prm_type":"flag_motion_prm"},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'get_alg_para'
+        assert data.get('state_code') == 200
+        return data
+        
+
+    def set_alg_para_flag_motion_prm(self, cmd_string_data=None):
+        """
+        设置道闸事件参数
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"body":{"alg_prm_type":"flag_motion_prm","param":{"flag_motion_prm":{"flag_error_time":{"enable":1,"time":600},"is_open":1}},"rule_chn":4},"cmd":"set_alg_para","id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_alg_para'
+        assert data.get('state_code') == 200
+        
+        
+
+    def set_alg_para_depolyment_time(self, cmd_string_data=None):
+        """
+        设置布防时间
+        :return:
+        """
+        if cmd_string_data is None:
+            cmd_string_data = '{"cmd":"set_alg_para","body":{"rule_chn":3,"alg_prm_type":"depolyment_time","param":{"depolyment_time":[{"day":0,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":1,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":2,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":3,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":4,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":5,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":6,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]}]}},"id":"132158"}'
+        data = self.tcp_send_msg_base(cmd_string_data)[0]
+        assert data.get('cmd') == 'set_alg_para'
+        assert data.get('state_code') == 200
+        
+        

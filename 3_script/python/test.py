@@ -71,41 +71,79 @@ index = 1
 #             last_line = graph
 
 cmd = '{"body":{"recognition_area":{"polygon_num":1,"polygon":[{"id":1,"enable":true,"point_num":4,"point":[{"x":4096,"y":4096},{"x":12288,"y":4096},{"x":13926,"y":13926},{"x":2457,"y":13926}]}]}},"cmd":"set_reco_para","id":"132156"}'
+# cmd = '{"cmd":"get_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm"},"id":"132158"}'
+# cmd = '{"cmd":"playserver_json_request","id":"132156","body":{"type":"ps_get_voice_info","voice_type":3}}'
+# cmd = '{"cmd":"get_traffic_lights"}'
 
-def json_parse(json_obj):
-    if isinstance(json_obj, dict):
-        for key, value in json_obj.items():
-            if isinstance(value, (dict, list)):
-                json_parse(value)
-            else:
-                pass
-    elif isinstance(json_obj, list):
-        for i in range(len(json_obj)):
-            v = json_obj[i]
-            if isinstance(v, (dict, list)):
-                json_parse(v)
-            else:
-                pass
+params = []
+func_note = ""
+func_name = ""
+func_body = ""
+func_end = ""
 
-try:
-    jl = json.loads(cmd)
-    if isinstance(jl, dict):
-        for key, value in jl.items():
-            if key == "id":
-                continue
-            elif key == "cmd":
-                pass
-            else:
-                if isinstance(value, list):
-                    pass
-                elif isinstance(value, str):
-                    pass
-                elif isinstance(value, (int, float)):
-                    pass
-                elif isinstance(value, bool):
-                    pass
+
+def json_parser(root, json_obj):
+    global func_name, params, func_end
+    try:
+        if isinstance(json_obj, dict):
+            print("dict:", len(json_obj), root, json_obj)
+            for key, value in json_obj.items():
+                if key == "id":
+                    continue
+                elif key == "cmd":
+                    func_name = value
+                    if func_name.startswith("get"):
+                        func_end = "return data"
                 else:
-                    pass
+                    json_parser(key, value)
+        elif isinstance(json_obj, list):
+            print("list:", len(json_obj), root, json_obj)
+            params.append(root)
+            # for item in json_obj:
+            #     json_parser(root, item)
+        else:
+            params.append(root)
+            print("value:", root, json_obj)
+    except Exception as e:
+        print(e)
 
-except Exception as e:
-    print(e)
+
+# def create_func_body(json_obj, params_b):
+#     try:
+#         body_params = json_obj["body"]
+#
+#
+#     except Exception as e:
+#         print(e)
+
+json_parser("", json.loads(cmd))
+# func_body = create_func_body(json.loads(cmd), params)
+print(func_name, params, func_body, func_end)
+
+print(
+f'''
+def {func_name}(self, cmd_string_data=None):
+    """
+    {func_note}
+    :return:
+    """
+    if cmd_string_data is None:
+        cmd_string_data = '{cmd}'
+    data = self.client.tcp_send_cmd(cmd_string_data)[0]
+    assert data.get('cmd') == '{func_name}'
+    assert data.get('state_code') == 200
+    {func_end}
+'''
+)
+
+# print(
+# f"""
+# def {func_name}(self, {", ".join(params)}):
+#      cmd_string = "{func_name}"
+#      {func_body}
+#      data = self.client.tcp_send_cmd(cmd_string_data)[0]
+#      assert data.get('cmd') == cmd_string
+#      assert data.get('state_code') == 200
+#      {func_end}
+# """
+# )
