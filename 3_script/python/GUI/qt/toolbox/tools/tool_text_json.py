@@ -82,9 +82,9 @@ class WidgetJson(QWidget, Ui_WidgetJson):
         tree_model = QStandardItemModel()
         self.treeView.setModel(tree_model)
         self.treeView.model().setHorizontalHeaderLabels(['Key', 'Values'])
-        self.set_trew_view_model_data(tree_model.invisibleRootItem(), json_data)
+        self.set_tree_view_model_data(tree_model.invisibleRootItem(), json_data)
 
-    def set_trew_view_model_data(self, parent, data):
+    def set_tree_view_model_data(self, parent, data):
         print(parent, data)
         if isinstance(data, dict):
             for k, v in data.items():
