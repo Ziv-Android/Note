@@ -1,4 +1,4 @@
-{"cmd":"set_factorydefault","id":"1548","body":{"factorydefault":0}}
+# {"cmd":"set_factorydefault","id":"1548","body":{"factorydefault":0}}
 {"cmd":"getsn","id":"123456"}
 {"cmd":"get_hw_board_version","id":"12"}
 {"cmd":"get_device_timestamp","id":"999999"}
@@ -8,7 +8,7 @@
 {"cmd":"set_centerserver_net","id":"132156","body":{"hostname":"192.168.1.106","port":80,"enable_ssl":false,"ssl_port":443,"http_timeout":5}}
 {"cmd":"set_user_default_cfg","id":"132156"}
 {"cmd":"set_adminpass","id":"132156","body":{"old_pass":"asgwe4AGSAD45","new_pass":"fdas213asfdgad"}}
-{"cmd":"reboot_dev","id":"132156"}
+#{"cmd":"reboot_dev","id":"132156"}
 {"cmd":"jasauthtime_rsp","id":"132156","year":2017,"mon":12,"day":12,"hour":13,"min":14,"sec":49}
 {"cmd":"get_denoise","id":"132156"}
 {"cmd":"set_denoise","id":"132156","body":{"mode":1,"strength":0}}

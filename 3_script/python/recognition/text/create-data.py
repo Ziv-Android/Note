@@ -38,7 +38,8 @@ def make_image(labels, font_path, width=24, height=24, rotate=0):
         img = img.rotate(rotate)
         # 命名文件保存，命名规则：dataset/编号/img-编号_r-选择角度_时间戳.png
         time_value = int(round(time.time() * 1000))
-        img_path = "dataset/{}/img-{}_r-{}_{}.png".format(value, value, rotate, time_value)
+        head, tail = os.path.split(font_path)
+        img_path = "dataset/{}/img-{}_r-{}_{}.png".format(value, tail[:-4], rotate, time_value)
         img.save(img_path)
 
 
@@ -46,7 +47,7 @@ def make_image(labels, font_path, width=24, height=24, rotate=0):
 for font_name in os.listdir(font_dir):
     path_font_file = os.path.join(font_dir, font_name)
     # 遍历角度-10到10
-    for i in range(1, 3):
+    for i in range(1, 2):
         for r in range(-10, 10, 1):
             # 生成图片
             make_image(label_dict, path_font_file, rotate=r)

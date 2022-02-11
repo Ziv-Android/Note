@@ -63,7 +63,6 @@ class TcpManager:
 
     def recv(self):
         # while self.s is not None:
-        #
         #     time.sleep(1)
         response = self.s.recv(8)
         if (b'VZ' == response[0:2]):
@@ -71,8 +70,13 @@ class TcpManager:
             print("[TCP recv] data size:", data_len)
             if data_len > 0:
                 response = self.s.recv(data_len)
-                data = response.decode()
-                print("[TCP recv]:", data)
+                if data_len < 100000:
+                    data = response.decode()
+                    print("[TCP recv]:", data)
+                    return data
+                else:
+                    return response
+        return ""
 
     def close(self):
         if self.s is None:
@@ -82,12 +86,18 @@ class TcpManager:
 
 
 client = TcpManager("192.168.13.202")
-with open("tcp_interface_auto_cmd.txt", "r") as of:
-    cmds = of.readlines()
-    # client.send('{"cmd":"get_4g_param","id":"123456"}')
-    # client.recv()
-    for cmd in cmds:
-        client.send(cmd)
-        client.recv()
-        time.sleep(1)
+# client.send('{"cmd":"get_reco_prop","id":"132156"}')
+# client.send('{"cmd":"get_led_para","id":"132156"}')
+# client.recv()
+with open("tcp_interface_auto_cmd.txt", "r") as rf:
+    with open("tcp_interface_auto_cmd_result.txt", "w", encoding="utf-8") as wf:
+        cmds = rf.readlines()
+        for cmd in cmds:
+            wf.write(f"[send]:{cmd}")
+            if cmd.startswith("{"):
+                client.send(cmd)
+                time.sleep(0.5)
+                wf.write(f"[recv]:{client.recv()}")
+                time.sleep(1)
+            wf.write('\n')
 client.close()

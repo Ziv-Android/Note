@@ -42,13 +42,13 @@ def train():
 
     # 从文件夹下读取图片，生成数据集
     train_ds = tf.keras.preprocessing.image_dataset_from_directory(
-        data_dir,
+        data_dir, # 从哪个文件获取数据
         validation_split=0.2,
         subset='training',
         seed=123,
-        color_mode="grayscale",
+        color_mode="grayscale", # 获取数据的颜色为灰度
         image_size=(img_height, img_width),
-        batch_size=batch_size
+        batch_size=batch_size # 多少个图片为一个批次
     )
 
     val_ds = tf.keras.preprocessing.image_dataset_from_directory(
