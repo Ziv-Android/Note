@@ -85,10 +85,13 @@ class TcpManager:
         self.s = None
 
 
-client = TcpManager("192.168.13.202")
+# client = TcpManager("192.168.13.202")
+client = TcpManager("192.168.1.100", port=8132)
 # client.send('{"cmd":"get_reco_prop","id":"132156"}')
-client.send('{"cmd":"set_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm","param":{"car_motion_prm":{"car_pass_event":{"is_area1":1,"is_area2":1,"is_open":1},"car_retrace_event":{"is_open":1},"is_open":1}}},"id":"132158"}')
-client.recv()
+# client.send('{"cmd":"set_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm","param":{"car_motion_prm":{"car_pass_event":{"is_area1":1,"is_area2":1,"is_open":1},"car_retrace_event":{"is_open":1},"is_open":1}}},"id":"132158"}')
+for i in [0, 1]:
+    client.send('{"type":"evs_get_rs485","id":36,"module":"EVS_BUS_REQUEST","block_flag":1,"body":{"source":%d}}' % (i,))
+    client.recv()
 # with open("tcp_interface_auto_cmd.txt", "r") as rf:
 #     with open("tcp_interface_auto_cmd_result.txt", "w", encoding="utf-8") as wf:
 #         cmds = rf.readlines()
@@ -101,3 +104,7 @@ client.recv()
 #                 time.sleep(1)
 #             wf.write('\n')
 client.close()
+
+'{"type":"register_listen_msg","id":1,"module":"TCP_BUS_REQUEST","block_flag":1,"body":{"register_flag":1,"listen_msg":["EVS_RS485_READ"]}}'
+
+'{"type":"evs_get_gpioin","id":39,"module":"EVS_BUS_REQUEST","block_flag":1,"body":{"source":0}}'

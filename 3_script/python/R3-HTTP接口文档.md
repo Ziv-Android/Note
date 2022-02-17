@@ -6,6 +6,9 @@ Request Method: POST
 
 Set-Cookie: sessionID=209192407
 
+body:
+rJIMYtjY2NgYtbky3tuwOy27rg: =
+
 
 ### 数据获取接口
 
@@ -55,4 +58,49 @@ Request Method: POST
 ### 操作接口
 
 ### 数据获取接口
+
+http://192.168.13.202/login.php
+rJIMYtjY2NgYtbky3tuwOy27rg: =
+
+http://192.168.13.202/getauth.php
+{"type":"get_user_auth"}
+
+http://192.168.13.202/genvictetc.php
+{"type":"etc_get_enable"}
+
+http://192.168.13.202/request.php
+{"type":"get_device_capacity","module":"SS_BUS_REQUEST"}
+{"type":"get_web_saved_value","module":"WEB_SELF_REQUEST"}
+{"type":"get_avs_focus_prm","module":"AVS_REQUEST_MESSAGE"}
+{"type":"evs_get_gpioin_func","module":"EVS_BUS_REQUEST"}
+
+http://192.168.13.202/getivsctrl.php
+8:1:MA: =
+
+http://192.168.13.202/systemjson.php
+{"type":"get_net_and_port"}
+{"type":"ss_get_devname"}
+{"type":"get_device_info"}
+{"type":"ss_get_ntp_cfg"}
+
+http://192.168.13.202/dgjson.php
+{"type":"get_group_cfg"}
+
+http://192.168.13.202/avsjson.php
+{"type":"AVS_GET_LED_PROP"}
+{"type":"AVS_GET_ALG_RESULT_PROP"}
+{"type":"AVS_GET_LED_CTRL"}
+{"type":"AVS_GET_ALG_RESULT_PARAM"}
+{"type":"AVS_GET_CAPTURE_PRM"}
+{"type":"get_new_energy_plate_support"}
+{"type":"get_car_info_support"}
+
+http://192.168.13.202/geteventruleexhtm.php
+0
+
+http://192.168.13.202/dboprnew.php
+{"type":"get_wl_check_status"}
+
+
+
 

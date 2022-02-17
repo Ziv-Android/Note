@@ -28,11 +28,11 @@ class W222VideoLed(QtWidgets.QWidget, Ui_W222VideoLed):
         QtWidgets.QMessageBox.warning(self, title, msg)
 
     def value_change(self):
-        self.led_ctrl(self.pLEDHSlider.value())
+        self.led_ctrl(self.pLEDHSlider.value(), 0)
         print(self.pLEDHSlider.value())
 
-    def led_ctrl(self, value):
-        if not self.login_state:
+    def led_ctrl(self, value, mode):
+        if mode == 0 and not self.login_state:
             self.message_signal.emit("失败", "设备未登录")
             return 404
         webc = self.pwm.http_client_handle()

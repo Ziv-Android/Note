@@ -85,19 +85,20 @@ class W231ExternGPIO(QtWidgets.QWidget, Ui_W231ExternGPIO):
             return {}
 
         in_sta = {}
-        ret = c_gpio_out(webc, out_num, out_sta)
+        ret, resp = c_gpio_out(webc, out_num, out_sta)
         if ret != 200:
             print('c_gpio_set %d failed' % out_num)
             return in_sta
 
         if self.num_ioin == 0:
-            return {0: out_sta}
-
-        time.sleep(0.1)
-        for i in range(self.num_ioin):
-            sta = c_io_out_get(webc, i)  # io-0
-            self.gpio_signal.emit(i, sta, -1, 0)
-            in_sta[i] = sta
+            for i in range(out_num + 1):
+                sta = c_io_out_get(webc, i)  # io-0
+                in_sta[i] = sta
+        else:
+            for i in range(self.num_ioin):
+                sta = c_io_in_get(webc, i)  # io-0
+                self.gpio_signal.emit(i, sta, -1, 0)
+                in_sta[i] = sta
         return in_sta
 
     def gpio_out_0_low(self):

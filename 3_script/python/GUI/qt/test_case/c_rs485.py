@@ -67,12 +67,14 @@ def c_rs485(webc, cmd_tmp, num, data):
 
 def c_rs485_write(webc, num, data):
     ret, resp = c_rs485(webc, cmd_s_tmp, num, data)
+    print("485 send:", num, data, "result:", ret, resp)
     return ret, resp
     # print(resp)
 
 
 def c_rs485_read(webc, num):
     ret, resp = c_rs485(webc, cmd_r_tmp, num, 'tt')
+    print("485 reci:", ret, resp)
     if ret == 200:
         print(resp)
         if resp is None or len(resp) == 0:
@@ -85,7 +87,7 @@ def c_rs485_read(webc, num):
             # print(temp)
             # data = temp
             data = base64.b64decode(temp).decode()
-            print(data)
+            print("485 reci:", temp, "decode:", data)
             return ret, data
         except:
             return 404, None

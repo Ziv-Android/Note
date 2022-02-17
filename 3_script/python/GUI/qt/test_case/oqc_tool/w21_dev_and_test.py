@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import _thread
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSignal
+
 from libutils.finddevice import CFindDevice
 from oqc_tool.cfg_factory_param_hs import *
 from oqc_tool.ui_w21_dev_and_test import Ui_W21DevAndTest
@@ -9,6 +11,7 @@ from oqc_tool.ui_w21_dev_and_test import Ui_W21DevAndTest
 
 #
 class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
+    fail_test_signal = pyqtSignal(str)
     def __init__(self, pwm):
         super().__init__()
         self.is_search = False
@@ -48,6 +51,7 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
         self.pTestListWidget.addItem('interface')
         self.pTestListWidget.addItem('result')
         self.pTestListWidget.setCurrentItem(item)
+        self.fail_test_signal.connect(self.show_fail_dialog)
 
     def widget_init(self):
         # print('w21 widget_init')
@@ -132,11 +136,13 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
     def dlens_exchange_host(self):
         print('双目更改IP地址')
         devs = self.fdev.get_devices()
+        self.pExchangeIPBtn.setEnabled(False)
         # devs = {}
         try:
             self.lExchangeIPResult.setText("正在修改")
+            cp, pro = self.pwm.get_product()
             _thread.start_new_thread(cfg_factory_param_dlens,
-                                     (list(devs.values()), self.pUsernameEdit.text(), self.pPasswordEdit.text(),
+                                     (cp, list(devs.values()), self.pUsernameEdit.text(), self.pPasswordEdit.text(),
                                       self.dlens_exchange_host_result))
         except:
             print("can't start thread")
@@ -144,3 +150,9 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
     def dlens_exchange_host_result(self, result, ip):
         self.lExchangeIPResult.setText(result)
         self.pDevHostEdit.setText(ip)
+        self.pExchangeIPBtn.setEnabled(True)
+        if result in ["修改失败", "485未连接或485模块异常"]:
+            self.fail_test_signal.emit(result)
+
+    def show_fail_dialog(self, msg):
+        QtWidgets.QMessageBox.warning(self, "失败", msg)

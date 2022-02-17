@@ -59,12 +59,12 @@ def cfg_factory_param_customer(webc, name, library):
 # {"type": "get_lens_mode", "module": "SERIAL_COMM_MSG"}:
 # {"body":{"is_double":0,"max_plate_num":3,"mode":0,"type":"get_lens_mode"},"err_msg":"All Done","state":200,"type":"get_lens_mode"}
 # 设置镜头型号:镜头类型, 双目
-def cfg_factory_param_product(webc, lens, dlens):
+def cfg_factory_param_product(webc, num_max_stop, lens, dlens):
     scmd = '''{
                 "module":"SERIAL_COMM_MSG",
                 "type":"set_lens_mode",
-                "body":{"max_plate_num":3,"mode":%d,"is_double":%d}
-        }''' % (lens, dlens)
+                "body":{"max_plate_num":%d,"mode":%d,"is_double":%d}
+        }''' % (num_max_stop, lens, dlens)
     if webc is None:
         print('product webc none')
         return False
@@ -101,11 +101,14 @@ def cfg_factory_param_product(webc, lens, dlens):
 
 
 # 双目，接了485的=1.100，未接485=1.101
-def cfg_factory_param_dlens(devs, username, password, callback=None):
+def cfg_factory_param_dlens(cp, devs, username, password, callback=None):
     gateway = '192.168.1.11'
     netmask = '255.255.128.0'
     temp_host = ['192.168.1.98', '192.168.1.99']
     host_on_camera = ['192.168.1.100', '192.168.1.101']
+    change_result = 0
+    camera_index = 0
+    num_check_485_error = 0
 
     for time_index in range(30):
         time.sleep(1)
@@ -128,8 +131,10 @@ def cfg_factory_param_dlens(devs, username, password, callback=None):
                                           gateway.encode('utf-8'),
                                           netmask.encode('utf-8'))
 
+    # 双目验证两路485是否都失败，并将485通过的一路设置为近端192.168.1.100
     dev = devs[0]
-    camera_index = 0
+    if callback is not None:
+        callback("正在检查485链接", host_on_camera[0])
     url = 'http://%s' % temp_host[0]
     webc = WEBClient(url, username, password)
     for time_index in range(30):
@@ -141,7 +146,8 @@ def cfg_factory_param_dlens(devs, username, password, callback=None):
         c_rs485_write(webc, 0, '$001,01&')
         time.sleep(1)
         ret, data = c_rs485_read(webc, 0)
-        if data == 'OK':
+        print("485检测1:", dev, ret, data)
+        if data == "OK":
             # 近端1.100
             camera_index = 1
             print('update %s host %s' % (dev['s'], host_on_camera[0]))
@@ -149,19 +155,48 @@ def cfg_factory_param_dlens(devs, username, password, callback=None):
                                                   host_on_camera[0].encode('utf-8'),
                                                   gateway.encode('utf-8'),
                                                   netmask.encode('utf-8'))
-            cfg_factory_param_product(webc, 0, 1)  # 近端，双目
+            num_max_stop = cp.get_capacity_num('num_max_stop')
+            cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目
+            change_result += 1
         else:
-            # 远端1.101
-            camera_index = 0
-            print('update %s host %s' % (dev['s'], host_on_camera[1]))
-            objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
-                                                  host_on_camera[1].encode('utf-8'),
-                                                  gateway.encode('utf-8'),
-                                                  netmask.encode('utf-8'))
-            cfg_factory_param_product(webc, 1, 1)  # 远端，双目
+            num_check_485_error = 1
         break
 
-    # 另一台设置
+    if num_check_485_error == 1:
+        url = 'http://%s' % temp_host[1]
+        webc = WEBClient(url, username, password)
+        for time_index in range(30):
+            time.sleep(1)
+            if not webc.login():
+                print("waiting", temp_host[1], "restart", time_index)
+                continue
+
+            c_rs485_write(webc, 0, '$001,01&')
+            time.sleep(1)
+            ret, data = c_rs485_read(webc, 0)
+            print("485检测2:", dev, ret, data)
+            if data == "OK":
+                # 近端1.100
+                camera_index = 1
+                print('update %s host %s' % (dev['s'], host_on_camera[0]))
+                objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
+                                                      host_on_camera[0].encode('utf-8'),
+                                                      gateway.encode('utf-8'),
+                                                      netmask.encode('utf-8'))
+                num_max_stop = cp.get_capacity_num('num_max_stop')
+                cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目
+                change_result += 1
+            else:
+                num_check_485_error = 2
+            break
+
+    # 两路485检测都失败，直接提示错误
+    if num_check_485_error == 2 or camera_index != 1:
+        if callback is not None:
+            callback("485未连接或485模块异常", host_on_camera[0])
+            return
+
+    # 不是两路485检测都失败的前提下，设置远端192.168.1.101
     dev = devs[1]
     print('update %s host[%d] %s' % (dev['s'], camera_index, host_on_camera[camera_index]))
     objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
@@ -177,10 +212,16 @@ def cfg_factory_param_dlens(devs, username, password, callback=None):
             continue
 
         if camera_index == 1:
-            cfg_factory_param_product(webc, 1, 1)  # 远端，双目
+            num_max_stop_long = cp.get_capacity_num('num_max_stop_long')
+            cfg_factory_param_product(webc, num_max_stop_long, 1, 1)  # 远端，双目
         else:
-            cfg_factory_param_product(webc, 0, 1)  # 近端，双目
+            num_max_stop = cp.get_capacity_num('num_max_stop')
+            cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目
         break
 
-    if callback is not None:
-        callback("修改成功", host_on_camera[0])
+    if change_result == 2:
+        if callback is not None:
+            callback("修改成功", host_on_camera[0])
+    else:
+        if callback is not None:
+            callback("修改失败", host_on_camera[0])

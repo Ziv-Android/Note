@@ -4,6 +4,8 @@
 {"cmd":"startfocusandzoom","id":"1548","body":{"value":1}}
 {"cmd":"stopfocusandzoom","id":"1548"}
 {"cmd":"get_custom_user_info","id":"123456"}
+{"cmd":"set_custom_user_info","id":"132456","body":{"manufacturer":"SJ-1","data":{锟斤拷ver":1,"is_zoom":0,"class":1}}}
+
 {"cmd":"get_alg_para","body":{"rule_chn":2,"alg_prm_type":"cross_line_bind_prm"},"id":"132158"}
 {"cmd":"get_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm"},"id":"132158"}
 {"cmd":"set_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm","param":{"car_motion_prm":{"car_pass_event":{"is_area1":1,"is_area2":1,"is_open":1},"car_retrace_event":{"is_open":1},"is_open":1}}},"id":"132158"}
@@ -17,4 +19,4 @@
 {"body":{"alg_prm_type":"flag_motion_prm","param":{"flag_motion_prm":{"flag_error_time":{"enable":1,"time":600},"is_open":1}},"rule_chn":4},"cmd":"set_alg_para","id":"132158"}
 {"cmd":"set_alg_para","body":{"rule_chn":3,"alg_prm_type":"depolyment_time","param":{"depolyment_time":[{"day":0,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":1,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":2,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":3,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":4,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":5,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]},{"day":6,"period":[{"end_time":{"hour":23,"minute":59},"start_time":{"hour":0,"minute":0}}]}]}},"id":"132158"}
 
-{"cmd":"set_custom_user_info","id":"132456","body":{"manufacturer":"SJ-1","data":{锟斤拷ver":1,"is_zoom":0,"class":1}}}
+

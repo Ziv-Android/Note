@@ -5,4 +5,5 @@ ui_*
 test_*
 log.txt
 *.back
-/bin
+/bin/build/
+/bin/dist/

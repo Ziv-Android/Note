@@ -33,12 +33,9 @@ class WEBClient:
         print(sys.argv[0])
         path = os.path.join(os.getcwd()) + "\\libutils\\Aes.js"
         print(path)
-        f = open(path, 'r', encoding='utf-8')  # 打开JS文件
-        line = f.readline()
-        htmlstr = ''
-        while line:
-            htmlstr = htmlstr + line
-            line = f.readline()
+        with open(path, 'r', encoding='utf-8') as rf: # 打开JS文件
+            htmlstr = rf.read()
+
         return htmlstr
 
     #

@@ -34,6 +34,8 @@ path=153611.png
 lens=2	
 # dlens: 1=双目,0=单目
 dlens=0
+num_max_stop=4
+num_max_stop_long=6
 # video: 视频相关测试
 video=hs_lens_ircut_ptz_led
 # io_in: 1=1个;2=2个
@@ -54,6 +56,9 @@ io_reset=1
 `[capacity]` | 产品配置信息关键字 | 不可变
 `lens` | 镜头类型 | 0=短焦,1=长焦,2=广角
 `dlens` | 镜头数量 | 1=双目,0=单目
+`num_max_stop` | 最大泊车数 | 
+`num_max_stop_long` | 双目长焦最大泊车数 |
+`num_485` | 485模块数 |
 `video` | 视频相关测试 | hs_lens_ircut_ptz_led，lens=镜头，ircut=白天/夜间，ptz=云台，led=补光灯
 `io_in` | IO输入 | 1=1个; 2=2个
 `io_out` | IO输出 | 

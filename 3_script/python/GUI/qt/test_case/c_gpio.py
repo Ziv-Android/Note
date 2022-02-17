@@ -134,13 +134,13 @@ def c_gpio_out(webc, source, status):
     if ret == 200:
         print(resp)
         if resp is None or len(resp) == 0:
-            return False
+            return ret, False
         try:
             jr = json.loads(resp)
-            return int(jr['state'])
+            return ret, int(jr['state'])
         except:
-            return -1
-    return -1
+            return ret, -1
+    return ret, -1
 
 
 def c_io_out_get(webc, source):
