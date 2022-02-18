@@ -101,7 +101,7 @@ class WEBClient:
             print(url)
             self.log.log_info(f"post {url} ---> {cmd}")
             udic = json.loads(cmd)
-            resp = self.ses.post(url, cmd, timeout=10)
+            resp = self.ses.post(url, cmd, timeout=10, headers={"Cache-Control": "no-cache"})
             if resp.status_code == 200:
                 self.log.log_info("success: " + udic['type'], udic['module'])
             else:

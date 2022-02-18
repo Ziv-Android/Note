@@ -28,7 +28,31 @@ from libutils.webclient import WEBClient
 '''
 
 from libutils.webclient import WEBClient
+'''
+{
+    "module":"EVS_BUS_REQUEST",
+    "type":"evs_send_rs485",
+    "id":123,
+    "body":{
+        "source":0,
+        "rs485_data":"JDAwMSwwMSY="
+        }
+    }
+}
+           
+{
+    "module":"EVS_BUS_REQUEST",
+    "type":"evs_read_rs485",
+    "id":111,
+    "body":{
+        "source":0,
+        "rs485_data":"dHQ="
+        }
+    }
+}
 
+{"type":"register_listen_msg","id":1,"module":"TCP_BUS_REQUEST","block_flag":1,"body":{"register_flag":1,"listen_msg":["EVS_RS485_READ"]}}
+'''
 cmd_s_tmp = '''{
                 "module":"EVS_BUS_REQUEST",
                 "type":"evs_send_rs485",
@@ -52,7 +76,7 @@ def c_rs485(webc, cmd_tmp, num, data):
     temp = base64.b64encode(data.encode()).decode()
     # print(temp.decode())
     cmd = cmd_tmp % (num, temp)
-    # print('c_rs485 %s' % cmd)
+    print('c_rs485 %s' % cmd)
     if webc is None:
         print('webc none')
         return 404, None
@@ -93,6 +117,24 @@ def c_rs485_read(webc, num):
             return 404, None
     return ret, None
     # print(resp)
+
+
+# 'JDAwMSwwMSY=', 'JDAwMSwwMiY='
+def c_rs485_test(webc, num1, num2, data1='$001,01&', data2='$001,02&'):
+    c_rs485_write(webc, num1, data1)
+    time.sleep(0.5)
+    ret_1, data_read_1 = c_rs485_read(webc, num2)
+    if ret_1 != 200:
+        return -2
+    time.sleep(0.5)
+    c_rs485_write(webc, num1, data2)
+    time.sleep(0.5)
+    ret_2, data_read_2 = c_rs485_read(webc, num2)
+    if ret_2 != 200:
+        return -2
+    if data_read_1 != data_read_2:
+        return 0
+    return -1
 
 
 # webc = WEBClient('http://192.168.6.31', 'admin', 'admin')

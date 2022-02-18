@@ -107,7 +107,6 @@ def cfg_factory_param_dlens(cp, devs, username, password, callback=None):
     temp_host = ['192.168.1.98', '192.168.1.99']
     host_on_camera = ['192.168.1.100', '192.168.1.101']
     change_result = 0
-    camera_index = 0
     num_check_485_error = 0
 
     for time_index in range(30):
@@ -143,26 +142,26 @@ def cfg_factory_param_dlens(cp, devs, username, password, callback=None):
             print("waiting", temp_host[0], "restart", time_index)
             continue
 
-        c_rs485_write(webc, 0, '$001,01&')
-        time.sleep(1)
-        ret, data = c_rs485_read(webc, 0)
-        print("485检测1:", dev, ret, data)
-        if data == "OK":
+        data = c_rs485_test(webc, 0, 0)
+        print("485检测1:", dev, data)
+        if data == 0:
+            if callback is not None:
+                callback("正在修改", host_on_camera[0])
             # 近端1.100
-            camera_index = 1
             print('update %s host %s' % (dev['s'], host_on_camera[0]))
             objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
                                                   host_on_camera[0].encode('utf-8'),
                                                   gateway.encode('utf-8'),
                                                   netmask.encode('utf-8'))
             num_max_stop = cp.get_capacity_num('num_max_stop')
-            cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目
+            cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目，短焦
             change_result += 1
         else:
             num_check_485_error = 1
         break
 
     if num_check_485_error == 1:
+        dev = devs[1]
         url = 'http://%s' % temp_host[1]
         webc = WEBClient(url, username, password)
         for time_index in range(30):
@@ -171,52 +170,53 @@ def cfg_factory_param_dlens(cp, devs, username, password, callback=None):
                 print("waiting", temp_host[1], "restart", time_index)
                 continue
 
-            c_rs485_write(webc, 0, '$001,01&')
-            time.sleep(1)
-            ret, data = c_rs485_read(webc, 0)
-            print("485检测2:", dev, ret, data)
-            if data == "OK":
+            data = c_rs485_test(webc, 0, 0)
+            print("485检测2:", dev, data)
+            if data == 0:
+                if callback is not None:
+                    callback("正在修改", host_on_camera[0])
                 # 近端1.100
-                camera_index = 1
                 print('update %s host %s' % (dev['s'], host_on_camera[0]))
                 objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
                                                       host_on_camera[0].encode('utf-8'),
                                                       gateway.encode('utf-8'),
                                                       netmask.encode('utf-8'))
                 num_max_stop = cp.get_capacity_num('num_max_stop')
-                cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目
+                cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目，短焦
                 change_result += 1
             else:
                 num_check_485_error = 2
             break
 
     # 两路485检测都失败，直接提示错误
-    if num_check_485_error == 2 or camera_index != 1:
+    if num_check_485_error == 2 or change_result == 0:
         if callback is not None:
             callback("485未连接或485模块异常", host_on_camera[0])
             return
 
+    if callback is not None:
+        callback("正在修改", host_on_camera[0])
     # 不是两路485检测都失败的前提下，设置远端192.168.1.101
-    dev = devs[1]
-    print('update %s host[%d] %s' % (dev['s'], camera_index, host_on_camera[camera_index]))
+    if dev == devs[1]:
+        dev = devs[0]
+    else:
+        dev = devs[1]
+    print('update %s host %s' % (dev['s'], host_on_camera[1]))
     objdll.VzLPRClient_UpdateNetworkParam(dev['sh'], dev['sl'],
-                                          host_on_camera[camera_index].encode('utf-8'),
+                                          host_on_camera[1].encode('utf-8'),
                                           gateway.encode('utf-8'),
                                           netmask.encode('utf-8'))
-    url = 'http://%s' % host_on_camera[camera_index]
+    url = 'http://%s' % host_on_camera[1]
     webc = WEBClient(url, username, password)
     for time_index in range(30):
         time.sleep(1)
         if not webc.login():
-            print("waiting", host_on_camera[camera_index], "restart", time_index)
+            print("waiting", host_on_camera[1], "restart", time_index)
             continue
 
-        if camera_index == 1:
-            num_max_stop_long = cp.get_capacity_num('num_max_stop_long')
-            cfg_factory_param_product(webc, num_max_stop_long, 1, 1)  # 远端，双目
-        else:
-            num_max_stop = cp.get_capacity_num('num_max_stop')
-            cfg_factory_param_product(webc, num_max_stop, 0, 1)  # 近端，双目
+        num_max_stop_long = cp.get_capacity_num('num_max_stop_long')
+        cfg_factory_param_product(webc, num_max_stop_long, 1, 1)  # 远端，双目，长焦
+        change_result += 1
         break
 
     if change_result == 2:

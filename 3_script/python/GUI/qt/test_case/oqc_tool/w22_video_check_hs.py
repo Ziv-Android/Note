@@ -110,11 +110,14 @@ class W22VideoCheck(QtWidgets.QWidget, Ui_W22VideoCheck):
                 return False
             self.vdo_hdl = objdll.VzLPRClient_StartRealPlay(self.sdk_hdl, int(self.pShowVideoLabel.winId()))
             print("objdll.VzLPRClient_StartRealPlay %d vdo_hdl %d" % (self.sdk_hdl, self.vdo_hdl))
-            time.sleep(5)
             QtWidgets.QApplication.processEvents()
-            if self.vdo_hdl == -1:
-                self.vdo_hdl = objdll.VzLPRClient_StartRealPlay(self.sdk_hdl, int(self.pShowVideoLabel.winId()))
-                print("retry open objdll.VzLPRClient_StartRealPlay %d vdo_hdl %d" % (self.sdk_hdl, self.vdo_hdl))
+            for i in range(4):
+                time.sleep(5)
+                if self.vdo_hdl == -1:
+                    self.vdo_hdl = objdll.VzLPRClient_StartRealPlay(self.sdk_hdl, int(self.pShowVideoLabel.winId()))
+                    print("retry open objdll.VzLPRClient_StartRealPlay %d vdo_hdl %d" % (self.sdk_hdl, self.vdo_hdl))
+                else:
+                    break
             self.set_login_state(True)
             return True
         except:

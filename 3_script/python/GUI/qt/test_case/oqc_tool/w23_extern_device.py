@@ -72,12 +72,14 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
             '485连接',
             '补光灯',
             'IO-测试',
-            '串口通信',
             '复位按键',
             # '网口信息',
             '日志读取',
             '恢复出厂'
         ]
+        # 双目添加串口测试
+        if self.dlens == 1:
+            self.testcase.insert(3, '串口通信')
         for tt in self.testcase:
             self.pTestCaseLWdg.addItem(tt)
 
@@ -173,10 +175,8 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         c_heart(self.http_client_handle())
         self.auto_test_signal.emit(self.testcase[i], '开始')
         if num_485 == 1:
-            c_rs485_write(webc, 0, '$001,01&')
-            time.sleep(1)
-            ret, data = c_rs485_read(webc, 0)
-            if data == 'OK':
+            data = c_rs485_test(webc, 0, 0)
+            if data == 0:
                 self.is_485_pass = 1
                 params[self.testcase[i]] = "成功"
                 self.auto_test_signal.emit(self.testcase[i], '成功')
@@ -189,14 +189,10 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
                     params[self.testcase[i]] = "失败"
                     self.auto_test_signal.emit(self.testcase[i], '失败')
         elif num_485 == 2:
-            c_rs485_write(webc, 0, '$001,01&')
-            time.sleep(0.5)
-            ret, data = c_rs485_read(webc, 1)
-            if ret == 200:
-                c_rs485_write(webc, 1, '$001,01&')
-                time.sleep(0.5)
-                ret, data = c_rs485_read(webc, 0)
-                if ret == 200:
+            data = c_rs485_test(webc, 0, 1)
+            if data == 0:
+                data = c_rs485_test(webc, 1, 0)
+                if data == 0:
                     self.is_485_pass = 1
                     params[self.testcase[i]] = "成功"
                     self.auto_test_signal.emit(self.testcase[i], '成功')
@@ -208,22 +204,6 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
                 self.is_485_pass = 0
                 params[self.testcase[i]] = "失败"
                 self.auto_test_signal.emit(self.testcase[i], '失败')
-            # if data == 'OK' or data == '$001,01&':
-            #     c_rs485_write(webc, 1, '$001,01&')
-            #     time.sleep(0.5)
-            #     ret, data = c_rs485_read(webc, 0)
-            #     if data == 'OK' or data == '$001,01&':
-            #         self.is_485_pass = 1
-            #         params[self.testcase[i]] = "成功"
-            #         self.auto_test_signal.emit(self.testcase[i], '成功')
-            #     else:
-            #         self.is_485_pass = 0
-            #         params[self.testcase[i]] = "失败"
-            #         self.auto_test_signal.emit(self.testcase[i], '失败')
-            # else:
-            #     self.is_485_pass = 0
-            #     params[self.testcase[i]] = "失败"
-            #     self.auto_test_signal.emit(self.testcase[i], '失败')
 
         # '补光灯'
         i = i + 1
@@ -288,28 +268,29 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
             self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '串口通信'
-        i = i + 1
-        if self.autotest_state == 5:
-            self.stop_click_signal.emit(self.autotest_state)
-            return False
-        c_heart(self.http_client_handle())
-        self.auto_test_signal.emit(self.testcase[i], '开始')
-        if dlens == 1 and self.is_485_pass == 0:
-            params[self.testcase[i]] = "跳过"
-            self.auto_test_signal.emit(self.testcase[i], '跳过')
-        else:
-            if self.ext_serial.num_serial <= 0:
-                params[self.testcase[i]] = "无此接口"
-                self.auto_test_signal.emit(self.testcase[i], '无此接口')
+        if self.dlens == 1:
+            i = i + 1
+            if self.autotest_state == 5:
+                self.stop_click_signal.emit(self.autotest_state)
+                return False
+            c_heart(self.http_client_handle())
+            self.auto_test_signal.emit(self.testcase[i], '开始')
+            if self.is_485_pass == 0:
+                params[self.testcase[i]] = "跳过"
+                self.auto_test_signal.emit(self.testcase[i], '跳过')
             else:
-                ret = self.ext_serial.autotest_usercase()
-                if ret == 404 or ret is False:
-                    params[self.testcase[i]] = "失败"
-                    self.auto_test_signal.emit(self.testcase[i], '失败')
-                    self.autotest_stop()
-                    return False
-                params[self.testcase[i]] = "成功"
-                self.auto_test_signal.emit(self.testcase[i], '成功')
+                if self.ext_serial.num_serial <= 0:
+                    params[self.testcase[i]] = "无此接口"
+                    self.auto_test_signal.emit(self.testcase[i], '无此接口')
+                else:
+                    ret = self.ext_serial.autotest_usercase()
+                    if ret == 404 or ret is False:
+                        params[self.testcase[i]] = "失败"
+                        self.auto_test_signal.emit(self.testcase[i], '失败')
+                        self.autotest_stop()
+                        return False
+                    params[self.testcase[i]] = "成功"
+                    self.auto_test_signal.emit(self.testcase[i], '成功')
 
         # '网口信息'
         # i = i+1
