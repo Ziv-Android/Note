@@ -33,7 +33,7 @@ Set-Cookie: sessionID=209192407
 
 ## 实时视频页
 #### 请求
-##### 获取?
+##### 获取用户权限
 http://192.168.13.202/getauth.php POST    
 Params    
 ```json
@@ -49,7 +49,7 @@ Response
 	"type": "get_user_auth"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/genvictetc.php POST    
 Params    
 ```json
@@ -61,7 +61,7 @@ Response
 	"state": 401
 }
 ```
-##### 获取?
+##### 获取设备类型
 http://192.168.13.202/request.php POST    
 Params    
 ```json
@@ -108,7 +108,7 @@ Response
 	"type": "get_device_capacity"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/getivsctrl.php POST    
 Params    
 ```
@@ -118,7 +118,7 @@ Response
 ``` 
 OK ivsctrl=8:1:MA==
 ```
-##### 获取?
+##### 获取？ 配置信息
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json
@@ -385,8 +385,8 @@ Response
 	"type": "get_live_stream_type"
 }
 ```
-##### 获取?
-http://192.168.13.202/ivs_result.php?_=1646033471027 GET    
+##### 获取手动触发算法识别结果？ 
+http://192.168.13.202/ivs_result.php?_=1646033471027 GET
 ```   
 Response   
 ```json    
@@ -418,7 +418,7 @@ Response
 	"type": "GET_LAST_IVS_RECORD"
 }
 ```
-##### 获取?
+##### 获取网络信息
 http://192.168.13.202/systemjson.php POST    
 Params    
 ```json
@@ -443,7 +443,7 @@ Response
 	"type": "get_net_and_port"
 }
 ```
-##### 获取?
+##### 获取主辅相机配置
 http://192.168.13.202/dgjson.php POST    
 Params    
 ```json
@@ -467,7 +467,7 @@ Response
 	}
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json
@@ -522,7 +522,7 @@ Response
 	"type": "AVS_GET_LED_PROP"
 }
 ```
-##### 获取?
+##### 获取运动方向和车牌像素限制都有相关？ 
 http://192.168.13.202/geteventruleexhtm.php POST    
 Params    
 ```
@@ -530,9 +530,9 @@ Params
 ```   
 Response   
 ```    
-OK eventruleex=0:0:45:400:10:0
+OK geteventruleex=0:0:45:400:10:0
 ```
-##### 获取?
+##### 获取设备名称
 http://192.168.13.202/systemjson.php POST    
 Params    
 ```json
@@ -549,7 +549,7 @@ Response
 	"type": "ss_get_devname"
 }
 ```
-##### 获取?
+##### 获取设备信息
 http://192.168.13.202/systemjson.php POST    
 Params    
 ```json
@@ -590,7 +590,7 @@ Response
 	"type": "get_device_info"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/dboprnew.php POST    
 Params    
 ```json
@@ -618,7 +618,7 @@ Response
 	"type": "get_wl_check_status"
 }
 ```
-##### 获取?
+##### 获取NTP配置
 http://192.168.13.202/systemjson.php POST    
 Params    
 ```json
@@ -637,7 +637,7 @@ Response
 	"type": "ss_get_ntp_cfg"
 }
 ```
-##### 获取?
+##### 获取视频编码信息？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json
@@ -899,7 +899,7 @@ Response
 	"type": "AVS_GET_ENCODE_PROP"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json
@@ -1141,7 +1141,7 @@ Response
 	"type": "AVS_GET_ALG_RESULT_PROP"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/request.php POST    
 Params    
 ```json
@@ -1168,7 +1168,7 @@ Response
 	"type": "get_avs_focus_prm"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json
@@ -1195,8 +1195,8 @@ Response
 	"type": "AVS_GET_ALG_RESULT_PARAM"
 }
 ```
-##### 获取?
-http://192.168.13.202/avsjson.php post
+##### 获取补光灯控制？ 
+http://192.168.13.202/avsjson.php Post    
 Params    
 ```json  
 {"type":"AVS_GET_LED_CTRL"}    
@@ -1234,8 +1234,8 @@ Response
 	"type": "AVS_GET_LED_CTRL"
 }
 ```
-##### 获取?
-http://192.168.13.202/avsjson.php post
+##### 获取视频编码配置？ 
+http://192.168.13.202/avsjson.php Post    
 Params    
 ```json  
 {"type":"AVS_GET_ENCODE_PARAM"}    
@@ -1276,8 +1276,8 @@ Response
 	"type": "AVS_GET_ENCODE_PARAM"
 }
 ```
-##### 获取?
-http://192.168.13.202/avsjson.php post
+##### 获取？ 
+http://192.168.13.202/avsjson.php Post    
 Params    
 ```json  
 {"type":"AVS_GET_ALG_RESULT_PARAM"}    
@@ -1303,8 +1303,8 @@ Response
 	"type": "AVS_GET_ALG_RESULT_PARAM"
 }
 ```
-##### 获取?
-http://192.168.13.202/avsjson.php post
+##### 获取识别区域？ 
+http://192.168.13.202/avsjson.php Post    
 Params    
 ```json  
 {"type":"AVS_GET_VIRLOOP_PRM"}    
@@ -1332,8 +1332,8 @@ Response
 	"type": "AVS_GET_VIRLOOP_PRM"
 }
 ```
-##### 获取?
-http://192.168.13.202/avsjson.php post
+##### 获取虚拟线圈？ 
+http://192.168.13.202/avsjson.php Post    
 Params    
 ```json  
 {"type":"AVS_GET_RECO_PRM"}    
@@ -1358,7 +1358,7 @@ Response
 }
 ```
 ##### 获取视频数据
-ws://192.168.13.202:9080/ws.flv?token=17abed60-9180-2eb7-e72b-609f6d96c0da GET    
+ws://192.168.13.202:9080/ws.flv?token=17abed60-9180-2eb7-e72b-609f6d96c0da GET
 
 ##### 心跳接口
 http://192.168.13.202/webpage_relogin.php POST    
@@ -1373,7 +1373,7 @@ Response
 }
 ```
 ##### 获取用户权限
-http://192.168.13.202/getauth.php
+http://192.168.13.202/getauth.php POST
 Params    
 ```json
 {"type":"get_user_auth"}    
@@ -1421,13 +1421,13 @@ Response
 }
 ```
 ##### 手动触发
-http://192.168.13.202/avstrigger.php?_=1646033475057 GET    
+http://192.168.13.202/avstrigger.php?_=1646033475057 GET
 Response   
 ```json    
 OK
 ```
 ##### 手动触发视频截图
-http://192.168.13.202/snapshot/last_ivs_result.jpg?1646035490999 GET    
+http://192.168.13.202/snapshot/last_ivs_result.jpg?1646035490999 GET
 Response   
 ```json    
 图像数据
@@ -1457,7 +1457,7 @@ Params
 Response   
 ```json    
 OK seteventrule1
-
+```
 http://192.168.13.202/geteventruleexhtm.php POST    
 Params    
 ```json  
@@ -1465,8 +1465,8 @@ Params
 ```   
 Response   
 ```json    
-OK eventruleex=1:1:45:400:10:1
-
+OK geteventruleex=1:1:45:400:10:1
+```
 ##### 补光模式 
 http://192.168.13.202/avsjson.php POST    
 Params    
@@ -1484,6 +1484,7 @@ Response
 	"state_code": 200,
 	"type": "AVS_SET_LED_CTRL"
 }
+```
 ##### 补光参数
 http://192.168.13.202/avsjson.php POST    
 Params    
@@ -1602,7 +1603,8 @@ Response
 }
 ```
 ##### 图片数据
-http://192.168.13.202/htmldata/picdata02.pic?1646036565157 GET     
+http://192.168.13.202/htmldata/picdata02.pic?1646036565157 GET
+
 Response   
 ``` 
 图片数据
@@ -1610,17 +1612,17 @@ Response
 ## 高级设置页
 ### 识别设置
 #### 请求
-##### 获取?
+##### 获取识别车牌
 http://192.168.13.202/getivsctrl.php POST    
 Params    
-```  
+```json  
 8:1:MA==
 ```   
 Response   
 ```json    
 OK ivsctrl=8:1:MA==
 ```
-##### 获取?
+##### 获取相机参数
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -1641,8 +1643,8 @@ Response
 	"type": "AVS_GET_CAPTURE_PRM"
 }
 ```
-##### 获取?
-http://192.168.13.202/request.php post
+##### 获取语音对讲 - 对讲设置
+http://192.168.13.202/request.php Post    
 Params    
 ```json  
 {"type":"evs_get_gpioin_func","module":"EVS_BUS_REQUEST"}    
@@ -1668,8 +1670,8 @@ Response
 	"type": "evs_get_gpioin_func"
 }
 ```
-##### 获取?
-http://192.168.13.202/getivsctrl.php post
+##### 获取？ 
+http://192.168.13.202/getivsctrl.php Post    
 Params    
 ```  
 4:1:MA==
@@ -1678,19 +1680,19 @@ Response
 ```    
 OK ivsctrl=4:1:MQ==
 ```
-##### 获取?
-http://192.168.13.202/geteventruleexhtm.php post
+##### 获取？ 
+http://192.168.13.202/geteventruleexhtm.php Post    
 Params    
 ```  
 0
 ```   
 Response   
 ```    
-OK eventruleex=1:1:45:400:10:2
+OK geteventruleex=1:1:45:400:10:2
 ```
 
-##### 获取?
-http://192.168.13.202/avsjson.php post
+##### 获取？ 
+http://192.168.13.202/avsjson.php Post    
 Params    
 ```json  
 {"type":"AVS_GET_ALG_RESULT_PROP"}    
@@ -1931,7 +1933,7 @@ Response
 	"type": "AVS_GET_ALG_RESULT_PROP"
 }
 ```
-##### 获取?
+##### 获取新能源车牌字段限制
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -1949,8 +1951,8 @@ Response
 	"type": "get_new_energy_plate_support"
 }
 ```
-##### 获取?
-http://192.168.13.202/avsjson.php post
+##### 获取输出车辆信息
+http://192.168.13.202/avsjson.php Post    
 Params    
 ```json  
 {"type":"get_car_info_support"}    
@@ -1969,7 +1971,7 @@ Response
 	"type": "get_car_info_support"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -2179,7 +2181,7 @@ Params
 ```   
 Response   
 ```    
-OK eventruleex=1:1:50:400:10:2
+OK geteventruleex=1:1:50:400:10:2
 ```
 ##### 识别参数 - 无车牌触发 - 勾选输出无车牌信息 
 http://192.168.13.202/ivsctrl.php POST    
@@ -2223,10 +2225,10 @@ Response
 OK
 ```
 ##### 识别参数 - 勾选车牌防伪 - 虚假车牌告警
-http://192.168.13.202/vb.htm?filtfakeplate=1&_=1646036087952  GET    
+http://192.168.13.202/vb.htm?filtfakeplate=1&_=1646036087952  Get
 
 ##### 识别参数 - 勾选车牌防伪 - 虚假车牌过滤
-http://192.168.13.202/vb.htm?filtfakeplate=0&_=1646036087953  GET    
+http://192.168.13.202/vb.htm?filtfakeplate=0&_=1646036087953  Get
 
 ##### 识别参数 - 勾选车牌防伪 - 防伪匹配度 
 http://192.168.13.202/avsjson.php POST    
@@ -2362,13 +2364,13 @@ Response
 	"type": "get_live_stream_type"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/dgjson.php POST  
-Params    
+params
 ```json
 {"type":"get_group_shared_io"}	
 ```
-Response    
+response
 ```json
 {
 	"state": 200,
@@ -2376,13 +2378,13 @@ Response
 	"value": 0
 }
 ```
-##### 获取?
-http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"get_addition_gpio"}&_=1646102553605 GET     
+##### 获取？ 
+http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"get_addition_gpio"}&_=1646102553605 GET 
 Response   
 ```json    
 OK={"body":{"delay_stop_time":0,"enable":0,"frequency_time":1000,"input_gpio":0,"output_gpio":0},"err_msg":"All done","state":200,"type":"get_addition_gpio"}
 ```
-##### 获取?
+##### 获取语音对讲 - 对讲设置
 http://192.168.13.202/request.php POST    
 Params    
 ```json  
@@ -2459,7 +2461,7 @@ Response
 	"type": "AVS_GET_AUDIO_PROP"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -2569,13 +2571,13 @@ Response
 	"type": "AVS_GET_OSD_PARAM"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
 {"type":"AVS_GET_VIDEO_PARAM_PROPERTY"}	
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -2979,11 +2981,11 @@ Response
 ```
 ##### 设置ws流配置
 http://192.168.13.202/request.php POST 
-Params    
+params
 ```json
 {"type":"set_ws_stream_cfg","module":"BUS_WEB_REQUEST","body":{"flv_enable":false,"flv_enable_auth":true,"mjpeg_enable":true,"mjpeg_enable_auth":false}}
 ```
-Response    
+response
 ```json
 {
 	"err_msg": "OK",
@@ -2993,11 +2995,11 @@ Response
 ```
 ##### 获取ws流配置
 http://192.168.13.202/request.php POST 
-Params    
+params
 ```json
 {"type":"get_ws_stream_cfg","module":"BUS_WEB_REQUEST"}
 ```
-Response    
+response
 ```
 {
 	"body": {
@@ -3013,11 +3015,11 @@ Response
 ```
 ##### 获取live流配置
 http://192.168.13.202/request.php POST    
-Params    
+params
 ```json
 {"type":"get_live_stream_type","module":"BUS_WEB_REQUEST"}
 ```
-Response    
+response
 ```
 {
 	"body": {
@@ -3341,7 +3343,7 @@ Params
 	"type": "ss_get_upnp_net"
 }
 ```
-##### 网络诊断?
+##### 网络诊断？ 
 http://192.168.13.202/systemjson.php POST    
 Params    
 ```json  
@@ -3451,7 +3453,7 @@ Params
 ```
 ### 白名单
 #### 请求
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/dboprnew.php POST    
 Params    
 ```json  
@@ -3471,7 +3473,7 @@ Response
 	"type": "get_wl_fuzzy"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/dboprnew.php POST    
 Params    
 ```json  
@@ -3586,8 +3588,8 @@ Response
 ### 高级网络
 #### 请求
 ##### 获取所有HTTP设置
-http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_http_cfg"}&_=1646113962019 GET    
-Response    
+http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_http_cfg"}&_=1646113962019 GET
+response
 ```
 OK={"body":{"centerserver":{"enable_ssl":0,"hostname":"MTkyLjE2OC4xLjEwNg==","http_timeout":5,"port":80,"ssl_port":443},"cs_alarm_gioin":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL2dpby5waHA="},"cs_alarm_plate":{"big_img":0,"enable":0,"plate_rlt_level":0,"retransmission":0,"small_img":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA=="},"cs_dev_reg":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3JlY2VpdmVkZXZpY2VpbmZvLnBocA=="},"cs_serial":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3NlcmlhbC5waHA="},"http_ip_ext":{"IpExt":[]},"offline_status":0,"proxy_http":{"big_img":0,"enable":0,"small_img":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA=="},"repush_nums":0,"serv_poll_status":0,"ssl_ca":{"ca_enable":0,"ca_file_exist":0}},"err_msg":"OK","state":200,"state_code":200,"type":"get_http_cfg"}
 ```
@@ -3611,8 +3613,8 @@ Response
 }
 ```
 ##### 获取ftp配置
-http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_ftp_cfg"}&_=1646113962020 GET    
-Response    
+http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_ftp_cfg"}&_=1646113962020 GET
+response
 ```
 OK={"body":{"enable":0,"foldername":"default_name","password":"ftpuser","port":21,"server_ip":"192.168.1.16","username":"ftpuser"},"err_msg":"OK","state":200,"state_code":200,"type":"get_ftp_cfg"}
 ```
@@ -3665,25 +3667,25 @@ Response
 ```
 #### 操作
 ##### HTTP推送设置
-http://192.168.13.202/vb.htm?sethttpconfigall={"type":"set_http_cfg","body":{"centerserver":{"hostname":"MTkyLjE2OC4xLjEwNg==","port":80,"enable_ssl":0,"ssl_port":443,"http_timeout":5},"cs_dev_reg":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3JlY2VpdmVkZXZpY2VpbmZvLnBocA=="},"cs_alarm_plate":{"clear_offline":0,"enable":0,"retransmission":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA==","plate_rlt_level":0,"big_img":0,"small_img":0},"cs_alarm_gioin":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL2dpby5waHA="},"cs_serial":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3NlcmlhbC5waHA="},"http_ip_ext":{"IpExt":[]},"ssl_ca":{"ca_enable":0},"offline_status":0,"serv_poll_status":0,"repush_nums":0,"proxy_http":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA==","big_img":0,"small_img":0}}}&_=1646191759041 GET      
+http://192.168.13.202/vb.htm?sethttpconfigall={"type":"set_http_cfg","body":{"centerserver":{"hostname":"MTkyLjE2OC4xLjEwNg==","port":80,"enable_ssl":0,"ssl_port":443,"http_timeout":5},"cs_dev_reg":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3JlY2VpdmVkZXZpY2VpbmZvLnBocA=="},"cs_alarm_plate":{"clear_offline":0,"enable":0,"retransmission":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA==","plate_rlt_level":0,"big_img":0,"small_img":0},"cs_alarm_gioin":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL2dpby5waHA="},"cs_serial":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3NlcmlhbC5waHA="},"http_ip_ext":{"IpExt":[]},"ssl_ca":{"ca_enable":0},"offline_status":0,"serv_poll_status":0,"repush_nums":0,"proxy_http":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA==","big_img":0,"small_img":0}}}&_=1646191759041 GET
 Response   
 ```json    
 OK {"err_msg":"OK","state":200,"state_code":200,"type":"set_http_cfg"}
 ```
 ##### 获取HTTP推送设置
-http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_http_cfg"}&_=1646191759042 GET    
+http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_http_cfg"}&_=1646191759042 GET
 Response   
 ```json    
 OK={"body":{"centerserver":{"enable_ssl":0,"hostname":"MTkyLjE2OC4xLjEwNg==","http_timeout":5,"port":80,"ssl_port":443},"cs_alarm_gioin":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL2dpby5waHA="},"cs_alarm_plate":{"big_img":0,"enable":0,"plate_rlt_level":0,"retransmission":0,"small_img":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA=="},"cs_dev_reg":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3JlY2VpdmVkZXZpY2VpbmZvLnBocA=="},"cs_serial":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3NlcmlhbC5waHA="},"http_ip_ext":{"IpExt":[]},"offline_status":0,"proxy_http":{"big_img":0,"enable":0,"small_img":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA=="},"repush_nums":0,"serv_poll_status":0,"ssl_ca":{"ca_enable":0,"ca_file_exist":0}},"err_msg":"OK","state":200,"state_code":200,"type":"get_http_cfg"}
 ```
 ##### HTTP推送测试 - 开始
-http://192.168.13.202/vb.htm?testhttpserver={"type":"test_http_server","body":{"start_test":1}}&_=1646191759043 GET    
+http://192.168.13.202/vb.htm?testhttpserver={"type":"test_http_server","body":{"start_test":1}}&_=1646191759043 GET
 Response   
 ```json    
 OK {"err_msg":"OK","state":200,"state_code":200,"type":"test_http_server"}
 ```
 ##### HTTP推送测试 - 停止
-http://192.168.13.202/vb.htm?testhttpserver={"type":"test_http_server","body":{"start_test":0}}&_=1646191759051 GET    
+http://192.168.13.202/vb.htm?testhttpserver={"type":"test_http_server","body":{"start_test":0}}&_=1646191759051 GET
 Response   
 ```json    
 OK {"err_msg":"OK","state":200,"state_code":200,"type":"test_http_server"}
@@ -3705,7 +3707,7 @@ Response
 }
 ```
 ##### FTP配置 - 启用 1 关闭 0
-http://192.168.13.202/vb.htm?sethttpconfigall={"body":{"enable":1,"server_ip":"192.168.1.16","port":21,"username":"ftpuser","password":"ftpuser","foldername":"default_name"},"type":"set_ftp_cfg"}&_=1646191759052 GET    
+http://192.168.13.202/vb.htm?sethttpconfigall={"body":{"enable":1,"server_ip":"192.168.1.16","port":21,"username":"ftpuser","password":"ftpuser","foldername":"default_name"},"type":"set_ftp_cfg"}&_=1646191759052 GET
 enable: 启用 1 关闭 0
 ```   
 Response   
@@ -3713,7 +3715,7 @@ Response
 OK {"err_msg":"OK","state":200,"state_code":200,"type":"set_ftp_cfg"}
 ```
 ##### 获取FTP配置
-http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_ftp_cfg"}&_=1646191759053 GET    
+http://192.168.13.202/vb.htm?gethttpconfigall={"type":"get_ftp_cfg"}&_=1646191759053 GET
 ```   
 Response   
 ```json    
@@ -3822,7 +3824,7 @@ Params
 ```
 ### 外设管理
 #### 请求
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -3840,11 +3842,11 @@ Response
 	"voice_defalut_volume": 100
 }
 ```
-##### 获取?
-http://192.168.13.202/vb.htm?getlinkagecfg&_=1646113962022 GET    
-Response    
+##### 获取？ 
+http://192.168.13.202/vb.htm?getlinkagecfg&_=1646113962022 GET
+response
 ```
-OK linkagecfg={
+OK getlinkagecfg={
    "black_list" : [],
    "device_capacity" : {
       "ado_enable" : 1,
@@ -3874,32 +3876,32 @@ OK linkagecfg={
    "white_list" : [ 56 ]
 }
 ```
-##### 获取?
-http://192.168.13.202/vb.htm?boa_busjsonreq={"type":"get_def_out_time"}&_=1646113962023 GET    
-Response    
+##### 获取？ 
+http://192.168.13.202/vb.htm?boa_busjsonreq={"type":"get_def_out_time"}&_=1646113962023 GET
+response
 ```
 OK={"body":{"def_out_time":500},"err_msg":"OK","state":200,"state_code":200,"type":"get_def_out_time"}
 ```
-##### 获取?
-http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"get_addition_gpio"}&_=1646113962024 GET    
-Response    
+##### 获取？ 
+http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"get_addition_gpio"}&_=1646113962024 GET
+response
 ```
 OK={"body":{"delay_stop_time":0,"enable":0,"frequency_time":1000,"input_gpio":0,"output_gpio":0},"err_msg":"All done","state":200,"type":"get_addition_gpio"}
 ```
-##### 获取?
-http://192.168.13.202/vb.htm?getwebspesialplates={"type":"get_special_plates"}&_=1646113962025 GET    
-Response    
+##### 获取？ 
+http://192.168.13.202/vb.htm?getwebspesialplates={"type":"get_special_plates"}&_=1646113962025 GET
+response
 ```
 OK={"body":{"plates":[{"index":0,"name":"5pyq55+l6L2m54mM","status":0},{"index":1,"name":"6JOd54mM","status":0},{"index":2,"name":"6buR54mM","status":0},{"index":3,"name":"5Y2V5o6S6buE54mM","status":0},{"index":4,"name":"5Y+M5o6S6buE54mM","status":0},{"index":5,"name":"6K2m6L2m6L2m54mM","status":0},{"index":6,"name":"5q2m6K2m6L2m54mM","status":0},{"index":7,"name":"5Liq5oCn5YyW6L2m54mM","status":0},{"index":8,"name":"5Y2V5o6S5Yab6L2m54mM","status":0},{"index":9,"name":"5Y+M5o6S5Yab6L2m54mM","status":0},{"index":10,"name":"5L2/6aaG6L2m54mM","status":0},{"index":11,"name":"6aaZ5riv6L+b5Ye65Lit5Zu95aSn6ZmG6L2m54mM","status":0},{"index":12,"name":"5Yac55So6L2m54mM","status":0},{"index":13,"name":"5pWZ57uD6L2m54mM","status":0},{"index":14,"name":"5r6z6Zeo6L+b5Ye65Lit5Zu95aSn6ZmG6L2m54mM","status":0},{"index":15,"name":"5Y+M5bGC5q2m6K2m6L2m54mM","status":0},{"index":16,"name":"5q2m6K2m5oC76Zif6L2m54mM","status":1},{"index":17,"name":"5Y+M5bGC5q2m6K2m5oC76Zif6L2m54mM","status":0},{"index":18,"name":"5rCR6Iiq6L2m54mM","status":0},{"index":19,"name":"5paw6IO95rqQ6L2m54mM","status":0},{"index":20,"name":"5paw6IO95rqQ6buE54mM","status":0},{"index":21,"name":"5bqU5oCl6L2m54mM","status":0},{"index":22,"name":"6aKG5LqL6aaG6L2m54mM","status":0}]},"err_msg":"OK","state":200,"state_code":200,"type":"get_special_plates"}
 ```
 ##### 获取串口
-http://192.168.13.202/vb.htm?paratest=uart.0&_=1646113962026 GET    
-Response    
+http://192.168.13.202/vb.htm?paratest=uart.0&_=1646113962026 GET
+response
 ```
 OK uart.0=OTYwMDowOjg6MQ==
 ```
 
-##### 获取补光灯?
+##### 获取补光灯？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -3954,7 +3956,7 @@ Response
 	"type": "AVS_GET_LED_PROP"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/request.php POST    
 Params    
 ```json  
@@ -3993,7 +3995,7 @@ Response
 	"type": "get_flashlamp_info"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/evtjson.php POST    
 Params    
 ```json  
@@ -4010,7 +4012,7 @@ Response
 	"type": "evs_gpio_test_ctrl"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/evtjson.php POST    
 Params    
 ```json  
@@ -4027,7 +4029,7 @@ Response
 	"type": "evs_gpio_test_ctrl"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/evtjson.php POST    
 Params    
 ```json  
@@ -4044,7 +4046,7 @@ Response
 	"type": "evs_gpio_test_ctrl"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/evtjson.php POST    
 Params    
 ```json  
@@ -4061,7 +4063,7 @@ Response
 	"type": "evs_gpio_test_ctrl"
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -4104,15 +4106,15 @@ Response
 #### 操作
 ##### 输出配置 - 防伪车牌
 http://192.168.13.202/vb.htm?setlinkagecfg={"white_list":[56,40,1485],"not_white_list":[56,40,1485],"no_licence":[56,40,1485],"black_list":[56,40,1485],"special_plates":[56,40,1485],"ext_ioctl1":[56,40],"ext_ioctl2":[56,40],"ext_ioctl3":[],"ext_ioctl4":[],"offline_alarm":[],"enable_fake_plate":0}&_=1646185193572
-Response    
+response
 ```
 OK setlinkagecfg
 ```
 ##### 输出配置 - 获取防伪车牌
 http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"get_addition_gpio"}&_=1646185193565
-Response    
+response
 ```
-OK linkagecfg={
+OK getlinkagecfg={
    "black_list" : [ 56, 40, 1485 ],
    "device_capacity" : {
       "ado_enable" : 1,
@@ -4142,47 +4144,47 @@ OK linkagecfg={
    "white_list" : [ 56, 40, 1485 ]
 }
 ```
-##### 获取防伪车牌后获取了什么东西?
-http://192.168.13.202/vb.htm?getlinkagecfg&_=1646185193564 GET    
-Response    
+##### 获取防伪车牌后获取了什么东西？
+http://192.168.13.202/vb.htm?getlinkagecfg&_=1646185193564 GET
+response
 ```
 OK={"body":{"delay_stop_time":0,"enable":0,"frequency_time":1000,"input_gpio":0,"output_gpio":0},"err_msg":"All done","state":200,"type":"get_addition_gpio"}
 ```
 
 ##### 串口配置
-http://192.168.13.202/vb.htm?uart=OTYwMDowOjg6MQ==.0&_=1646185193575 GET    
-Response    
+http://192.168.13.202/vb.htm?uart=OTYwMDowOjg6MQ==.0&_=1646185193575 GET
+response
 ```
 OK uart
 ```
 
 ##### GPIO开闸 - 默认开闸时间
-http://192.168.13.202/vb.htm?boa_busjsonreq={"type":"set_def_out_time","body":{"def_out_time":500}}&_=1646185193576 GET    
-Response    
+http://192.168.13.202/vb.htm?boa_busjsonreq={"type":"set_def_out_time","body":{"def_out_time":500}}&_=1646185193576 GET
+response
 ```
 OK={"err_msg":"OK","state":200,"state_code":200,"type":"set_def_out_time"}
 ```
 ##### 获取GPIO开闸默认时间
-http://192.168.13.202/vb.htm?boa_busjsonreq={"type":"get_def_out_time"}&_=1646185193578 GET    
-Response    
+http://192.168.13.202/vb.htm?boa_busjsonreq={"type":"get_def_out_time"}&_=1646185193578 GET
+response
 ```
 OK={"body":{"def_out_time":500},"err_msg":"OK","state":200,"state_code":200,"type":"get_def_out_time"}
 ```
 ##### GPIO开闸 - 二次开闸配置
-http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"set_addition_gpio","body":{"enable":0,"frequency_time":1000,"delay_stop_time":0,"input_gpio":0,"output_gpio":0}}&_=1646185193577 GET    
-Response    
+http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"set_addition_gpio","body":{"enable":0,"frequency_time":1000,"delay_stop_time":0,"input_gpio":0,"output_gpio":0}}&_=1646185193577 GET
+response
 ```
 OK={"err_msg":"All done","state":200,"type":"set_addition_gpio"}
 ```
 ##### GPIO开闸 - 获取二次开闸配置
-http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"get_addition_gpio"}&_=1646185193580 GET    
-Response    
+http://192.168.13.202/vb.htm?boa_eventjsonreq={"type":"get_addition_gpio"}&_=1646185193580 GET
+response
 ```
 OK={"body":{"delay_stop_time":0,"enable":0,"frequency_time":1000,"input_gpio":0,"output_gpio":0},"err_msg":"All done","state":200,"type":"get_addition_gpio"}
 ```
 ##### 特殊车牌
-http://192.168.13.202/vb.htm?getwebspesialplates={"type":"set_special_plates","body":{"plates":[{"index":0,"status":1},{"index":1,"status":0},{"index":2,"status":0},{"index":3,"status":0},{"index":4,"status":0},{"index":5,"status":0},{"index":6,"status":0},{"index":7,"status":0},{"index":8,"status":0},{"index":9,"status":0},{"index":10,"status":0},{"index":11,"status":0},{"index":12,"status":0},{"index":13,"status":0},{"index":14,"status":0},{"index":15,"status":0},{"index":16,"status":1},{"index":17,"status":0},{"index":18,"status":0},{"index":19,"status":0},{"index":21,"status":0},{"index":22,"status":0}]}}&_=1646185193591 GET    
-Response    
+http://192.168.13.202/vb.htm?getwebspesialplates={"type":"set_special_plates","body":{"plates":[{"index":0,"status":1},{"index":1,"status":0},{"index":2,"status":0},{"index":3,"status":0},{"index":4,"status":0},{"index":5,"status":0},{"index":6,"status":0},{"index":7,"status":0},{"index":8,"status":0},{"index":9,"status":0},{"index":10,"status":0},{"index":11,"status":0},{"index":12,"status":0},{"index":13,"status":0},{"index":14,"status":0},{"index":15,"status":0},{"index":16,"status":1},{"index":17,"status":0},{"index":18,"status":0},{"index":19,"status":0},{"index":21,"status":0},{"index":22,"status":0}]}}&_=1646185193591 GET
+response
 ```
 ```
 ##### 补光灯配置
@@ -4378,7 +4380,7 @@ Params
 ```
 ### 屏显语音
 #### 请求
-##### 获取语音配置?
+##### 获取语音配置？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -4396,7 +4398,7 @@ Response
 	"voice_defalut_volume": 100
 }
 ```
-##### 获取??组?
+##### 获取主辅相机配置
 http://192.168.13.202/dgjson.php POST    
 Params    
 ```json  
@@ -4420,7 +4422,7 @@ Response
 	}
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/bbjson.php POST    
 Params    
 ```json  
@@ -4484,7 +4486,7 @@ Response
 	"type": "get_led_ctrl_cfg"
 }
 ```
-##### 获取停车数据?
+##### 获取停车数据？ 
 http://192.168.13.202/dgjson.php POST    
 Params    
 ```json  
@@ -4551,7 +4553,7 @@ Response
 	"type": "set_led_ctrl_cfg"
 }
 ```
-##### 设置屏显协议配置?
+##### 设置屏显协议配置？ 
 http://192.168.13.202/bbjson.php POST    
 Params    
 ```json  
@@ -4663,7 +4665,7 @@ Response
 	"value": 0
 }
 ```
-##### 获取?
+##### 获取？ 
 http://192.168.13.202/dgjson.php POST    
 Params    
 ```json  
@@ -5174,8 +5176,8 @@ Response
 ##### 获取当前时间日期
 http://192.168.13.202/vb.htm?getdate=&gettime=&_=1646113962033
 ```
-OK date=2022-03-01 Tue
-OK time=14:28:20
+OK getdate=2022-03-01 Tue
+OK gettime=14:28:20
 ```
 
 ##### 获取时区
@@ -5242,7 +5244,7 @@ Response
 	"type": "set_timezone"
 }
 ```
-##### 设置时区伴随的请求?
+##### 设置时区伴随的请求？ 
 http://192.168.13.202/avsjson.php POST    
 Params    
 ```json  
@@ -5397,7 +5399,7 @@ Response
 	"type": "STORE_STAT_REQUEST"
 }
 ```
-##### 获取录像?的什么东西
+##### 获取录像？ 的什么东西
 http://192.168.13.202/request.php POST    
 Params    
 ```json  
@@ -6105,13 +6107,13 @@ Response
 }
 ```
 ##### 参数导出文件下载地址
-http://192.168.13.202/download.php/VzConfig/configbackup00.cfg GET    
+http://192.168.13.202/download.php/VzConfig/configbackup00.cfg GET
 
 ##### 参数导入（会导致重启）
-http://192.168.13.202/configrestore.cgi GET    
+http://192.168.13.202/configrestore.cgi GET
 
-##### 参数导入（会导致重启）- 参数导入后的重启请求？
-http://192.168.13.202/vb.htm?ipcamrestartcmd=&_=1646113962239 GET    
+##### 参数导入（会导致重启）- 参数导入后的重启请求？ 
+http://192.168.13.202/vb.htm?ipcamrestartcmd=&_=1646113962239 GET
 
 ##### 模块管理 - 设置模块状态
 http://192.168.13.202/request.php POST    
@@ -6148,7 +6150,7 @@ Response
 
 #### 操作
 ##### 删除logo
-http://192.168.13.202/vb.htm?paratest=removelogofile&_=1646113962236 GET    
+http://192.168.13.202/vb.htm?paratest=removelogofile&_=1646113962236 GET
 
 Response   
 ```json    
@@ -6203,10 +6205,10 @@ Response
 ```
 ##### 获取日期时间
 http://192.168.13.202/vb.htm?getdate=&gettime=&_=1646113962069
-Response    
+response
 ```
-OK date=2022-03-01 Tue
-OK time=14:36:06
+OK getdate=2022-03-01 Tue
+OK gettime=14:36:06
 ```
 
 ##### 获取重启设备配置
@@ -6229,11 +6231,12 @@ Response
 }
 ```
 #### 操作
-重启设备 - 立即重启
+##### 重启设备 - 立即重启
+http://192.168.13.201/vb.htm?ipcamrestartcmd=&_=1646273279427
+OK ipcamrestartcmd
 
 
-重启设备 - 自动重启
-##### 
+##### 重启设备 - 自动重启
 http://192.168.13.202/systemjson.php POST    
 Params    
 ```json  
@@ -6247,9 +6250,19 @@ Response
 	"type": "set_reboot_timing"
 }
 ```
-恢复出厂 - 完全恢复
+##### 恢复出厂 - 完全恢复
+http://192.168.13.201/vb.htm?democfg=0&_=1646273380300
+Response   
+```
+OK democfg
+```
+##### 恢复出厂 - 部分恢复
+http://192.168.13.201/vb.htm?democfg=1&_=1646273380300
+Response   
+```
+OK democfg
+```
+##### 升级设备
+http://192.168.13.202/upload.cgi
 
-恢复出厂 - 部分恢复
-
-升级设备
 
