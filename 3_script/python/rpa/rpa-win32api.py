@@ -9,8 +9,8 @@ import win32clipboard
 
 import time
 
-import xlrd
-import xlwt
+# import xlrd
+# import xlwt
 
 '''
 HWND：指定父窗口句柄
@@ -21,8 +21,8 @@ Directory：缺省目录
 ShowCmd：打开选项，可选值:
 '''
 
-filePath = r'D:\WXWork\WXWork.exe'
-fileName = r'企业微信'
+filePath = r'D:\Tencent\WeChat\WeChat.exe'
+fileName = r'WeChat'
 
 
 # 1 鼠标

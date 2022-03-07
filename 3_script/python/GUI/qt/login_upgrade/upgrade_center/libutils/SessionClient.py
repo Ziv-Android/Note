@@ -19,6 +19,7 @@ from .ConfigManager import *
 url_login = ""
 url_info = ""
 url_upgrade = ""
+url_heart_beat = "/webpage_relogin.php"
 
 user_info = ''
 device_info = ''
@@ -207,6 +208,25 @@ class SessionClient:
 
     # def progress_callback(self, monitor):
     #     print(round(monitor.bytes_read/monitor.len*100, 2))
+
+    def send_heart_beat(self):
+        self.login()
+        try:
+            global url_heart_beat
+            # http://192.168.30.125:19852/02880771-fce36ba5/systemjson.php
+            # url = self.host + "/webpage_relogin.php"
+            url = self.host + url_heart_beat
+            self.log.log_info("SessionClient", f"heart_beat request {url} {self.session.cookies}")
+            resp = self.session.post(url=url, data="", timeout=10, headers=self.HEADERS)
+            resp.encoding = 'utf-8'
+            self.log.log_info("SessionClient", f"heart_beat encode: {resp.encoding}")
+            if resp.status_code == 200:
+                result = resp.content.decode(encoding="UTF-8")
+                self.log.log_info("SessionClient",
+                                  f"info result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
+
+        except Exception as e:
+            self.log.log_error("SessionClient", f"info failed {e}")
 
     # 关闭会话并复位状态
     def close(self):

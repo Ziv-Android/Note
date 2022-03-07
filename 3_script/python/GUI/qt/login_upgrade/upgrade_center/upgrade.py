@@ -6,7 +6,7 @@ import re
 import socket
 import struct
 
-from PyQt5.QtCore import Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal, QSettings
+from PyQt5.QtCore import Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal, QSettings, QTimer
 from PyQt5.QtWidgets import QApplication, QFileDialog, QTableWidgetItem, QMessageBox, QMainWindow
 
 from ui.ui_upgrade import *
@@ -505,6 +505,8 @@ class Worker(QRunnable):
         print("Worker", "init", "创建Worker", self.thread_name)
         self.line = -1
         self.data = None
+        self.timer = None
+        self.client = None
         self.log = ZLog()
 
     def setData(self, i, _data):
@@ -548,8 +550,8 @@ class Worker(QRunnable):
             self.signal.active_count.emit(-1)
             return
         # 创建请求并登录
-        client = SessionClient(self.data["host"], username, password, config_file_path)
-        info_json = client.login()
+        self.client = SessionClient(self.data["host"], username, password, config_file_path)
+        info_json = self.client.login()
         self.log.log_debug(f"Worker {self.thread_name} login：{info_json}")
         if not info_json:
             self.data['state'] = "登陆失败"
@@ -559,7 +561,7 @@ class Worker(QRunnable):
         self.data['state'] = "在线"
         self.signal.progress.emit(self.line, self.data)
         # 获取版本
-        version = client.info()
+        version = self.client.info()
         self.log.log_debug(f"Worker {self.thread_name} info：{version}")
         if info_json is None:
             self.data['state'] = "离线"
@@ -576,8 +578,10 @@ class Worker(QRunnable):
             self.log.log_debug(f"Worker {self.thread_name} 已经是当前版本")
             self.signal.progress.emit(self.line, self.data)
             return
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.send_heart_beat)
         # 升级
-        state = client.update(file_path, self.progress_change)
+        state = self.client.update(file_path, self.progress_change)
         self.log.log_debug(f"Worker {self.thread_name} update：{state}")
         print("Worker", self.thread_name, "update:", state)
         if state:
@@ -599,7 +603,8 @@ class Worker(QRunnable):
                     exist = True
             if not exist:
                 failed_data.append(self.data)
-        client.close()
+        self.client.close()
+        self.client = None
 
         try:
             self.signal.progress.emit(self.line, self.data)
@@ -609,6 +614,11 @@ class Worker(QRunnable):
             print("exit")
         self.log.log_debug(f"Worker {self.thread_name} finish：{self.data['sn']}")
         print("Worker", self.thread_name, "finish")
+
+    def send_heart_beat(self):
+        if self.client is None:
+            return
+        self.client.send_heart_beat()
 
 
 class UpgradeThread(QThread):
