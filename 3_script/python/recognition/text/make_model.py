@@ -3,8 +3,8 @@
 
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras import layers
-from tensorflow.keras.models import Sequential
+from keras.api._v2.keras import layers
+from tensorflow.python.keras.engine.sequential import Sequential
 import pathlib
 import cv2
 

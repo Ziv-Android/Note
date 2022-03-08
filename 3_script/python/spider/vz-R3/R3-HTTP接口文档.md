@@ -4936,6 +4936,9 @@ http://192.168.13.202/request.php POST
 Params    
 ```json  
 {"type":"get_all_mate","module":"PM_WEB_REQUEST"}
+```
+Response   
+```json
 {
 	"body": "",
 	"err_msg": "OK",
@@ -6123,7 +6126,7 @@ Response
 http://192.168.13.202/download.php/VzConfig/configbackup00.cfg GET    
 
 ##### 参数导入（会导致重启）
-http://192.168.13.202/configrestore.cgi GET    
+http://192.168.13.202/configrestore.cgi POST    
 
 ##### 模块管理 - 设置模块状态
 http://192.168.13.202/request.php POST    
@@ -6242,7 +6245,7 @@ Response
 ```
 #### 操作
 ##### 重启设备 - 立即重启
-http://192.168.13.201/vb.htm?ipcamrestartcmd=&_=1646273279427
+http://192.168.13.201/vb.htm?ipcamrestartcmd=&_=1646273279427 GET
 OK ipcamrestartcmd
 
 

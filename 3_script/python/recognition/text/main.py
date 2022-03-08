@@ -14,7 +14,8 @@ from collections import Counter
 import make_model
 
 
-# %%
+# %% https://www.tensorflow.org/guide/keras/train_and_evaluate
+# %% https://www.tensorflow.org/tutorials/estimator/keras_model_to_estimator?hl=zh-cn
 # 整幅图片的Y轴投影
 def img_y_shadow(img_b):
     ### 计算投影 ###

@@ -22,12 +22,12 @@ import docx
 #     graph = p.text
 #     print(graph)
 
-# cmd = '{"type":"set_reboot_timing","body":{"enable":1,"wday":"1,3","minute":0}}'
-# cmd = '{"type":"reset_module_app_cfg","module":"MODULE_CONFIG_INFO"} '
-cmd = '{"type":"set_module_app_cfg","module":"MODULE_CONFIG_INFO","body":{"app":[{"name":"xtp_push_app","enable":1},{"name":"onvif_server_app","enable":1},{"name":"stp_server_app","enable":1},{"name":"link_visual_app","enable":1},{"name":"onenet_server_app","enable":1},{"name":"oem_multicast_app","enable":1},{"name":"interact_device_app","enable":0}]}}'
+func_note = "获取补光灯控制"
+# cmd = '{"type":"set_module_app_cfg","module":"MODULE_CONFIG_INFO","body":{"app":[{"name":"xtp_push_app","enable":1},{"name":"onvif_server_app","enable":1},{"name":"stp_server_app","enable":1},{"name":"link_visual_app","enable":1},{"name":"onenet_server_app","enable":1},{"name":"oem_multicast_app","enable":1},{"name":"interact_device_app","enable":0}]}}'
+# cmd = '{"type":"AVS_SET_LED_CTRL","body":{"time_ctrl":[{"time_begin":"00:00:00","time_end":"04:30:00","timectrl_enable":true,"led_level":2,"id":0},{"time_begin":"04:30:00","time_end":"10:45:00","timectrl_enable":false,"led_level":-1,"id":1},{"time_begin":"10:45:00","time_end":"24:00:00","timectrl_enable":true,"led_level":0,"id":2}],"led_mode":2}}'
+cmd = '{"type":"AVS_GET_LED_CTRL"}'
 
 params = []
-func_note = "配置自动重启"
 func_name = ""
 func_body = ""
 func_end = ""
@@ -76,11 +76,16 @@ print("------------------------------------------------------------------------"
 def create_allure_step(param_list):
     param_str = "url={url}, cmd_type={cmd_type}"
     for param in param_list:
+        if param == 'module':
+            continue
         param_str += ', %s={%s}' % (param, param)
     return param_str
 
 
 print("allure_step:", create_allure_step(params))
+
+
+# def create_params_url()
 
 
 def create_params(data_json, param_list):
@@ -95,11 +100,13 @@ def create_params(data_json, param_list):
 
     if cmd_body is not None:
         for param in param_list:
+            if param == 'module':
+                continue
             default_value = data["body"][param]
             # print(param, default_value)
             if isinstance(default_value, str):
                 default_value = f'"{default_value}"'
-            param_str += f', "{param}"={default_value}'
+            param_str += f', {param}={default_value}'
     return param_str
 
 
@@ -109,6 +116,8 @@ print("params:", create_params(cmd, params))
 def create_doc(param_list):
     param_str = ""
     for param in param_list:
+        if param == 'module':
+            continue
         param_str += f'\t:param {param}: \n'
     return param_str[:-1]
 
@@ -120,6 +129,7 @@ def create_data_body(data_json, param_list):
     data = json.loads(data_json)
     param_str = ""
     cmd_type = None
+    cmd_module = None
     cmd_body = None
     try:
         cmd_type = data["type"]
@@ -130,16 +140,26 @@ def create_data_body(data_json, param_list):
         param_str += '{"type": cmd_type'
 
     try:
+        cmd_module = data["module"]
+    except Exception as e:
+        print('cmd not has module')
+
+    if cmd_module is not None:
+        param_str += f', "module": "{cmd_module}"'
+
+    try:
         cmd_body = data["body"]
     except Exception as e:
         print('cmd not has body')
 
     if cmd_body is not None:
-        param_str += ', {"body": '
+        param_str += ', "body": {'
         for param in param_list:
+            if param == 'module':
+                continue
             default_value = data["body"][param]
             # print(param, default_value)
-            param_str += f'"{param}"={param}, '
+            param_str += f'"{param}": {param}, '
         param_str += '}'
 
     param_str += '}'
@@ -167,7 +187,6 @@ def {func_name}(self, url=SYSTEMJSON_URL, cmd_type="{func_name}"{create_params(c
     try:
         data_body = {create_data_body(cmd, params)}
         ask_url = {create_ask_url()}
-        # response = requests.request("POST", ask_url, data=json.dumps(data_body), headers=self.HEADERS)
         response = self.post(ask_url, data=json.dumps(data_body))
         assert response.status_code == 200
         assert self.get_text(response.text, 'state') == 200
