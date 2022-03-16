@@ -161,6 +161,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
         print("GetInfoWorker", "net state", net_state)
         self.log.log_debug(f"UpgradeWindow get online info, net state: {net_state}, {data['sn']}")
         # data['host'] = "http://192.168.30.127:18008/02880771-fce36ba5"
+        data['host'] = "http://192.168.91.121"
         if data['host'] == "":
             self.get_access_key_id_secret()
             host = requestSnToHost(data['sn'])
@@ -603,6 +604,9 @@ class Worker(QRunnable):
                     exist = True
             if not exist:
                 failed_data.append(self.data)
+
+        # （可选）检查升级结果：重新登陆获取版本信息，与本地升级包版本对比
+
         self.client.close()
         self.client = None
 

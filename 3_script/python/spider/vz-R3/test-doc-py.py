@@ -22,10 +22,17 @@ import docx
 #     graph = p.text
 #     print(graph)
 
-func_note = "获取补光灯控制"
+func_note = "设置MTU"
 # cmd = '{"type":"set_module_app_cfg","module":"MODULE_CONFIG_INFO","body":{"app":[{"name":"xtp_push_app","enable":1},{"name":"onvif_server_app","enable":1},{"name":"stp_server_app","enable":1},{"name":"link_visual_app","enable":1},{"name":"onenet_server_app","enable":1},{"name":"oem_multicast_app","enable":1},{"name":"interact_device_app","enable":0}]}}'
 # cmd = '{"type":"AVS_SET_LED_CTRL","body":{"time_ctrl":[{"time_begin":"00:00:00","time_end":"04:30:00","timectrl_enable":true,"led_level":2,"id":0},{"time_begin":"04:30:00","time_end":"10:45:00","timectrl_enable":false,"led_level":-1,"id":1},{"time_begin":"10:45:00","time_end":"24:00:00","timectrl_enable":true,"led_level":0,"id":2}],"led_mode":2}}'
-cmd = '{"type":"AVS_GET_LED_CTRL"}'
+# cmd = '{"type":"set_flashlamp_info","module":"EVS_BUS_REQUEST","body":{"output_gpio":0,"input_gpio":0,"light_mode":4,"flash_info":{"delay_time":50,"light_time":3000}}}'
+# cmd = '{"type":"set_voice_cfg","body":{"voice_type":0,"greetings":"5oKo5aW9","tag":"5LiA6Lev6aG66aOO","voice_male":1,"voice_interval":900,"voice_time_inv_level":[{"start_time":"00:00:00","end_time":"07:00:00","voice_volume":60},{"start_time":"07:00:00","end_time":"20:00:00","voice_volume":100},{"start_time":"20:00:00","end_time":"24:00:00","voice_volume":60}],"start_mode":1}}'
+cmd = '''{
+  "type": "set_net_mtu",
+  "body": {
+    "mtu": 1500
+  }
+}'''
 
 params = []
 func_name = ""
@@ -107,6 +114,15 @@ def create_params(data_json, param_list):
             if isinstance(default_value, str):
                 default_value = f'"{default_value}"'
             param_str += f', {param}={default_value}'
+    else:
+        for param in param_list:
+            if param == 'module':
+                continue
+            default_value = data[param]
+            if isinstance(default_value, str):
+                default_value = f'"{default_value}"'
+            param_str += f', {param}={default_value}'
+
     return param_str
 
 
@@ -129,7 +145,6 @@ def create_data_body(data_json, param_list):
     data = json.loads(data_json)
     param_str = ""
     cmd_type = None
-    cmd_module = None
     cmd_body = None
     try:
         cmd_type = data["type"]
@@ -138,14 +153,6 @@ def create_data_body(data_json, param_list):
 
     if cmd_type is not None:
         param_str += '{"type": cmd_type'
-
-    try:
-        cmd_module = data["module"]
-    except Exception as e:
-        print('cmd not has module')
-
-    if cmd_module is not None:
-        param_str += f', "module": "{cmd_module}"'
 
     try:
         cmd_body = data["body"]
@@ -157,10 +164,18 @@ def create_data_body(data_json, param_list):
         for param in param_list:
             if param == 'module':
                 continue
-            default_value = data["body"][param]
+            if param == 'mode':
+                continue
+            # default_value = data["body"][param]
             # print(param, default_value)
             param_str += f'"{param}": {param}, '
         param_str += '}'
+    else:
+        for param in param_list:
+            if param == 'module':
+                param_str += f', "{param}": "{data[param]}", '
+                continue
+            param_str += f', "{param}": {param}, '
 
     param_str += '}'
     return param_str

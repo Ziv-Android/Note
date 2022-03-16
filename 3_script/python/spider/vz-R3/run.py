@@ -1,0 +1,1 @@
+cmd = 'pandoc -s .\R3-HTTP接口文档.md -o .\R3-HTTP接口文档.docx --reference-doc=templ.docx'

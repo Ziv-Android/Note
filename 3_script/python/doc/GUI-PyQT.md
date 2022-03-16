@@ -41,7 +41,7 @@ Working directory: $FileDir$
 3. pyrcc
 PyRCC主要是把编写的.qrc资源文件换成.py文件。
 ```text
-Name: QtDisigner
+Name: PyRCC
 Program : D:\Python\Scripts\pyrcc5.exe
 Arguments: $FileName$ -o rc_$FileNameWithoutExtension$.py
 Working directory: $FileDir$

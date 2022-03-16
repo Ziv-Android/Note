@@ -16,13 +16,17 @@ from .ConfigManager import *
 # user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
 # device_info = '{"type":"get_hwinfo","module":"BUS_WEB_REQUEST"}'
 # device_info_rx = '{"type":"get_device_info"}'
-url_login = ""
-url_info = ""
-url_upgrade = ""
-url_heart_beat = "/webpage_relogin.php"
+# device_info_yb = '{"type":"is_login_timeout","module":"BUS_WEB_REQUEST","body":{}}'
+url_login = "/request.php"
+url_logout = "/request.php"
+url_info = "/request.php"
+url_upgrade = "/update.php"
+url_heart_beat = "/request.php"
 
-user_info = ''
-device_info = ''
+user_info = '{"type": "login","module": "BUS_WEB_REQUEST","user_info": "%s"}'
+logout_info = '{"type":"logout","module":"BUS_WEB_REQUEST","body":{}}'
+device_info = '{"type":"get_hwinfo","module":"BUS_WEB_REQUEST"}'
+heart_beat_info = '{"type":"is_login_timeout","module":"BUS_WEB_REQUEST","body":{}}'
 
 
 class SessionClient:
@@ -40,6 +44,7 @@ class SessionClient:
     :param:username 用户名
     :param:password 密码
     """
+
     def __init__(self, host, username, password, config_path=None):
         self.host = host
         self.username = username
@@ -51,14 +56,20 @@ class SessionClient:
         self.read_config(config_path)
 
     def read_config(self, path):
-        global user_info, device_info, url_login, url_info, url_upgrade
+        global url_login,  url_info, url_upgrade, url_heart_beat, url_logout
+        global user_info, device_info, heart_beat_info, logout_info
         self.config = ConfigManager(path)
         try:
-            user_info = self.config.get_params_user_info()
-            device_info = self.config.get_params_device_info()
             url_login = self.config.get_path_login()
-            url_info = self.config.get_path_info()
+            url_logout = self.config.get_path_logout()
+            user_info = self.config.get_params_user_info()
             url_upgrade = self.config.get_path_upgrade()
+            url_heart_beat = self.config.get_path_heart_beat()
+
+            url_info = self.config.get_path_info()
+            logout_info = self.config.get_params_logout_info()
+            device_info = self.config.get_params_device_info()
+            heart_beat_info = self.config.get_params_heart_beat_info()
         except Exception as e:
             print("SessionClient read_config exception", e)
         finally:
@@ -83,6 +94,7 @@ class SessionClient:
     '''
     登录
     '''
+
     def login(self):
         if self.isLogin:
             return True
@@ -163,6 +175,7 @@ class SessionClient:
     :param filename 升级文件abs路径
     :return http状态值，response数据
     '''
+
     def update(self, filename, callback):
         self.login()
         try:
@@ -187,7 +200,8 @@ class SessionClient:
             resp = requests.post(url, data=m, headers=headers, timeout=60)
             resp.encoding = 'utf-8'
             self.log.log_info("SessionClient", f"update encode: {resp.encoding}, {resp.elapsed.total_seconds()}")
-            self.log.log_info("SessionClient", f"upload result: code={resp.status_code}, content={resp.content.decode()}")
+            self.log.log_info("SessionClient",
+                              f"upload result: code={resp.status_code}, content={resp.content.decode()}")
             if resp.status_code == 200:
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.log_info("SessionClient", f"upload success: cookies={self.session.cookies}, content={result}")
@@ -216,21 +230,42 @@ class SessionClient:
             # http://192.168.30.125:19852/02880771-fce36ba5/systemjson.php
             # url = self.host + "/webpage_relogin.php"
             url = self.host + url_heart_beat
-            self.log.log_info("SessionClient", f"heart_beat request {url} {self.session.cookies}")
-            resp = self.session.post(url=url, data="", timeout=10, headers=self.HEADERS)
+            self.log.log_info("SessionClient", f"heart_beat request {url} {self.session.cookies} {heart_beat_info}")
+            resp = self.session.post(url=url, data=heart_beat_info, timeout=10, headers=self.HEADERS)
             resp.encoding = 'utf-8'
             self.log.log_info("SessionClient", f"heart_beat encode: {resp.encoding}")
             if resp.status_code == 200:
                 result = resp.content.decode(encoding="UTF-8")
                 self.log.log_info("SessionClient",
-                                  f"info result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
+                                  f"heart_beat result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
 
         except Exception as e:
             self.log.log_error("SessionClient", f"info failed {e}")
 
+    def logout(self):
+        try:
+            if not self.isLogin:
+                return True
+            global url_logout, logout_info
+            # http://192.168.30.125:19852/02880771-fce36ba5/systemjson.php
+            # url = self.host + "/webpage_relogin.php"
+            url = self.host + url_logout
+            self.log.log_info("SessionClient", f"logout request {url} {self.session.cookies} {logout_info}")
+            resp = self.session.post(url=url, data=logout_info, timeout=10, headers=self.HEADERS)
+            resp.encoding = 'utf-8'
+            self.log.log_info("SessionClient", f"logout encode: {resp.encoding}")
+            if resp.status_code == 200:
+                result = resp.content.decode(encoding="UTF-8")
+                self.log.log_info("SessionClient",
+                                  f"logout result: code={resp.status_code}, cookies={self.session.cookies}, content={result}")
+
+        except Exception as e:
+            self.log.log_error("SessionClient", f"logout failed {e}")
+
     # 关闭会话并复位状态
     def close(self):
         if self.session is not None:
+            self.logout()
             self.session.close()
         self.session = None
         self.isLogin = False

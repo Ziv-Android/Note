@@ -14,12 +14,16 @@ access_key_secret =
 
 [path]
 login = 
+logout =
 info = 
 upgrade = 
+heart_beat = 
 
 [params]
 user_info = 
+logout_info = 
 device_info = 
+heart_beat_info = 
 
 [switch]
 use_local = 0
@@ -39,10 +43,13 @@ use_access = 0
 `access_key_secret` | 授权密钥 | 可选，use_access=1时，配置后自动填入
 `[path]` | 相机请求地址 | 不可变
 `login` | 相机登录路径 | 必选，注:login.php与request.php涉及不同的加密密钥和请求参数
+`logout` | 相机退出登录路径 | 必选，注:logout.php与request.php具体需要通过抓包确认
 `info` | 获取设备信息路径 | 必选，注:systemjson.php与request.php涉及不同的请求参数
 `upgrade` | 升级路径 | 必选，注:upload.cgi与update.php具体需要通过抓包确认
+`heart_beat` | 心跳 | 必选，注:request.php与webpage_relogin.php具体需要通过抓包确认
 `[params]` | 相机请求参数关键字 | 不可变
-`user_info` | 登录请求参数 | 必选，抓包确认, %s占位传入的user_info数据且需要使用两个`%%`替换一个`%`
+`user_info` | 登录请求参数 | 必选，抓包确认
+`logout_info` | 推出登录请求参数 | 必选，抓包确认
 `device_info` | 获取版本等信息请求参数 | 必选，抓包确认
 `[switch]` | 控制开关关键字 | 不可变
 `use_access` | 是否使用accessKey | 必选，0=关闭，1=开启；开启后界面显示access_key_id和access_key_secret输入框，且参考连接文档获取accessKeyId和accessKeySecret <br/> http://open.vzicloud.com/doc/
