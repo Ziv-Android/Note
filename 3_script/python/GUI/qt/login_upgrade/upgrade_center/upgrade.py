@@ -142,8 +142,10 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
             item_sn = item_sn.replace('\n', '').replace('\r', '').replace(' ', '').strip()
             if isLegalSn(item_sn):
                 data = {'sn': item_sn, 'state': "", 'progress': "", 'version': "", "host": "", "priority": 8}
+            elif isLegalIp(item_sn):
+                data = {'sn': item_sn, 'state': "", 'progress': "", 'version': "", "host": f"http://{item_sn}", "priority": 5}
             else:
-                data = {'sn': item_sn, 'state': "序列号错误", 'progress': "", 'version': "", "host": "", "priority": 4}
+                data = {'sn': item_sn, 'state': "序列号/IP错误", 'progress': "", 'version': "", "host": "", "priority": 4}
             self.database_update(total_data, data, row)
             self.log.log_debug(f"UpgradeWindow table item changed {row}, {data['sn']}")
             self.table_head_message_change_callback()
@@ -161,7 +163,6 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
         print("GetInfoWorker", "net state", net_state)
         self.log.log_debug(f"UpgradeWindow get online info, net state: {net_state}, {data['sn']}")
         # data['host'] = "http://192.168.30.127:18008/02880771-fce36ba5"
-        data['host'] = "http://192.168.91.121"
         if data['host'] == "":
             self.get_access_key_id_secret()
             host = requestSnToHost(data['sn'])
@@ -220,14 +221,18 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
             csv_write.writerow(csv_head)
 
             for _item in total_data:
-                if isLegalSn(_item['sn']):
+                if isLegalSn(_item['sn']) or isLegalIp(_item['sn']):
                     row = [_item['sn'], _item['state'], _item['progress'], _item['version']]
                     csv_write.writerow(row)
+
 
     # 增
     def database_add(self, database, data, index=-1):
         global shouldUpdateInfo, temp
         if isLegalSn(data['sn']):
+            self.request_device_online_state(data)
+        elif isLegalIp(data['sn']):
+            data['host'] = "http://" + data['sn']
             self.request_device_online_state(data)
         print("UpgradeWindow", "database_add", data, index)
         if index >= 0:
@@ -263,6 +268,9 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
 
         if _index_delete >= 0:
             if isLegalSn(data['sn']):
+                self.request_device_online_state(data)
+            elif isLegalIp(data['sn']):
+                data['host'] = "http://" + data['sn']
                 self.request_device_online_state(data)
             database[_index_delete] = data
         else:
@@ -345,7 +353,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
                 continue
             sn = cvs_line[0].replace('\n', '').replace('\r', '').replace(' ', '').strip()
             # 判断SN是否合法, 检查去重
-            if isLegalSn(sn):
+            if isLegalSn(sn) or isLegalIp(sn):
                 if sn not in temp:
                     temp.append(sn)
                     _temp.append({'sn': sn, 'state': "", 'progress': "", 'version': "", "host": "", "priority": 6})
@@ -358,7 +366,7 @@ class UpgradeWindow(QMainWindow, Ui_MainWindow):
 
         for _i in range(len(total_data)):
             _item = total_data[_i]
-            if not isLegalSn(_item['sn']):
+            if not isLegalSn(_item['sn']) or not isLegalIp(_item['sn']):
                 if len(_temp) > 0:
                     self.database_update(total_data, _temp[0], _i)
                     _temp.remove(_temp[0])
@@ -607,6 +615,7 @@ class Worker(QRunnable):
 
         # （可选）检查升级结果：重新登陆获取版本信息，与本地升级包版本对比
 
+        self.timer.stop()
         self.client.close()
         self.client = None
 
@@ -645,7 +654,7 @@ class UpgradeThread(QThread):
         self.log.log_debug(f"UpgradeThread thread pool started")
         for index in range(len(total_data)):
             _item = total_data[index]
-            if isLegalSn(_item['sn']):
+            if isLegalSn(_item['sn']) or isLegalIp(_item['sn']):
                 workerSignal = WorkerSignal()
                 workerSignal.progress.connect(self.update_data)
                 workerSignal.finished.connect(self.update_message)
@@ -718,7 +727,7 @@ def isLegalSn(sn):
 def isLegalIp(ip):
     result = re.match(r'((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}:?\d*',
                       ip) is not None
-    print("UpgradeWindow", "isLegalIp", ip, result)
+    # print("UpgradeWindow", "isLegalIp", ip, result)
     return result
 
 
@@ -796,7 +805,7 @@ def record_sn_list():
     temp.clear()
     # 记录SN，去重
     for item in total_data:
-        if isLegalSn(item['sn']):
+        if isLegalSn(item['sn']) or isLegalIp(item['sn']):
             temp.append(item['sn'])
 
 # 参考资料

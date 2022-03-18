@@ -22,17 +22,15 @@ import docx
 #     graph = p.text
 #     print(graph)
 
-func_note = "设置MTU"
+func_note = "获取语音播报配置"
 # cmd = '{"type":"set_module_app_cfg","module":"MODULE_CONFIG_INFO","body":{"app":[{"name":"xtp_push_app","enable":1},{"name":"onvif_server_app","enable":1},{"name":"stp_server_app","enable":1},{"name":"link_visual_app","enable":1},{"name":"onenet_server_app","enable":1},{"name":"oem_multicast_app","enable":1},{"name":"interact_device_app","enable":0}]}}'
 # cmd = '{"type":"AVS_SET_LED_CTRL","body":{"time_ctrl":[{"time_begin":"00:00:00","time_end":"04:30:00","timectrl_enable":true,"led_level":2,"id":0},{"time_begin":"04:30:00","time_end":"10:45:00","timectrl_enable":false,"led_level":-1,"id":1},{"time_begin":"10:45:00","time_end":"24:00:00","timectrl_enable":true,"led_level":0,"id":2}],"led_mode":2}}'
 # cmd = '{"type":"set_flashlamp_info","module":"EVS_BUS_REQUEST","body":{"output_gpio":0,"input_gpio":0,"light_mode":4,"flash_info":{"delay_time":50,"light_time":3000}}}'
 # cmd = '{"type":"set_voice_cfg","body":{"voice_type":0,"greetings":"5oKo5aW9","tag":"5LiA6Lev6aG66aOO","voice_male":1,"voice_interval":900,"voice_time_inv_level":[{"start_time":"00:00:00","end_time":"07:00:00","voice_volume":60},{"start_time":"07:00:00","end_time":"20:00:00","voice_volume":100},{"start_time":"20:00:00","end_time":"24:00:00","voice_volume":60}],"start_mode":1}}'
-cmd = '''{
-  "type": "set_net_mtu",
-  "body": {
-    "mtu": 1500
-  }
-}'''
+# cmd = '''{"type":"set_http_cfg","body":{"centerserver":{"hostname":"MTkyLjE2OC4xLjEwNg==","port":80,"enable_ssl":0,"ssl_port":443,"http_timeout":5},"cs_dev_reg":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3JlY2VpdmVkZXZpY2VpbmZvLnBocA=="},"cs_alarm_plate":{"clear_offline":0,"enable":0,"retransmission":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA==","plate_rlt_level":0,"big_img":0,"small_img":0},"cs_alarm_gioin":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL2dpby5waHA="},"cs_serial":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3NlcmlhbC5waHA="},"http_ip_ext":{"IpExt":[]},"ssl_ca":{"ca_enable":0},"offline_status":0,"serv_poll_status":0,"repush_nums":0,"proxy_http":{"enable":0,"uri":"L2RldmljZW1hbmFnZW1lbnQvcGhwL3BsYXRlcmVzdWx0LnBocA==","big_img":0,"small_img":0}}}'''
+cmd = '''
+{"centerserver":{"hostname":"MTkyLjE2OC4xLjEwNg==","port":80,"enable_ssl":0,"ssl_port":443,"http_timeout":5}}
+'''
 
 params = []
 func_name = ""
@@ -46,13 +44,15 @@ def json_parser(root, json_obj):
         if isinstance(json_obj, dict):
             print("dict:", len(json_obj), root, json_obj)
             for key, value in json_obj.items():
-                if key == "id":
-                    continue
-                elif key == "type":
+                # if key == "id":
+                #     continue
+                if key == "type":
                     func_name = value
-                    if func_name.startswith("get"):
-                        func_end = "return data"
+                    # if func_name.startswith("get"):
+                    #     func_end = "return data"
                 else:
+                    if key.startswith("body"):
+                        print(key, value)
                     json_parser(key, value)
         elif isinstance(json_obj, list):
             print("list:", len(json_obj), root, json_obj)
