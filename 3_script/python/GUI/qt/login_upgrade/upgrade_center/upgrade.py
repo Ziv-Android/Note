@@ -766,7 +766,7 @@ def requestSnToHost(sn):
         param = {'sn': sn, 'port': 80}
         resp = requests.get(url_pdns, params=param)
         print("Worker", "requestSnToHost", "getHost", resp.status_code, resp.text)
-        return resp.text
+        return "http://" + resp.text
     if access_switch == 1:
         if access_key_id == "" or access_key_secret == "":
             return "access_error"
