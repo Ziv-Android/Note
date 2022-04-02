@@ -53,6 +53,7 @@ class TcpManager:
             self.s.sendall(buf)
         except socket.error as e:
             print("TCP send exception", e)
+            raise
 
     def send(self, cmd):
         if self.s is None:

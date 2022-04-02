@@ -589,6 +589,7 @@ class Worker(QRunnable):
             return
         self.timer = QTimer()
         self.timer.timeout.connect(self.send_heart_beat)
+        self.timer.start(3000)
         # 升级
         state = self.client.update(file_path, self.progress_change)
         self.log.log_debug(f"Worker {self.thread_name} update：{state}")
@@ -614,9 +615,8 @@ class Worker(QRunnable):
                 failed_data.append(self.data)
 
         # （可选）检查升级结果：重新登陆获取版本信息，与本地升级包版本对比
-
         self.timer.stop()
-        self.client.close()
+        # self.client.close()
         self.client = None
 
         try:
@@ -720,7 +720,7 @@ def isLegalSn(sn):
     if len(sn) != 17:
         return False
     result = re.match(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{8}", sn) is not None
-    print("UpgradeWindow", "isLegalSn", sn, result)
+    # print("UpgradeWindow", "isLegalSn", sn, result)
     return result
 
 
