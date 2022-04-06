@@ -182,7 +182,7 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
                 self.auto_test_signal.emit(self.testcase[i], '成功')
             else:
                 self.is_485_pass = 0
-                if dlens == 1:
+                if dlens == 1 and host == '192.168.1.101':
                     params[self.testcase[i]] = "双目远端无此接口"
                     self.auto_test_signal.emit(self.testcase[i], '双目远端无此接口')
                 else:
@@ -217,21 +217,21 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
             self.auto_test_signal.emit(self.testcase[i], '跳过')
         else:
             ret = self.vdo_led.led_ctrl(10, 1)
-            time.sleep(1)
+            time.sleep(5)
             if ret != 200:
                 params[self.testcase[i]] = "失败"
                 self.auto_test_signal.emit(self.testcase[i], '失败')
                 self.autotest_stop()
                 return False
             ret = self.vdo_led.led_ctrl(50, 1)
-            time.sleep(1)
+            time.sleep(5)
             if ret != 200:
                 params[self.testcase[i]] = "失败"
                 self.auto_test_signal.emit(self.testcase[i], '失败')
                 self.autotest_stop()
                 return False
-            ret = self.vdo_led.led_ctrl(100, 1)
-            time.sleep(1)
+            ret = self.vdo_led.led_ctrl(90, 1)
+            time.sleep(5)
             if ret != 200:
                 params[self.testcase[i]] = "失败"
                 self.auto_test_signal.emit(self.testcase[i], '失败')
@@ -361,8 +361,34 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
             self.auto_test_signal.emit(self.testcase[i], '失败')
             self.autotest_state = 5
             return False
-        params[self.testcase[i]] = "成功"
-        self.auto_test_signal.emit(self.testcase[i], '成功')
+
+        time.sleep(5)
+        self.pwm.reset_http_client_handle()
+        # 设备恢复出厂后，IP发生变换
+        if host == "192.168.1.100" or host == "192.168.1.101":
+            pass
+        else:
+            # 双目远端
+            if dlens == 1 and self.is_485_pass == 0:
+                host = "192.168.1.101"
+            # 双目近端 单目
+            else:
+                host = "192.168.1.100"
+        self.pwm.w21_dat.pDevHostEdit.setText(host)
+        url = 'http://%s' % host
+        webc = WEBClient(url, username, password)
+        for time_index in range(30):
+            time.sleep(1)
+            if not webc.login():
+                if self.autotest_state == 5:
+                    self.stop_click_signal.emit(self.autotest_state)
+                    break
+                self.auto_test_signal.emit(self.testcase[i], f'重连中{time_index}')
+                continue
+            else:
+                params[self.testcase[i]] = "成功"
+                self.auto_test_signal.emit(self.testcase[i], '成功')
+                break
 
         report_doc.report_extern(params)
         report_doc.report_end("通过", time.time())
@@ -380,6 +406,7 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
             print(f"output: {source}")
             # 单目
             self.pwm.pTestStackWidget.setCurrentIndex(2)
+            self.pwm.w24_ret.final_log.set_custom_sn_cfg_auto()
             self.pwm.w24_ret.final_log.show_result_html(source)
             return
 
@@ -388,6 +415,7 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
             report_doc.reset_flag()
             # 双目，切换至第二个摄像头测试
             self.pwm.pTestStackWidget.setCurrentIndex(0)
+            self.pwm.w24_ret.final_log.set_custom_sn_cfg_auto()
             self.pwm.w21_dat.pDevHostEdit.setText("192.168.1.101")
             self.pwm.w21_dat.start_autotest_click(0)
         else:
@@ -400,6 +428,7 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
             report_doc.clear_compose_file()
             # 切换至结果页并显示报告
             self.pwm.pTestStackWidget.setCurrentIndex(2)
+            self.pwm.w24_ret.final_log.set_custom_sn_cfg_auto()
             self.pwm.w24_ret.final_log.show_result_html(source)
 
     # 请求设备信息-序列号sn
@@ -407,4 +436,5 @@ class W23ExternDevice(QtWidgets.QWidget, Ui_W23ExternDevice):
         print('device_config')
         webc = self.http_client_handle()
         QtWidgets.QApplication.processEvents()
-        return get_device_info(webc)
+        sn, soft_ver = get_device_info(webc)
+        return sn

@@ -98,7 +98,7 @@ class WEBClient:
                 print("http session is None")
                 return 404, None
             url = self.url + "/request.php"
-            print(url)
+            print(url, cmd)
             self.log.log_info(f"post {url} ---> {cmd}")
             udic = json.loads(cmd)
             resp = self.ses.post(url, cmd, timeout=10, headers={"Cache-Control": "no-cache"})
@@ -139,7 +139,7 @@ class WEBClient:
             data = '{"filepath":"%s"}' % remotefile
             print(data)
 
-            files = {'file' : open(localfile, 'rb')}
+            files = {'file': open(localfile, 'rb')}
             print(files)
             headers = {"content-type":"multipart/form-data"}
             # resp = self.ses.post(url, data=data, files=files, headers=headers)

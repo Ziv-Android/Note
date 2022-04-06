@@ -3,6 +3,7 @@
 import json
 import time
 
+from c_protocol import *
 from c_rs485 import *
 from oqc_tool import *
 from libutils.webclient import WEBClient
@@ -192,7 +193,7 @@ def cfg_factory_param_dlens(cp, devs, username, password, callback=None):
     if num_check_485_error == 2 or change_result == 0:
         if callback is not None:
             callback("485未连接或485模块异常", host_on_camera[0])
-            return
+        return
 
     if callback is not None:
         callback("正在修改", host_on_camera[0])

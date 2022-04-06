@@ -64,34 +64,38 @@ class W223VideoLens(QtWidgets.QWidget, Ui_W223VideoLens):
     # 镜头
     def lens_zoom_in(self):
         webc = self.pwm.http_client_handle()
-        if self.lens_zoomin_sta == 1:
-            self.lens_zoomin_sta = 0
-            return c_lens_stop(webc, self.motor, self.runmode)
-        elif self.lens_zoomin_sta == 0:
-            self.lens_zoomin_sta = 1
-            if not self.login_state:
-                self.message_signal.emit("失败", "设备未登录")
-                return 404
-            self.motor, self.runmode = c_lens_zoom_in(webc, 1)
-            if not self.pLensSpeedCBox.isChecked():
-                time.sleep(0.2)
-                return c_lens_keep(webc, self.motor, self.runmode)
+        self.lens_zoomin_sta = 1
+        if not self.login_state:
+            self.message_signal.emit("失败", "设备未登录")
+            return 404
+        self.motor, self.runmode = c_lens_zoom_in(webc, 1)
+        if not self.pLensSpeedCBox.isChecked():
+            time.sleep(0.3)
+            return c_lens_keep(webc, self.motor, self.runmode)
+
+    def lens_zoom_in_stop(self):
+        self.lens_zoomin_sta = 0
+        return self.lens_zoom_stop()
 
     #
     def lens_zoom_out(self):
         webc = self.pwm.http_client_handle()
-        if self.lens_zoomout_sta == 1:
-            self.lens_zoomout_sta = 0
-            return c_lens_stop(webc, self.motor, self.runmode)
-        elif self.lens_zoomout_sta == 0:
-            self.lens_zoomout_sta = 1
-            if not self.login_state:
-                self.message_signal.emit("失败", "设备未登录")
-                return 404
-            self.motor, self.runmode = c_lens_zoom_out(webc)
-            if not self.pLensSpeedCBox.isChecked():
-                time.sleep(0.2)
-                return c_lens_keep(webc, self.motor, self.runmode)
+        self.lens_zoomout_sta = 1
+        if not self.login_state:
+            self.message_signal.emit("失败", "设备未登录")
+            return 404
+        self.motor, self.runmode = c_lens_zoom_out(webc)
+        if not self.pLensSpeedCBox.isChecked():
+            time.sleep(0.3)
+            return c_lens_keep(webc, self.motor, self.runmode)
+
+    def lens_zoom_out_stop(self):
+        self.lens_zoomout_sta = 0
+        return self.lens_zoom_stop()
+
+    def lens_zoom_stop(self):
+        webc = self.pwm.http_client_handle()
+        return c_lens_stop(webc, self.motor, self.runmode)
 
     #
     def lens_focus_in(self):
@@ -106,7 +110,7 @@ class W223VideoLens(QtWidgets.QWidget, Ui_W223VideoLens):
                 return 404
             self.motor, self.runmode = c_lens_focus_in(webc)
             if not self.pLensSpeedCBox.isChecked():
-                time.sleep(0.2)
+                time.sleep(0.3)
                 return c_lens_keep(webc, self.motor, self.runmode)
 
     #
@@ -122,7 +126,7 @@ class W223VideoLens(QtWidgets.QWidget, Ui_W223VideoLens):
                 return 404
             self.motor, self.runmode = c_lens_focus_out(webc, 1)
             if not self.pLensSpeedCBox.isChecked():
-                time.sleep(0.2)
+                time.sleep(0.3)
                 return c_lens_keep(webc, self.motor, self.runmode)
 
     #

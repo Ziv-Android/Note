@@ -150,12 +150,16 @@ class WordReport:
     def write_content(self, content):
         self.document.add_paragraph(content)
 
-    def write_pic(self, pic_path):
+    def write_pic(self, pic_path, compress_rate=0.5):
         try:
             pic = Image.open(pic_path)
+            w, h = pic.size
+            pic = pic.resize((int(w*compress_rate), int(h*compress_rate)))
+            w, h = pic.size
+            print("write_pic resize:", w, h)
             if pic.mode == "P":
                 pic = pic.convert("RGB")
-            pic.save(pic_path, quality=100)
+            pic.save(pic_path, quality=80)
             self.document.add_picture(pic_path, width=Cm(15.2))
         except:
             self.write_content(f"图片获取失败：{pic_path}")

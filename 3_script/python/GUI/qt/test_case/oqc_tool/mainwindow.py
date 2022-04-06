@@ -10,6 +10,7 @@ from oqc_tool.w1_product_change import W1ProductChange
 
 import win32api
 from libutils.wordreport import *
+from oqc_tool.config_app import *
 
 
 #
@@ -23,8 +24,11 @@ class CMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except:
             print("objdll is not define")
 
+        self.windowTitle = self.windowTitle()
+        self.setWindowTitle(f"{self.windowTitle}({version_app})")
+
         # 测试主界面
-        self.w2_test_wdg = W2TestWidget()
+        self.w2_test_wdg = W2TestWidget(self)
         self.pMainStackWidget.addWidget(self.w2_test_wdg)
 
         # 产品选择界面
@@ -45,13 +49,20 @@ class CMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.report_doc.save_doc()
 
     def finish_callback(self, cp_fd, product, cc_fd, customer):
+        self.setWindowTitle(f"{self.windowTitle}({version_app})-{cc_fd.get_name(customer)}-{product}")
         params = report_doc.get_empty_params()
         params["产品型号"] = product
         self.w2_test_wdg.set_product(cp_fd, product)
-        params["订货客户"] = customer
+        params["订货客户"] = cc_fd.get_name(customer)
         self.w2_test_wdg.set_customer(cc_fd, customer)
         self.w2_test_wdg.widget_init()
 
         self.pMainStackWidget.setCurrentWidget(self.w2_test_wdg)
 
         report_doc.report_basic(params)
+
+    def back_to_product_page(self):
+        self.pMainStackWidget.setCurrentWidget(self.w1_pro_chg)
+
+    def get_custom_sn_file(self):
+        return self.w1_pro_chg.custom_sn_file

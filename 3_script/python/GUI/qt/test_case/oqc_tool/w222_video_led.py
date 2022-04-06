@@ -36,6 +36,7 @@ class W222VideoLed(QtWidgets.QWidget, Ui_W222VideoLed):
             self.message_signal.emit("失败", "设备未登录")
             return 404
         webc = self.pwm.http_client_handle()
+        print("led_ctrl_level", value)
         return c_led(webc, value)
 
     def set_login_state(self, state):

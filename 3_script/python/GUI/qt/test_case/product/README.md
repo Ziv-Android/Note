@@ -21,7 +21,7 @@ library=
 `library` | 使用的so库名称 |
 
 ## 产品型号配置
-配置路径：product -> h -> `[产品型号]`.ini 注意：**文件名对应产品型号**    
+配置路径：product -> h -> 协议名(使用通用协议时，忽略此路径) -> `[产品型号]`.ini 注意：**文件名对应产品型号**    
 配置模板：
 ```text
 [info]
@@ -43,6 +43,8 @@ io_in=1
 io_out=2
 serial=2
 io_reset=1
+# net_type: 网卡类型 100=百兆，1000=千兆
+net_type=1000
 ```
 
 字段说明：
@@ -64,3 +66,4 @@ io_reset=1
 `io_out` | IO输出 | 
 `serial` | 串口 | 
 `io_reset` | IO复位 | 
+`net_type` | 网卡类型 | 100=百兆，1000=千兆

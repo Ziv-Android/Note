@@ -6,7 +6,7 @@ import _thread
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 
-from c_rs485 import *
+from c_serial import *
 from oqc_tool.ui_w232_extern_serial import Ui_W232ExternSerial
 
 
@@ -44,27 +44,11 @@ class W232ExternSerial(QtWidgets.QWidget, Ui_W232ExternSerial):
 
     # 自动测试
     def autotest_usercase(self):
-        ret = False
         webc = self.pwm.http_client_handle()
-        sdata = self.pRS0Edit.text()
-        ret, _ = c_rs485_write(webc, 0, sdata)
-        if ret != 200:
-            return False
-        try:
-            js = json.loads(_)
-            if js['state'] != 200:
-                return False
-        except:
-            return False
-
-        if self.num_serial == 2:
-            time.sleep(1)
-            ret, rdata = c_rs485_read(webc, 0)
-            if ret == 200:
-                self.test_signal.emit(0, rdata)
-            if sdata != rdata:
-                return False
-        return True
+        rdata = c_serial_another_ip(webc)
+        if isinstance(rdata, str):
+            self.test_signal.emit(0, rdata)
+        return rdata
 
     # 更新state显示
     def update_state(self, num, state):

@@ -51,6 +51,9 @@ class W2TestWidget(QtWidgets.QWidget, Ui_W2TestWidget):
         #
         self.pTestStackWidget.setCurrentWidget(self.w22_vdo)
 
+    def set_soft_ver(self, ver):
+        self.w21_dat.set_soft_ver(ver)
+
     def set_product(self, fd, product):
         self.pro_fd = fd
         self.product = product
@@ -65,10 +68,14 @@ class W2TestWidget(QtWidgets.QWidget, Ui_W2TestWidget):
     def get_customer(self):
         return self.cus_fd, self.customer
 
+    def get_custom_sn_file(self):
+        return self.prt.get_custom_sn_file()
+
     def widget_init(self):
         self.w21_dat.widget_init()
         self.w22_vdo.widget_init()
         self.w23_ext.widget_init()
+        self.w24_ret.widget_init()
 
     def reset_http_client_handle(self):
         if self.client is not None:
@@ -119,6 +126,7 @@ class W2TestWidget(QtWidgets.QWidget, Ui_W2TestWidget):
             self.pTestStackWidget.setCurrentWidget(self.w23_ext)
         elif self.w24_ret.name == name:
             self.pTestStackWidget.setCurrentWidget(self.w24_ret)
+            self.w24_ret.get_custom_sn_cfg_client()
         else:
             self.pTestStackWidget.setCurrentWidget(self.w22_vdo)
         self.w22_vdo.autotest_stop(0)

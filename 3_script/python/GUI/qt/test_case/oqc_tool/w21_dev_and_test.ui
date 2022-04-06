@@ -47,14 +47,7 @@
       <property name="spacing">
        <number>6</number>
       </property>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>本地IP(空时人工填)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2">
+      <item row="5" column="0" colspan="3">
        <widget class="QPushButton" name="pushButton_2">
         <property name="maximumSize">
          <size>
@@ -67,20 +60,34 @@
         </property>
        </widget>
       </item>
+      <item row="7" column="2">
+       <widget class="QLineEdit" name="pUsernameEdit">
+        <property name="text">
+         <string>admin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLineEdit" name="pPasswordEdit">
+        <property name="text">
+         <string>admin</string>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::PasswordEchoOnEdit</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QPushButton" name="pExchangeIPBtn">
+        <property name="text">
+         <string>双目IP修改</string>
+        </property>
+       </widget>
+      </item>
       <item row="7" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>用户名:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="pLocalHostCBox">
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-        <property name="currentIndex">
-         <number>-1</number>
         </property>
        </widget>
       </item>
@@ -91,40 +98,64 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="4" column="1">
-       <widget class="QPushButton" name="pExchangeIPBtn">
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>双目IP修改</string>
+         <string>版  本</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="1" column="2">
+       <widget class="QComboBox" name="pLocalHostCBox">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
        <widget class="QPushButton" name="pSearchButton">
         <property name="text">
          <string>搜索设备(F5)</string>
         </property>
+        <property name="shortcut">
+         <string>F5</string>
+        </property>
        </widget>
       </item>
-      <item row="8" column="1">
-       <widget class="QLineEdit" name="pPasswordEdit">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>admin</string>
+         <string>本地IP(空时人工填)</string>
         </property>
-        <property name="echoMode">
-         <enum>QLineEdit::PasswordEchoOnEdit</enum>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="pBackButton">
+        <property name="text">
+         <string>返回上页(Back)</string>
+        </property>
+        <property name="shortcut">
+         <string>Backspace</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLineEdit" name="pDevHostEdit">
+        <property name="text">
+         <string>192.168.1.100</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QListWidget" name="pDevListWidget"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lExchangeIPResult">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -135,34 +166,17 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QListWidget" name="pDevListWidget"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="pDevHostEdit">
-        <property name="text">
-         <string>192.168.1.100</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QLineEdit" name="pUsernameEdit">
-        <property name="text">
-         <string>admin</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="lExchangeIPResult">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
+      <item row="10" column="2">
        <widget class="QPushButton" name="pLoginButton">
         <property name="text">
          <string>设备登录</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLineEdit" name="lineEdit_soft_version">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -194,6 +208,9 @@
        <widget class="QPushButton" name="pAutotestButton">
         <property name="text">
          <string>自动测试(F8)</string>
+        </property>
+        <property name="shortcut">
+         <string>F8</string>
         </property>
        </widget>
       </item>

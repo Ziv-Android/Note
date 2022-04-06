@@ -3,6 +3,8 @@
 # from oqc_tool import Ui_MainWindow
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
+
 from oqc_tool.config_client import ConfigClient
 from oqc_tool.config_product import ConfigProduct
 from oqc_tool.ui_w1_product_change import Ui_W01_ProductChange
@@ -14,15 +16,21 @@ class W1ProductChange(QtWidgets.QWidget, Ui_W01_ProductChange):
         super().__init__()
         self.setupUi(self)
         self.pSrvGBox.setVisible(False)
+        self.pProductInfo.setEnabled(False)
+        self.pCustomSnBtn.setVisible(False)
 
+        self.custom_sn_file = ""
         self.pwm = pwm
         self.dir = "./product/%s/" % product  # 产品目录
+        self.dir_product = ''
         print(self.dir)
 
         self.init_product()
         self.init_customer()
         self.pFinishCfgBtn.clicked.connect(self.finish_config_product)
+        self.pCustomSnBtn.clicked.connect(self.custom_sn_config)
         self.pProductCBox.currentIndexChanged.connect(self.pro_change_slots)
+        self.pCustomerCBox.currentIndexChanged.connect(self.pro_customer_change_slots)
 
     # 初始化客户列表
     def init_customer(self):
@@ -36,9 +44,14 @@ class W1ProductChange(QtWidgets.QWidget, Ui_W01_ProductChange):
                 break
 
     # 初始化产品列表
-    def init_product(self):
-        filelist = self.get_filelist(self.dir, [])
+    def init_product(self, product=""):
+        self.pProductCBox.clear()
         self.pProductCBox.addItem('-')
+        if product == "" or product == "yaodian":
+            self.dir_product = self.dir
+        else:
+            self.dir_product = self.dir + product + '/'
+        filelist = self.get_filelist(self.dir_product, [])
         for file in filelist:
             self.pProductCBox.addItem(file)
         print(filelist)
@@ -47,7 +60,6 @@ class W1ProductChange(QtWidgets.QWidget, Ui_W01_ProductChange):
     # 输入文件夹路径、空文件列表[]
     # 返回 文件列表Filelist,包含文件名（完整路径）
     def get_filelist(self, dir, file_list):
-        new_dir = dir
         if os.path.isfile(dir):
             filename = os.path.basename(dir)    # 文件名
             if filename.endswith(".ini"):
@@ -63,10 +75,25 @@ class W1ProductChange(QtWidgets.QWidget, Ui_W01_ProductChange):
 
         return file_list
 
+    # 订单客户
+    def pro_customer_change_slots(self):
+        customer = self.pCustomerCBox.currentData()
+        pname = self.cc.get_conf_pname(customer)
+        if pname == 'lifang':
+            self.pCustomSnBtn.setVisible(True)
+        else:
+            self.pCustomSnBtn.setVisible(False)
+        self.custom_sn_file = ""
+        self.pProductInfo.clear()
+        self.init_product(pname)
+        self.pro_change_slots()
+
     # 产品选择
     def pro_change_slots(self):
         pro = self.pProductCBox.currentText()
-        path = self.dir + pro + '.ini'
+        if pro == '' or pro == '-':
+            return
+        path = self.dir_product + pro + '.ini'
         print(path)
 
         self.pProductInfo.clear()
@@ -88,6 +115,8 @@ class W1ProductChange(QtWidgets.QWidget, Ui_W01_ProductChange):
         for cap in caps:
             self.pProductInfo.appendPlainText(str(cap))
         # print(cp.get_capacity())
+        if self.custom_sn_file != "":
+            self.pProductInfo.appendPlainText(self.custom_sn_file)
 
     # 确认产品选择
     def finish_config_product(self):
@@ -101,4 +130,15 @@ class W1ProductChange(QtWidgets.QWidget, Ui_W01_ProductChange):
         if not self.cp.is_init():
             print('ConfigProduct failed')
             return
+        if self.cc.get_conf_pname(customer) == 'lifang' and self.custom_sn_file == '':
+            QtWidgets.QMessageBox.warning(self, "警告", "未选择加密配置文件")
         self.pwm.finish_callback(self.cp, product, self.cc, customer)
+
+    # 客户配置烧写加密excel文件
+    def custom_sn_config(self):
+        file_path, file_format = QFileDialog.getOpenFileName(self, '选择文件', '', 'Excel files(*.xls)')
+        if file_path == '':
+            return
+        self.custom_sn_file = file_path
+        print("custom_sn_config", self.custom_sn_file)
+        self.pProductInfo.appendPlainText(f"加密配置文件路径：{self.custom_sn_file}")

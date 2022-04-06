@@ -23,6 +23,16 @@ class W24FinalResult(QtWidgets.QWidget, Ui_W24FinalResult):
         self.pFinalGLayout.addWidget(self.final_log)
         self.auto_test_signal.connect(self.test_case_update_state)
 
+    def widget_init(self):
+        cc, cus = self.pwm.get_customer()
+        self.final_log.set_customer(cc, cus)
+
+    def get_custom_sn_file(self):
+        return self.pwm.get_custom_sn_file()
+
+    def get_custom_sn_cfg_client(self):
+        self.final_log.get_custom_sn_cfg_client()
+
     # 更新QListWidget item显示
     def test_case_update_state(self, text):
         self.final_log.show_result(text)

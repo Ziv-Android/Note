@@ -12,9 +12,15 @@ from time import sleep, time
 
 # TCP阻塞通信,使用request发送消息获取回执
 class TCPClient:
+    def __init__(self, host, port=8132):
+        self.host = ""
+        self.port = 0
+        self.tc = None
+        self.connect(host, port)
+
     def connect(self, host, port):
-        self.host = host;
-        self.port = port;
+        self.host = host
+        self.port = port
 
         self.tc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # self.tc.setblocking(0)  # 非阻塞模式
@@ -22,7 +28,7 @@ class TCPClient:
             self.tc.connect((self.host, self.port))
         except socket.error:
             print('Fail to setup socket connection. err is {}'.format(socket.error))
-            self.tc.close()
+            self.close()
 
     #
     def recv(self, buffer=1024):
@@ -30,7 +36,10 @@ class TCPClient:
 
     #
     def close(self):
+        if self.tc is None:
+            return
         self.tc.close()
+        self.tc = None
 
     # 向TCP连接上发送数据
     def send_cmd(self, cmd):
@@ -113,7 +122,8 @@ class TCPClient:
             return json_data
         try:
             # 发送命令
-            self.send_cmd(cmd)
+            self.send_cmd(cmd.encode())
+            sleep(0.5)
             json_data, image_str = self.recv_ret()
 
         except Exception as err:
@@ -122,4 +132,29 @@ class TCPClient:
 
         return json_data, image_str
 
+
+cmd_get = """{
+    "id" : 9999,
+    "module" : "DP_CUSTOM_CFG_REQ",
+    "block_flag":1,
+    "type" : "get_usr_data"
+}"""
+# {'err_msg': 'No Moudule Deal This Cmd', 'id': 9999, 'signature': '', 'state': 200, 'type': 'get_usr_data'}
+
+cmd_set = """{
+    "body":{
+        "secret_key": "ABCDEFGH11111G11R111S1111100000",
+        "sn": "RF_10_00000001"
+    },
+    "id": 9999,
+    "module": "DP_CUSTOM_CFG_REQ",
+    "type": "set_usr_data"
+}"""
+
+cmd_get_device_info = '{"type":"get_device_info","id":5,"module":"SS_BUS_REQUEST","block_flag":1}'
+
+if __name__ == "__main__":
+    client_tcp = TCPClient("192.168.115.8")
+    json_data, image_str = client_tcp.request(cmd_get_device_info)
+    print(json_data)
 

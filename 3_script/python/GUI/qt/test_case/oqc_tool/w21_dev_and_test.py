@@ -23,10 +23,12 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
         self.fdev.start()
 
         self.dev_host = '192.168.1.100'
-        self.pSearchButton.clicked.connect(self.search_device)
 
+        self.pSearchButton.clicked.connect(self.search_device)
         self.pSearchButton.setShortcut('F5')
-        self.pAutotestButton.setShortcut('F8')
+
+        self.pBackButton.setShortcut('Backspace')
+        self.pBackButton.clicked.connect(self.back_to_product_page)
 
         self.devs_time = QtCore.QTimer()
         self.devs_time.timeout.connect(self.device_list_update)
@@ -35,6 +37,7 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
         self.pLoginButton.clicked.connect(self.login_click)
 
         # 自动测试按钮
+        self.pAutotestButton.setShortcut('F8')
         self.pAutotestButton.clicked.connect(self.start_autotest_click)
         self.pTestListWidget.itemClicked.connect(self.test_widget_switch)
 
@@ -63,6 +66,14 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
         self.dlens = fd.get_capacity_num('dlens')
         if self.dlens == 0:
             self.pExchangeIPBtn.setVisible(False)
+        else:
+            self.pExchangeIPBtn.setVisible(True)
+
+    def set_soft_ver(self, ver):
+        self.lineEdit_soft_version.setText(ver)
+
+    def back_to_product_page(self):
+        self.pwm.prt.back_to_product_page()
 
     #
     def search_device(self):
@@ -121,10 +132,12 @@ class W21DevAndTest(QtWidgets.QWidget, Ui_W21DevAndTest):
             else:
                 self.is_open_video = False
                 self.pwm.reset_http_client_handle()
+                self.lineEdit_soft_version.setText("")
                 self.pLoginButton.setText("设备登录")
                 QtWidgets.QMessageBox.warning(self, "警告", "登陆失败")
         else:
             self.is_open_video = False
+            self.lineEdit_soft_version.setText("")
             self.pwm.w22_vdo.close_sdk_hdl()
             self.pLoginButton.setText("设备登录")
 

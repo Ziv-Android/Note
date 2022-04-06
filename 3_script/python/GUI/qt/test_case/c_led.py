@@ -72,7 +72,7 @@ cmd_tmp = '''{
                                     "id": 2
                                 }
                             ],
-                            "led_mode": 3,
+                            "led_mode": %d,
                             "led_sensitivity": 4
                         }
                     ]
@@ -80,8 +80,8 @@ cmd_tmp = '''{
             }'''
 
 
-def c_led(webc, value):
-    cmd = cmd_tmp % (value, value, value)
+def c_led(webc, value, mode=3):
+    cmd = cmd_tmp % (value, value, value, mode)
     # print('c_lens %s' % cmd)
     if webc == None:
         print('webc none')
