@@ -11,12 +11,12 @@ import json
 
 import docx
 
-doc = docx.Document("tcp_interface.docx")
-last_line = ""
-
-cache = ""
-dep = -1
-index = 1
+# doc = docx.Document("tcp_interface.docx")
+# last_line = ""
+#
+# cache = ""
+# dep = -1
+# index = 1
 # 数据提取
 # for p in doc.paragraphs:
 #     graph = p.text
@@ -43,32 +43,32 @@ index = 1
 #         last_line = graph
 
 # 暂存文件
-with open("tcp_interface_auto_cmd.txt", "w") as of:
-    for p in doc.paragraphs:
-        graph = p.text
-        # print(graph)
-        if len(graph) > 0:
-            if graph.startswith("请求命令参数"):
-                dep = 0
-                print(last_line)
-                # print(graph)
-                continue
-            if dep >= 0:
-                cache += graph
-                json_start = graph.count("{")
-                json_end = graph.count("}")
-                dep = dep + json_start - json_end
-                # print(dep, graph)
-                if dep == 0:
-                    cache = cache.replace("”", "\"").replace(" ", "").replace("\t", "")
-                    of.write(cache)
-                    print(index, cache)
-                    of.write('\n')
-                    dep = -1
-                    cache = ""
-                    index += 1
-                continue
-            last_line = graph
+# with open("tcp_interface_auto_cmd.txt", "w") as of:
+#     for p in doc.paragraphs:
+#         graph = p.text
+#         # print(graph)
+#         if len(graph) > 0:
+#             if graph.startswith("请求命令参数"):
+#                 dep = 0
+#                 print(last_line)
+#                 # print(graph)
+#                 continue
+#             if dep >= 0:
+#                 cache += graph
+#                 json_start = graph.count("{")
+#                 json_end = graph.count("}")
+#                 dep = dep + json_start - json_end
+#                 # print(dep, graph)
+#                 if dep == 0:
+#                     cache = cache.replace("”", "\"").replace(" ", "").replace("\t", "")
+#                     of.write(cache)
+#                     print(index, cache)
+#                     of.write('\n')
+#                     dep = -1
+#                     cache = ""
+#                     index += 1
+#                 continue
+#             last_line = graph
 
 # cmd = '{"body":{"recognition_area":{"polygon_num":1,"polygon":[{"id":1,"enable":true,"point_num":4,"point":[{"x":4096,"y":4096},{"x":12288,"y":4096},{"x":13926,"y":13926},{"x":2457,"y":13926}]}]}},"cmd":"set_reco_para","id":"132156"}'
 # # cmd = '{"cmd":"get_alg_para","body":{"rule_chn":0,"alg_prm_type":"car_motion_prm"},"id":"132158"}'
@@ -147,3 +147,9 @@ with open("tcp_interface_auto_cmd.txt", "w") as of:
 # #      {func_end}
 # # """
 # # )
+
+
+for i in range(5):
+    print(i)
+else:
+    print("for -> else")
