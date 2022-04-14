@@ -108,6 +108,38 @@ FFmpeg中使用AVPacket结构体描述解码前或编码后的压缩数据，使
 GOP：两个I帧之间形成的一组帧数据，gop_size代表两个I帧之间的间隔，gop_size越大，画面质量越高 **？**
 
 ## 开发工具配置
+本机编译（Native Compilation）——使用本机器的编译器，将源代码编译链接成为一个可执行二进制文件的过程。
+
+交叉编译——在一个平台上通过**交叉工具编译链**生成另外一个平台的可执行代码  
+
+交叉编译链常用工具：CC、AS、AR、LD、NM、GDB  
+* CC：编译器，对源文件进行编译处理，生成汇编文件
+* AS：将汇编文件生成目标文件（汇编文件使用的是指令助记符，AS将它翻译成机器码）
+* AR：打包器，用于库操作，可以通过该工具从一个库中删除或者增加目标模块代码
+* LD：链接器，为前面生成的目标代码分配地址空间，将多个目标文件链接成一个库或者可执行文件
+* NM：查看静态可文件中的符号表
+* GDB：调试工具，可以对运行过程中的程序进行代码调试工作
+* STRIP：以最终生成的可执行文件或者库文件作为输入，然后消除其中的源码
+* Objdump：查看静态库或者动态库的方法签名
+
+指令集：机器对指令集向下兼容，常见的指令集有armv6，armv7，armv7s，arm64
+
+### 交叉编译LAME
+1. 下载最新的LAME源码：https://sourceforge.net/projects/lame/files/latest/download
+2. 编写build_armv7.sh脚本
+```shell
+./configure \
+--disable-shared \
+--disable-frontend \
+--host=arm-apple-darwin \
+--prefix="./ziv/armv7" \
+CC="xcrun -sdk iphoneos clang -arch armv7" \
+CFLAGS="-arch armv7 -fembed-bitcode -miphoneos-version-min=7.0" \
+LDFLAGS="-arch armv7 -fembed-bitcode -miphoneos-version-min=7.0"
+make clean
+make -j8
+make install
+```
 
 
 ## MediaPlayer与MediaPlayerService

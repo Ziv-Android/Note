@@ -7,6 +7,7 @@
 #     total += year
 #     print(f"第{i}年, year：{year}, total:{total}")
 #     year *= 0.977
+import base64
 import json
 
 import docx
@@ -149,7 +150,11 @@ import docx
 # # )
 
 
-for i in range(5):
-    print(i)
-else:
-    print("for -> else")
+# for i in range(5):
+#     print(i)
+# else:
+#     print("for -> else")
+
+
+a = base64.b64encode("左".encode('utf-8'))
+print(a.decode('utf-8'))
